@@ -1,0 +1,167 @@
+import type { Service, CaseStudy, ExchangeRates } from './types';
+
+// Mock exchange rates should be consistent with the provider
+export const MOCK_RATES: ExchangeRates = {
+  USD: 1,
+  EUR: 0.92,
+  GBP: 0.79,
+  JPY: 157,
+  JMD: 155,
+};
+
+
+export const services: Service[] = [
+  {
+    id: 'brand-identity',
+    name: 'Brand Identity Suite',
+    category: 'Creative',
+    description: 'Craft a memorable brand that resonates. Our package includes logo design, color palette creation, typography guidelines, and a comprehensive brand style guide to ensure consistency across all platforms.',
+    price: 1200,
+    image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b',
+    previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b'],
+    paymentLink: 'https://book.stripe.com/9B68wP9YOeqg6Ky3zg93y0a',
+    whatsIncluded: ['Logo Design (3 concepts)', 'Color Palette & Typography', 'Brand Style Guide', 'Business Card Design', 'Social Media Profile Images'],
+    goodToKnow: ['Project timeline is typically 2-3 weeks.', 'Includes 2 rounds of revisions for the chosen logo concept.'],
+    caseStudyIds: ['global-rebrand'],
+  },
+  {
+    id: 'event-video',
+    name: 'Event Videography',
+    category: 'Creative',
+    description: 'Cinematic video coverage for your events. We create highlight reels, full-length recordings, and promotional videos that capture the energy and narrative of your occasion. The quantity in cart represents hours booked.',
+    price: 250,
+    unit: 'hr',
+    image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9',
+    previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9'],
+    paymentLink: 'https://book.stripe.com/9B6aEXef41Dugl88TA93y0g',
+    whatsIncluded: [
+      'Professional videographer and equipment',
+      '1-2 minute cinematic highlight reel',
+      'Professionally mixed audio',
+      'Licensed background music',
+      'Digital delivery of final video',
+    ],
+    caseStudyIds: ['annual-corporate-summit'],
+  },
+  {
+    id: 'lifestyle-photography',
+    name: 'Lifestyle Product Photography',
+    category: 'Lifestyle',
+    description: 'Showcase your products in their natural element. Our lifestyle photography session captures your products in authentic, relatable scenarios that connect with your target audience.',
+    price: 950,
+    image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
+    previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4'],
+    paymentLink: 'https://buy.stripe.com/placeholder_lifestyle-photography',
+  }
+];
+
+export const caseStudies: CaseStudy[] = [
+    {
+        id: 'global-rebrand',
+        title: 'The Saint T Collective',
+        category: 'Creative',
+        image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b',
+        description: 'We orchestrated a complete brand evolution for an elite event design firm, elevating their identity to mirror their artistry.',
+        link: '/discover/case-studies/global-rebrand',
+        dataAiHint: 'corporate meeting',
+    },
+    {
+        id: 'annual-corporate-summit',
+        title: 'Annual Corporate Summit',
+        category: 'Event Videography',
+        image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9',
+        description: 'Dynamic video coverage for a major tech corporation\'s annual three-day summit.',
+        link: '/discover/case-studies/annual-corporate-summit',
+        dataAiHint: 'corporate summit',
+    },
+    {
+        id: 'executive-portraits',
+        title: 'Executive Branding Portraits',
+        category: 'Lifestyle',
+        image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
+        description: 'Crafted a powerful visual identity for a C-suite executive, enhancing their professional brand and online presence.',
+        link: '/discover/case-studies/executive-portraits',
+        dataAiHint: 'executive portrait',
+    },
+    {
+        id: 'production-makeup-collaboration',
+        title: 'Flawless on Film: A Collaboration with Ioka Beautiful Purpose',
+        category: 'Production Makeup',
+        image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b',
+        description: 'A seamless collaboration ensuring talent looked impeccable on camera, delivering a great experience and fostering long-term retention.',
+        link: '/discover/case-studies/production-makeup-collaboration',
+        dataAiHint: 'makeup production',
+    },
+    {
+      id: 'luxury-lifestyle-launch',
+      title: 'Luxury Lifestyle Brand Launch',
+      category: 'Social Media Strategy',
+      image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9',
+      description: 'Launched a new luxury brand on social media, achieving explosive growth and engagement through a targeted visual content strategy.',
+      link: '/discover/case-studies/luxury-lifestyle-launch',
+      dataAiHint: 'luxury lifestyle',
+    },
+    {
+        id: 'viral-post',
+        title: 'Viral Visual: The Power of a Single Post',
+        category: 'Social Media Graphic',
+        image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
+        description: 'How one strategically designed graphic for a local cafe led to a 500% increase in weekly engagement and record foot traffic.',
+        link: '/discover/case-studies/viral-post',
+        dataAiHint: 'cafe social',
+    },
+    {
+        id: 'executive-identity',
+        title: 'Executive Identity: Crafting a Lasting Impression',
+        category: 'Business Card Design',
+        image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b',
+        description: 'Designed a premium business card for a top consulting firm, resulting in a measurable increase in client callbacks.',
+        link: '/discover/case-studies/executive-identity',
+        dataAiHint: 'business networking',
+    },
+    {
+        id: 'futuristic-tech-launch',
+        title: 'Futuristic Tech Launch: A 3D Animated Reveal',
+        category: '3D Motion Graphics',
+        image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9',
+        description: 'Created a stunning 3D animated product reveal for a next-generation gadget, generating massive pre-launch buzz.',
+        link: '/discover/case-studies/futuristic-tech-launch',
+        dataAiHint: 'tech circuit',
+    },
+    {
+        id: 'luxury-real-estate-showcase',
+        title: 'Luxury Real Estate Showcase',
+        category: 'Cinematic Home Tour',
+        image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
+        description: 'A compelling video tour that brought a high-value property to life, resulting in a faster sale at the desired price point.',
+        link: '/discover/case-studies/luxury-real-estate-showcase',
+        dataAiHint: 'luxury home',
+    }
+];
+
+export function getServiceById(id: string): Service | undefined {
+  return services.find((service) => service.id === id);
+}
+
+export function getCaseStudyById(id: string): CaseStudy | undefined {
+    return caseStudies.find((study) => study.id === id);
+}
+
+// Mock async function to simulate a database call
+export async function getServicesByIds(ids: string[]): Promise<Service[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const result = services.filter((service) => ids.includes(service.id));
+      resolve(result);
+    }, 500);
+  });
+}
+
+export async function getCaseStudiesByIds(ids: string[]): Promise<CaseStudy[]> {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const result = caseStudies.filter((study) => ids.includes(study.id));
+            resolve(result);
+        }, 300);
+    });
+}

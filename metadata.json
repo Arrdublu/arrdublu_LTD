@@ -1,0 +1,6 @@
+{
+  "name": "Arrdublu Hero and Portfolio Experience",
+  "description": "An immersive, interactive 3D WebGL hero and portfolio experience with custom canvas animations and cyberpunk aesthetics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,73 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Global Safety Net
+    // ===============================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['email', 'role']) &&
+             data.keys().size() == 2 &&
+             data.email is string &&
+             data.email.size() <= 128 &&
+             data.role in ['admin', 'client'];
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['items', 'subtotal', 'totalAmount', 'status', 'currency', 'createdAt']) &&
+             data.items is list &&
+             data.subtotal is number &&
+             data.totalAmount is number &&
+             data.status in ['paid', 'pending', 'cancelled'] &&
+             data.currency is string &&
+             (!data.keys().contains('discountCode') || data.discountCode is string) &&
+             (!data.keys().contains('discountAmount') || data.discountAmount is number) &&
+             (!data.keys().contains('stripePaymentIntentId') || data.stripePaymentIntentId is string) &&
+             (!data.keys().contains('uid') || data.uid is string);
+    }
+
+    function isValidDiscount(data) {
+      return data.keys().hasAll(['code', 'type', 'value', 'isActive']) &&
+             data.keys().size() == 4 &&
+             data.code is string &&
+             data.code.size() <= 32 &&
+             data.type in ['percentage', 'fixed'] &&
+             data.value is number &&
+             data.isActive is bool;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow list: if true;
+      allow get, delete: if isValidId(userId);
+      allow create, update: if isValidId(userId) && isValidUser(request.resource.data);
+    }
+
+    match /orders/{orderId} {
+      allow list: if true;
+      allow get, delete: if isValidId(orderId);
+      allow create, update: if isValidId(orderId) && isValidOrder(request.resource.data);
+    }
+
+    match /discounts/{discountId} {
+      allow list: if true;
+      allow get, delete: if isValidId(discountId);
+      allow create, update: if isValidId(discountId) && isValidDiscount(request.resource.data);
+    }
+  }
+}

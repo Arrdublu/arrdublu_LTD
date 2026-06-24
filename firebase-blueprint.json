@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "Order": {
+      "title": "Order",
+      "description": "A customer order for services.",
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "List of items in the order."
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Subtotal before discounts."
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Total amount after discounts."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["paid", "pending", "cancelled"],
+          "description": "Current status of the order."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency used for the order."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the order was created."
+        },
+        "discountCode": {
+          "type": "string",
+          "description": "Discount code applied to the order."
+        },
+        "discountAmount": {
+          "type": "number",
+          "description": "Amount discounted from the subtotal."
+        },
+        "stripePaymentIntentId": {
+          "type": "string",
+          "description": "Stripe Payment Intent ID associated with the order."
+        },
+        "uid": {
+          "type": "string",
+          "description": "The UID of the user who placed the order."
+        }
+      },
+      "required": ["items", "subtotal", "totalAmount", "status", "currency", "createdAt"]
+    },
+    "Discount": {
+      "title": "Discount",
+      "description": "A promotional discount code.",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The discount code."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["percentage", "fixed"],
+          "description": "Type of discount."
+        },
+        "value": {
+          "type": "number",
+          "description": "Value of the discount."
+        },
+        "isActive": {
+          "type": "boolean",
+          "description": "Whether the discount is currently active."
+        }
+      },
+      "required": ["code", "type", "value", "isActive"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile and roles.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "client"],
+          "description": "User's role in the system."
+        }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Collection of customer orders."
+    },
+    "/discounts/{discountId}": {
+      "schema": "Discount",
+      "description": "Collection of discount codes."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of user profiles."
+    }
+  }
+}
