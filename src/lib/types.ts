@@ -22,6 +22,7 @@ export type CaseStudy = {
     dataAiHint: string;
     description: string;
     link: string;
+    status?: 'Live' | 'Archived';
 }
 
 export type OrderItem = {

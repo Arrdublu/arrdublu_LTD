@@ -93,6 +93,7 @@ export default function AdminLayout({
 
             <button
               onClick={handleGoogleSignIn}
+              aria-label="Sign in with Google account"
               className="w-full py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-black font-semibold rounded font-sans text-sm flex items-center justify-center gap-2.5 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.4)] active:scale-[0.98] cursor-pointer"
             >
               <svg className="w-5 h-5 animate-pulse" viewBox="0 0 24 24">
@@ -183,6 +184,7 @@ export default function AdminLayout({
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4 gap-1">
               <Link
                 href="/admin"
+                aria-label="Admin Dashboard"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   pathname === '/admin'
                     ? 'text-cyan-400 bg-slate-900/80 border-l-2 border-cyan-500'
@@ -193,6 +195,7 @@ export default function AdminLayout({
               </Link>
               <Link
                 href="/admin/discounts"
+                aria-label="Manage Discounts"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   pathname === '/admin/discounts'
                     ? 'text-cyan-400 bg-slate-900/80 border-l-2 border-cyan-500'
@@ -203,6 +206,7 @@ export default function AdminLayout({
               </Link>
               <Link
                 href="/admin/prints"
+                aria-label="Manage Prints"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   pathname === '/admin/prints'
                     ? 'text-cyan-400 bg-slate-900/80 border-l-2 border-cyan-500'
@@ -213,6 +217,7 @@ export default function AdminLayout({
               </Link>
               <Link
                 href="/admin/free-downloads"
+                aria-label="Manage Free Downloads"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   pathname === '/admin/free-downloads'
                     ? 'text-cyan-400 bg-slate-900/80 border-l-2 border-cyan-500'
@@ -223,6 +228,7 @@ export default function AdminLayout({
               </Link>
               <Link
                 href="/admin/services"
+                aria-label="Manage Services"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   pathname === '/admin/services'
                     ? 'text-cyan-400 bg-slate-900/80 border-l-2 border-cyan-500'
@@ -233,6 +239,7 @@ export default function AdminLayout({
               </Link>
               <Link
                 href="/admin/store"
+                aria-label="Manage Store Products"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
                   pathname === '/admin/store'
                     ? 'text-cyan-400 bg-slate-900/80 border-l-2 border-cyan-500'

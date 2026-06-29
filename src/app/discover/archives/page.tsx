@@ -52,6 +52,11 @@ export default function ArchivesPage() {
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
         <div className="md:col-span-1 flex justify-center">
             <Card className="p-0">
+              {!isMounted ? (
+                <div className="p-6 flex justify-center min-w-[300px] min-h-[350px]">
+                  <Skeleton className="h-full w-full" />
+                </div>
+              ) : (
                 <Calendar
                     mode="single"
                     selected={date}
@@ -59,6 +64,7 @@ export default function ArchivesPage() {
                     className="p-0"
                     disabled={(d) => d > new Date()}
                 />
+              )}
             </Card>
         </div>
         <div className="md:col-span-2">

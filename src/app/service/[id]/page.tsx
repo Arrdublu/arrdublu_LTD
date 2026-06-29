@@ -37,6 +37,8 @@ export async function generateMetadata(
       title: `${service.name} | Arrdublu`,
       description: service.description.substring(0, 160),
       url: `/service/${service.id}`,
+      siteName: 'Arrdublu Creative Agency',
+      type: 'website',
       images: [
         {
           url: imageUrl,
@@ -52,6 +54,8 @@ export async function generateMetadata(
       title: `${service.name} | Arrdublu`,
       description: service.description.substring(0, 160),
       images: [imageUrl],
+      creator: '@arrdublu',
+      site: '@arrdublu',
     },
   }
 }

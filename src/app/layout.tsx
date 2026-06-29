@@ -21,6 +21,7 @@ import { SiteHeader } from '@/components/layout/Header';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 import { CartProvider } from '@/context/CartProvider';
 import { CurrencyProvider } from '@/context/CurrencyProvider';
+import { LanguageProvider } from '@/context/LanguageProvider';
 
 export const metadata = {
   title: 'Arrdublu | Immersive WebGL Hero and Portfolio',
@@ -36,12 +37,14 @@ export default function RootLayout({
     <html lang="en" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${unbounded.variable} dark`} suppressHydrationWarning>
       <body className="bg-[#020304] text-slate-100 overflow-x-hidden antialiased selection:bg-cyan-500/30 selection:text-cyan-200">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <CurrencyProvider>
-            <CartProvider>
-              <SiteHeader />
-              {children}
-            </CartProvider>
-          </CurrencyProvider>
+          <LanguageProvider>
+            <CurrencyProvider>
+              <CartProvider>
+                <SiteHeader />
+                {children}
+              </CartProvider>
+            </CurrencyProvider>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

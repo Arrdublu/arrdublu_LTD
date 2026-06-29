@@ -32,10 +32,10 @@ service cloud.firestore {
              data.totalAmount is number &&
              data.status in ['paid', 'pending', 'cancelled'] &&
              data.currency is string &&
-             (!data.keys().contains('discountCode') || data.discountCode is string) &&
-             (!data.keys().contains('discountAmount') || data.discountAmount is number) &&
-             (!data.keys().contains('stripePaymentIntentId') || data.stripePaymentIntentId is string) &&
-             (!data.keys().contains('uid') || data.uid is string);
+             (!data.keys().hasAny(['discountCode']) || data.discountCode is string) &&
+             (!data.keys().hasAny(['discountAmount']) || data.discountAmount is number) &&
+             (!data.keys().hasAny(['stripePaymentIntentId']) || data.stripePaymentIntentId is string) &&
+             (!data.keys().hasAny(['uid']) || data.uid is string);
     }
 
     function isValidDiscount(data) {

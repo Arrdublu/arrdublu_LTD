@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 interface HeroCanvasProps {
@@ -12,6 +12,7 @@ interface HeroCanvasProps {
 export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: HeroCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const requestRef = useRef<number | null>(null)
+  const [isLowPower, setIsLowPower] = useState(false)
   
   // Keep states in refs so loop always has access to latest values without re-triggering effect
   const viewStateRef = useRef(viewState)
@@ -24,13 +25,24 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 })
 
   useEffect(() => {
+    // Check for user preferences
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isMobile = window.innerWidth < 768
+    
+    // Enable low power mode on mobile or if reduced motion is requested
+    setIsLowPower(prefersReducedMotion || isMobile)
+    
     const handleMouseMove = (e: MouseEvent) => {
+      if (prefersReducedMotion) return // Disable mouse tracking if reduced motion
       // Normalize mouse between -1 and 1
       mouseRef.current.targetX = (e.clientX / window.innerWidth) * 2 - 1
       mouseRef.current.targetY = -(e.clientY / window.innerHeight) * 2 + 1
     }
 
-    window.addEventListener('mousemove', handleMouseMove)
+    if (!prefersReducedMotion) {
+      window.addEventListener('mousemove', handleMouseMove, { passive: true })
+    }
+    
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
     }
@@ -47,16 +59,21 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
     const scene = new THREE.Scene()
     
     // Add subtle ambient fog to feel like a deep space void
-    scene.fog = new THREE.FogExp2(0x020304, 0.08)
+    scene.fog = new THREE.FogExp2(0x020304, isLowPower ? 0.05 : 0.08)
 
     // 2. Camera setup
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100)
     camera.position.z = 7
 
-    // 3. Renderer setup
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    // 3. Renderer setup - performance optimized
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: !isLowPower, // Disable antialiasing on low power
+      alpha: true,
+      powerPreference: 'high-performance' 
+    })
     renderer.setSize(width, height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    // Reduce pixel ratio on mobile/low power to boost FPS
+    renderer.setPixelRatio(isLowPower ? 1 : Math.min(window.devicePixelRatio, 2))
     container.appendChild(renderer.domElement)
 
     // 4. Lights
@@ -75,12 +92,10 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
 
     // 5. Creating our 3D Geometries
     // To enable smooth fracturing/morphing, we create 3 clusters of geometries.
-    // In HERO mode, we merge their positions at (0, 0, 0) to form a unified, highly complex multi-layered structure.
-    // In PORTFOLIO mode, we drift them apart into left (-2.5, 0.5, 0), center (0, -0.6, -0.5), and right (2.5, 0.5, 0) nodes.
 
     // Cluster A: Left - Creative Production (Cyan Core)
     const clusterAGroup = new THREE.Group()
-    const geoA = new THREE.IcosahedronGeometry(1.2, 1)
+    const geoA = new THREE.IcosahedronGeometry(1.2, isLowPower ? 0 : 1) // Less detail on low power
     const matA = new THREE.MeshBasicMaterial({
       color: 0x00f0ff,
       wireframe: true,
@@ -90,12 +105,11 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
     const meshA = new THREE.Mesh(geoA, matA)
     clusterAGroup.add(meshA)
 
-    // Inside Cluster A: tiny cluster particles
+    // Inside Cluster A: tiny cluster particles (reduce count on low power)
     const particleGeoA = new THREE.BufferGeometry()
-    const pCountA = 80
+    const pCountA = isLowPower ? 20 : 80
     const pPositionsA = new Float32Array(pCountA * 3)
     for (let i = 0; i < pCountA * 3; i += 3) {
-      // Random shell distribution
       const u = Math.random()
       const v = Math.random()
       const theta = u * 2.0 * Math.PI
@@ -118,7 +132,7 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
 
     // Cluster B: Center - SEO & Digital Dominance (Gold Sphere)
     const clusterBGroup = new THREE.Group()
-    const geoB = new THREE.OctahedronGeometry(1.0, 1)
+    const geoB = new THREE.OctahedronGeometry(1.0, isLowPower ? 0 : 1)
     const matB = new THREE.MeshBasicMaterial({
       color: 0xfbbf24,
       wireframe: true,
@@ -128,7 +142,6 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
     const meshB = new THREE.Mesh(geoB, matB)
     clusterBGroup.add(meshB)
 
-    // Inner core sphere for Cluster B
     const geoBInner = new THREE.BoxGeometry(0.5, 0.5, 0.5)
     const matBInner = new THREE.MeshBasicMaterial({
       color: 0xf59e0b,
@@ -142,8 +155,7 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
 
     // Cluster C: Right - Luxury Lifestyle Content (Bi-color Core)
     const clusterCGroup = new THREE.Group()
-    // Ring-like torus knot representing continuous media streams
-    const geoC = new THREE.TorusKnotGeometry(0.7, 0.2, 50, 6, 2, 3)
+    const geoC = new THREE.TorusKnotGeometry(0.7, 0.2, isLowPower ? 20 : 50, isLowPower ? 4 : 6, 2, 3)
     const matC = new THREE.MeshBasicMaterial({
       color: 0x00f0ff,
       wireframe: true,
@@ -153,9 +165,8 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
     const meshC = new THREE.Mesh(geoC, matC)
     clusterCGroup.add(meshC)
 
-    // Sparkly golden nodes for Cluster C
     const particleGeoC = new THREE.BufferGeometry()
-    const pCountC = 60
+    const pCountC = isLowPower ? 20 : 60
     const pPositionsC = new Float32Array(pCountC * 3)
     for (let i = 0; i < pCountC * 3; i += 3) {
       const theta = Math.random() * Math.PI * 2
@@ -177,7 +188,7 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
 
     // 6. Volumetric golden Tracer beam line that travels across space
     const tracerPoints = []
-    const tracerCount = 20
+    const tracerCount = isLowPower ? 10 : 20
     for (let i = 0; i < tracerCount; i++) {
       tracerPoints.push(new THREE.Vector3(0, 0, 0))
     }
@@ -188,26 +199,23 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
       opacity: 0.6,
     })
     const tracerLine = new THREE.Line(tracerGeo, tracerMat)
-    scene.add(tracerLine)
+    if (!isLowPower) {
+       scene.add(tracerLine) // Only add complex tracer on high power
+    }
 
     // Current positions interpolators
     const currentPosA = new THREE.Vector3(0, 0, 0)
     const currentPosB = new THREE.Vector3(0, 0, 0)
     const currentPosC = new THREE.Vector3(0, 0, 0)
 
-    // Cluster Target Coordinates:
-    // HERO mode: concentrated in the center
     const heroPosA = new THREE.Vector3(0, 0, 0)
     const heroPosB = new THREE.Vector3(0, 0, 0)
     const heroPosC = new THREE.Vector3(0, 0, 0)
 
-    // PORTFOLIO mode: expanded nodes in a digital void
-    // Staggered slightly in Z for a real 3D depth field experience
     const portPosA = new THREE.Vector3(-2.8, 0.4, 0.3)
     const portPosB = new THREE.Vector3(0, -0.6, -0.5)
     const portPosC = new THREE.Vector3(2.8, 0.5, 0.8)
 
-    // Track original mesh scales for pulsing effect
     const origScaleA = meshA.scale.clone()
     const origScaleB = meshB.scale.clone()
     const origScaleC = meshC.scale.clone()
@@ -221,7 +229,6 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
       camera.updateProjectionMatrix()
       
       renderer.setSize(w, h)
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
       // Adjust camera / cluster scales for smaller screens (mobiles)
       if (w < 768) {
@@ -238,30 +245,38 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
       }
     }
     
-    // Call once initially
     handleResize()
-    window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', handleResize, { passive: true })
 
-    // Animation variables
     let clock = new THREE.Clock()
 
-    // Camera target positions for detail zooms
     const camTargetPos = new THREE.Vector3(0, 0, 7)
     const camTargetLookAt = new THREE.Vector3(0, 0, 0)
     const camCurrentLookAt = new THREE.Vector3(0, 0, 0)
 
     // 8. Visual Animation Loop
+    let lastRenderTime = 0
+    const targetFPS = isLowPower ? 30 : 60
+    const frameInterval = 1 / targetFPS
+
     const animate = () => {
+      requestRef.current = requestAnimationFrame(animate)
+
       const time = clock.getElapsedTime()
+      
+      // Throttle rendering for low power mode
+      if (isLowPower && (time - lastRenderTime) < frameInterval) {
+         return
+      }
+      lastRenderTime = time
 
       // Smooth mouse lerping
       mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.08
       mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.08
 
-      const mx = mouseRef.current.x
-      const my = mouseRef.current.y
+      const mx = isLowPower ? 0 : mouseRef.current.x
+      const my = isLowPower ? 0 : mouseRef.current.y
 
-      // Setup interpolation targets based on active viewstate
       const activeState = viewStateRef.current
       const activeIdx = activeIndexRef.current
 
@@ -275,76 +290,72 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
         targetC = portPosC
       }
 
-      // Smoothly interpolate cluster positions
-      currentPosA.lerp(targetA, 0.06)
-      currentPosB.lerp(targetB, 0.06)
-      currentPosC.lerp(targetC, 0.06)
+      const lerpSpeed = isLowPower ? 0.1 : 0.06
+
+      currentPosA.lerp(targetA, lerpSpeed)
+      currentPosB.lerp(targetB, lerpSpeed)
+      currentPosC.lerp(targetC, lerpSpeed)
 
       clusterAGroup.position.copy(currentPosA)
       clusterBGroup.position.copy(currentPosB)
       clusterCGroup.position.copy(currentPosC)
 
       // Slow constant aesthetic rotate + React to Mouse Coordinate (tilting)
-      clusterAGroup.rotation.y = time * 0.15 + mx * 0.2
-      clusterAGroup.rotation.x = time * 0.1 + my * 0.2
+      const rotateSpeed = isLowPower ? 0.05 : 0.15
+      clusterAGroup.rotation.y = time * rotateSpeed + mx * 0.2
+      clusterAGroup.rotation.x = time * (rotateSpeed * 0.6) + my * 0.2
       
-      clusterBGroup.rotation.y = -time * 0.2 + mx * 0.15
-      clusterBGroup.rotation.z = time * 0.15 + my * 0.15
+      clusterBGroup.rotation.y = -time * (rotateSpeed * 1.3) + mx * 0.15
+      clusterBGroup.rotation.z = time * rotateSpeed + my * 0.15
 
-      clusterCGroup.rotation.y = time * 0.1 - mx * 0.2
-      clusterCGroup.rotation.x = -time * 0.12 - my * 0.2
+      clusterCGroup.rotation.y = time * (rotateSpeed * 0.6) - mx * 0.2
+      clusterCGroup.rotation.x = -time * (rotateSpeed * 0.8) - my * 0.2
 
-      // "Pulsating" breathing geometries mimicking "Creativity & Strategy" data rates
-      const breath = Math.sin(time * 2) * 0.06
-      meshA.scale.copy(origScaleA).multiplyScalar(1 + breath)
-      meshB.scale.copy(origScaleB).multiplyScalar(1 - breath * 1.2)
-      meshC.scale.copy(origScaleC).multiplyScalar(1 + breath * 0.8)
+      if (!isLowPower) {
+        // "Pulsating" breathing geometries mimicking "Creativity & Strategy" data rates
+        const breath = Math.sin(time * 2) * 0.06
+        meshA.scale.copy(origScaleA).multiplyScalar(1 + breath)
+        meshB.scale.copy(origScaleB).multiplyScalar(1 - breath * 1.2)
+        meshC.scale.copy(origScaleC).multiplyScalar(1 + breath * 0.8)
 
-      // Move light positions dynamically for volumetric shadow feel
-      cyanLight.position.x = 2 * Math.cos(time * 0.8) + mx * 1.5
-      cyanLight.position.y = 2 * Math.sin(time * 0.6) + my * 1.5
-      cyanLight.position.z = 2 + Math.sin(time * 0.5)
+        // Move light positions dynamically for volumetric shadow feel
+        cyanLight.position.x = 2 * Math.cos(time * 0.8) + mx * 1.5
+        cyanLight.position.y = 2 * Math.sin(time * 0.6) + my * 1.5
+        cyanLight.position.z = 2 + Math.sin(time * 0.5)
 
-      goldLight.position.x = -2 * Math.sin(time * 0.7) - mx * 1.5
-      goldLight.position.y = -2 * Math.cos(time * 0.9) - my * 1.5
+        goldLight.position.x = -2 * Math.sin(time * 0.7) - mx * 1.5
+        goldLight.position.y = -2 * Math.cos(time * 0.9) - my * 1.5
 
-      // Continuous golden circuit board tracer line calculation
-      // Draws path connecting Cluster A -> Cluster B -> Cluster C -> Cluster A
-      const linePositions = tracerLine.geometry.attributes.position.array as Float32Array
-      // Setup dynamic curved interpolation path
-      const pointsArray = []
-      // Cluster positions
-      const pA = clusterAGroup.position
-      const pB = clusterBGroup.position
-      const pC = clusterCGroup.position
+        // Continuous golden circuit board tracer line calculation
+        const linePositions = tracerLine.geometry.attributes.position.array as Float32Array
+        const pointsArray = []
+        const pA = clusterAGroup.position
+        const pB = clusterBGroup.position
+        const pC = clusterCGroup.position
 
-      for (let i = 0; i < tracerCount; i++) {
-        const ratio = i / (tracerCount - 1)
-        let pt = new THREE.Vector3()
-        if (ratio < 0.5) {
-          // Path from A to B
-          pt.lerpVectors(pA, pB, ratio * 2)
-          // Add sine wave curve for electrical tracer effect
-          pt.y += Math.sin(ratio * Math.PI) * 0.35 * Math.sin(time * 4)
-        } else {
-          // Path from B to C
-          pt.lerpVectors(pB, pC, (ratio - 0.5) * 2)
-          pt.x += Math.sin((ratio - 0.5) * Math.PI) * 0.35 * Math.sin(time * 4)
+        for (let i = 0; i < tracerCount; i++) {
+          const ratio = i / (tracerCount - 1)
+          let pt = new THREE.Vector3()
+          if (ratio < 0.5) {
+            pt.lerpVectors(pA, pB, ratio * 2)
+            pt.y += Math.sin(ratio * Math.PI) * 0.35 * Math.sin(time * 4)
+          } else {
+            pt.lerpVectors(pB, pC, (ratio - 0.5) * 2)
+            pt.x += Math.sin((ratio - 0.5) * Math.PI) * 0.35 * Math.sin(time * 4)
+          }
+          pointsArray.push(pt)
         }
-        pointsArray.push(pt)
-      }
 
-      // Update tracer line vertices
-      for (let i = 0; i < tracerCount; i++) {
-        linePositions[i * 3] = pointsArray[i].x
-        linePositions[i * 3 + 1] = pointsArray[i].y
-        linePositions[i * 3 + 2] = pointsArray[i].z
+        for (let i = 0; i < tracerCount; i++) {
+          linePositions[i * 3] = pointsArray[i].x
+          linePositions[i * 3 + 1] = pointsArray[i].y
+          linePositions[i * 3 + 2] = pointsArray[i].z
+        }
+        tracerLine.geometry.attributes.position.needsUpdate = true
       }
-      tracerLine.geometry.attributes.position.needsUpdate = true
 
       // Camera zoom details when clicking on a card in PORTFOLIO mode
       if (activeState === 'PORTFOLIO' && activeIdx !== null) {
-        // Zoom and align closely to selected node
         if (activeIdx === 0) {
           camTargetPos.set(portPosA.x, portPosA.y, portPosA.z + 1.8)
           camTargetLookAt.copy(portPosA)
@@ -356,25 +367,20 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
           camTargetLookAt.copy(portPosC)
         }
       } else {
-        // Default standard angles
         if (activeState === 'PORTFOLIO') {
-          // Slightly angled panoramic view of the floating digital void
           camTargetPos.set(mx * 0.5, -0.2 + my * 0.5, 6.2)
           camTargetLookAt.set(0, 0, 0)
         } else {
-          // Centered hero camera, tilts gently on mouse coordinates
           camTargetPos.set(mx * 0.8, my * 0.8, 6.5)
           camTargetLookAt.set(0, 0, 0)
         }
       }
 
-      // Lerp Camera vectors smoothly
-      camera.position.lerp(camTargetPos, 0.05)
-      camCurrentLookAt.lerp(camTargetLookAt, 0.05)
+      camera.position.lerp(camTargetPos, lerpSpeed)
+      camCurrentLookAt.lerp(camTargetLookAt, lerpSpeed)
       camera.lookAt(camCurrentLookAt)
 
       renderer.render(scene, camera)
-      requestRef.current = requestAnimationFrame(animate)
     }
 
     requestRef.current = requestAnimationFrame(animate)
@@ -387,7 +393,6 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
       }
       container.removeChild(renderer.domElement)
 
-      // Dispose scenes geometries and materials properly to preserve performance
       geoA.dispose()
       matA.dispose()
       particleGeoA.dispose()
@@ -408,12 +413,13 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
 
       renderer.dispose()
     }
-  }, [])
+  }, [isLowPower])
 
   return (
     <div 
       className="fixed inset-0 w-full h-full z-0 pointer-events-none"
       style={{ overflow: 'hidden' }}
+      aria-hidden="true"
     >
       <div 
         id="aistudio_canvas_container"

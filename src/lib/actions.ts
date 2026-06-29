@@ -22,7 +22,7 @@ export async function createPaymentIntent(
   }
 
   const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: '2026-05-27.dahlia',
+    apiVersion: '2026-05-27.dahlia' as any,
   });
 
   const orderItems = items.map(item => ({

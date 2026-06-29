@@ -1,5 +1,6 @@
 
 import { BrandGrid } from '@/components/brands/BrandGrid';
+import { ClientLogos } from '@/components/home/ClientLogos';
 
 export default function BrandsPage() {
   return (
@@ -12,6 +13,7 @@ export default function BrandsPage() {
           We are proud to have worked with a diverse range of innovative and inspiring brands.
         </p>
       </div>
+      <ClientLogos />
       <BrandGrid />
     </div>
   );

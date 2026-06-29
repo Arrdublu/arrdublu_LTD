@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   }
 
   const stripe = new Stripe(key, {
-    apiVersion: "2026-05-27.dahlia",
+    apiVersion: "2026-05-27.dahlia" as any,
   });
 
   const body = await req.text();

@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Send } from "lucide-react";
 
 const formSchema = z.object({
@@ -53,80 +51,77 @@ export function SupportForm() {
     toast({
       title: "Opening Email Client",
       description: "Your message has been prepared. Please send it from your email application.",
+      className: "bg-cyan-950 border-cyan-500 text-white",
     });
     form.reset();
   }
 
   return (
-    <Card>
-        <CardContent className="pt-6">
-            <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                            <Input placeholder="John Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Email Address</FormLabel>
-                        <FormControl>
-                            <Input placeholder="you@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                </div>
-                 <FormField
-                    control={form.control}
-                    name="subject"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Subject</FormLabel>
-                        <FormControl>
-                            <Input placeholder="e.g. Question about my order" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Your Message</FormLabel>
-                    <FormControl>
-                        <Textarea
-                        placeholder="Tell us how we can help..."
-                        className="min-h-[120px]"
-                        {...field}
-                        />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
-                <Button type="submit" className="w-full md:w-auto">
-                <Send className="mr-2 h-4 w-4" />
-                Send Message
-                </Button>
-            </form>
-            </Form>
-        </CardContent>
-    </Card>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel className="font-mono text-xs uppercase text-cyan-400 tracking-wider">Operator Identity</FormLabel>
+                  <FormControl>
+                      <Input placeholder="Enter your full name" className="bg-slate-900/50 border-slate-800 text-white placeholder:text-slate-600 focus-visible:ring-cyan-500/50 focus-visible:border-cyan-500 font-sans" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-red-400 font-mono text-[10px]" />
+                  </FormItem>
+              )}
+              />
+              <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel className="font-mono text-xs uppercase text-cyan-400 tracking-wider">Return Frequency (Email)</FormLabel>
+                  <FormControl>
+                      <Input placeholder="you@domain.com" className="bg-slate-900/50 border-slate-800 text-white placeholder:text-slate-600 focus-visible:ring-cyan-500/50 focus-visible:border-cyan-500 font-sans" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-red-400 font-mono text-[10px]" />
+                  </FormItem>
+              )}
+              />
+          </div>
+            <FormField
+              control={form.control}
+              name="subject"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel className="font-mono text-xs uppercase text-cyan-400 tracking-wider">Transmission Subject</FormLabel>
+                  <FormControl>
+                      <Input placeholder="e.g. Identity Architecture Consultation" className="bg-slate-900/50 border-slate-800 text-white placeholder:text-slate-600 focus-visible:ring-cyan-500/50 focus-visible:border-cyan-500 font-sans" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-red-400 font-mono text-[10px]" />
+                  </FormItem>
+              )}
+              />
+          <FormField
+          control={form.control}
+          name="message"
+          render={({ field }) => (
+              <FormItem>
+              <FormLabel className="font-mono text-xs uppercase text-cyan-400 tracking-wider">Encrypted Payload (Message)</FormLabel>
+              <FormControl>
+                  <Textarea
+                  placeholder="Detail your project specifications or required support operations here..."
+                  className="min-h-[160px] bg-slate-900/50 border-slate-800 text-white placeholder:text-slate-600 focus-visible:ring-cyan-500/50 focus-visible:border-cyan-500 font-sans resize-none"
+                  {...field}
+                  />
+              </FormControl>
+              <FormMessage className="text-red-400 font-mono text-[10px]" />
+              </FormItem>
+          )}
+          />
+          <Button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 hover:text-slate-900 transition-colors uppercase font-mono tracking-wider text-xs font-bold py-6 group">
+            <Send className="mr-2 h-4 w-4 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+            Transmit Data
+          </Button>
+      </form>
+    </Form>
   );
 }

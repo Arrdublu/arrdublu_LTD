@@ -52,6 +52,49 @@ export const services: Service[] = [
     image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
     previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4'],
     paymentLink: 'https://buy.stripe.com/placeholder_lifestyle-photography',
+  },
+  {
+    id: 'holographic-production',
+    name: 'Holographic Production',
+    category: 'Creative',
+    description: 'Immersive holographic production services for futuristic tech launches, virtual events, and engaging web presences. Our holographic cluster nodes and WebGL solutions align to bring your vision to life.',
+    price: 3500,
+    image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b',
+    previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b'],
+    paymentLink: 'https://buy.stripe.com/placeholder_holographic',
+    whatsIncluded: ['3D Motion Graphics', 'WebGL Space Integration', 'Holographic Node Clustering', 'Immersive Web Design'],
+    goodToKnow: ['Advanced technological operational details included.', 'Best suited for futuristic tech launches.'],
+    caseStudyIds: ['futuristic-tech-launch'],
+  },
+  {
+    id: 'cognitive-seo',
+    name: 'Cognitive SEO',
+    category: 'SEO',
+    description: 'Algorithmic dominance frameworks and advanced search structures to own the digital conversation.',
+    price: 3500,
+    image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
+    previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4'],
+    paymentLink: 'https://buy.stripe.com/placeholder_cognitive_seo',
+  },
+  {
+    id: 'luxury-identity',
+    name: 'Luxury Identity',
+    category: 'Creative',
+    description: 'Elite brand curation, high-end storytelling, and identity systems designed for premium market positioning.',
+    price: 8000,
+    image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9',
+    previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9'],
+    paymentLink: 'https://buy.stripe.com/placeholder_luxury_identity',
+  },
+  {
+    id: 'virtual-production',
+    name: 'Virtual Production',
+    category: 'Creative',
+    description: 'Next-gen Unreal Engine 5 integrations and curved LED stage cinematic capture for reality-bending narratives.',
+    price: 15000,
+    image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b',
+    previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b'],
+    paymentLink: 'https://buy.stripe.com/placeholder_virtual_production',
   }
 ];
 
@@ -64,6 +107,7 @@ export const caseStudies: CaseStudy[] = [
         description: 'We orchestrated a complete brand evolution for an elite event design firm, elevating their identity to mirror their artistry.',
         link: '/discover/case-studies/global-rebrand',
         dataAiHint: 'corporate meeting',
+        status: 'Live',
     },
     {
         id: 'annual-corporate-summit',
@@ -73,6 +117,7 @@ export const caseStudies: CaseStudy[] = [
         description: 'Dynamic video coverage for a major tech corporation\'s annual three-day summit.',
         link: '/discover/case-studies/annual-corporate-summit',
         dataAiHint: 'corporate summit',
+        status: 'Archived',
     },
     {
         id: 'executive-portraits',
@@ -82,6 +127,7 @@ export const caseStudies: CaseStudy[] = [
         description: 'Crafted a powerful visual identity for a C-suite executive, enhancing their professional brand and online presence.',
         link: '/discover/case-studies/executive-portraits',
         dataAiHint: 'executive portrait',
+        status: 'Live',
     },
     {
         id: 'production-makeup-collaboration',
@@ -91,6 +137,7 @@ export const caseStudies: CaseStudy[] = [
         description: 'A seamless collaboration ensuring talent looked impeccable on camera, delivering a great experience and fostering long-term retention.',
         link: '/discover/case-studies/production-makeup-collaboration',
         dataAiHint: 'makeup production',
+        status: 'Archived',
     },
     {
       id: 'luxury-lifestyle-launch',
@@ -100,6 +147,7 @@ export const caseStudies: CaseStudy[] = [
       description: 'Launched a new luxury brand on social media, achieving explosive growth and engagement through a targeted visual content strategy.',
       link: '/discover/case-studies/luxury-lifestyle-launch',
       dataAiHint: 'luxury lifestyle',
+      status: 'Live',
     },
     {
         id: 'viral-post',
