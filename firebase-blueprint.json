@@ -92,6 +92,31 @@
         }
       },
       "required": ["email", "role"]
+    },
+    "SearchLog": {
+      "title": "SearchLog",
+      "description": "A search log record for tracking search trends and user interest metrics.",
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query term entered by the user."
+        },
+        "resultsCount": {
+          "type": "number",
+          "description": "The number of matching services returned."
+        },
+        "resultsFound": {
+          "type": "boolean",
+          "description": "True if one or more services were matched."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the search action."
+        }
+      },
+      "required": ["query", "resultsCount", "resultsFound", "timestamp"]
     }
   },
   "firestore": {
@@ -106,6 +131,10 @@
     "/users/{userId}": {
       "schema": "User",
       "description": "Collection of user profiles."
+    },
+    "/search_logs/{logId}": {
+      "schema": "SearchLog",
+      "description": "Collection of search logs for trend analysis."
     }
   }
 }

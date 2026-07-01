@@ -64,6 +64,38 @@ export default function FaqPage() {
       },
       {
         "@type": "Question",
+        "name": "Do you offer Virtual Production and Unreal Engine 5 integrations?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, Arrdublu specializes in next-generation virtual production services. We offer Unreal Engine 5 custom environment mapping and 3D digital stage creation, integrated with curved LED volume screen capture for reality-bending visual narratives."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is Holographic Production and how does it benefit my brand?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Holographic Production at Arrdublu refers to our high-performance 3D WebGL experiences and real-time interactive product visualizations that break standard browser limitations to create high-impact, immersive engagement."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What does Cognitive SEO mean?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Cognitive SEO is our algorithmic dominance framework that goes beyond simple keyword stuffing. We construct advanced, semantically dense content structures and technical search architectures designed to establish permanent organic authority in your industry."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Where are your headquarters, and do you work with international clients?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Arrdublu is headquartered in Kingston, Jamaica, blending the vibrant creative energy of the Caribbean with cutting-edge global technical standards. We deploy high-fidelity digital solutions to enterprise and luxury brand partners worldwide."
+        }
+      },
+      {
+        "@type": "Question",
         "name": "What is your refund policy?",
         "acceptedAnswer": {
           "@type": "Answer",

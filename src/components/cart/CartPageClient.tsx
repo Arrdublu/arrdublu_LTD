@@ -12,7 +12,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Separator } from '@/components/ui/separator';
 import { Trash2, ShoppingBag, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { createPaymentIntent } from '@/lib/actions';
+import { createPaymentIntent, simulateMockPayment } from '@/lib/actions';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { CheckoutForm } from '@/components/checkout/CheckoutForm';
@@ -23,7 +23,7 @@ import type { Discount, Service } from '@/lib/types';
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 export function CartPageClient() {
-  const { cartItems, removeFromCart, updateQuantity, getFormattedPrice, getCartTotal } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, getFormattedPrice, getCartTotal, clearCart } = useCart();
   const { selectedCurrency } = useCurrency();
   const { toast } = useToast();
 
@@ -158,12 +158,23 @@ export function CartPageClient() {
                     <CardTitle className="text-center text-3xl font-light tracking-wide text-white">
                         Total: <span className="font-semibold text-[#d4af37]">{getFormattedPrice(total)}</span>
                     </CardTitle>
-                    <p className="text-center text-sm text-zinc-400 mt-2">Secure checkout powered by Stripe</p>
+                    <p className="text-center text-sm text-zinc-400 mt-2">
+                        {clientSecret === 'mock_client_secret_for_preview' ? "Secure checkout (Preview Mode)" : "Secure checkout powered by Stripe"}
+                    </p>
                 </CardHeader>
                 <CardContent className="p-8">
-                    <Elements options={{ clientSecret, appearance }} stripe={stripePromise}>
-                        <CheckoutForm totalAmount={total} />
-                    </Elements>
+                    {clientSecret === 'mock_client_secret_for_preview' ? (
+                        <MockCheckoutForm 
+                            totalAmount={total} 
+                            orderId={orderId} 
+                            getFormattedPrice={getFormattedPrice} 
+                            clearCart={clearCart} 
+                        />
+                    ) : (
+                        <Elements options={{ clientSecret, appearance }} stripe={stripePromise}>
+                            <CheckoutForm totalAmount={total} />
+                        </Elements>
+                    )}
                 </CardContent>
             </Card>
         </div>
@@ -266,5 +277,150 @@ export function CartPageClient() {
         </div>
       )}
     </div>
+  );
+}
+
+interface MockCheckoutFormProps {
+  totalAmount: number;
+  orderId: string;
+  getFormattedPrice: (amount: number) => string;
+  clearCart: () => void;
+}
+
+function MockCheckoutForm({ totalAmount, orderId, getFormattedPrice, clearCart }: MockCheckoutFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [cvc, setCvc] = useState('');
+  const [name, setName] = useState('');
+  const { toast } = useToast();
+
+  const handlePay = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!cardNumber || !expiry || !cvc || !name) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill out all payment details.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await simulateMockPayment(orderId);
+      if (result.success) {
+        toast({
+          title: "Payment Successful",
+          description: `Your purchase of ${getFormattedPrice(totalAmount)} was completed successfully in preview mode.`,
+        });
+        clearCart();
+        window.location.href = `/orders?session_id=${orderId}`;
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Payment Error",
+        description: error.message || "Failed to process simulated payment",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handlePay} className="space-y-6 text-white">
+      <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-amber-200 text-xs leading-relaxed mb-4">
+        <span className="font-semibold block mb-1 text-sm">⚠️ Stripe Sandbox Mode</span>
+        The Stripe secret key is not configured. We have enabled a simulated checkout so you can test complete order fulfillment. Use any mock credit card details to complete payment.
+      </div>
+
+      <div className="space-y-2 text-left">
+        <label className="text-sm font-medium text-zinc-300">Cardholder Name</label>
+        <Input 
+          type="text" 
+          placeholder="Jane Doe" 
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="bg-white/5 border-white/10 text-white placeholder-zinc-500 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37]"
+          required
+        />
+      </div>
+
+      <div className="space-y-2 text-left">
+        <label className="text-sm font-medium text-zinc-300">Card Number</label>
+        <div className="relative">
+          <Input 
+            type="text" 
+            placeholder="4242 4242 4242 4242" 
+            value={cardNumber}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, '').slice(0, 16);
+              const matches = val.match(/\d{4,16}/g);
+              const match = matches && matches[0] || '';
+              const parts = [];
+
+              for (let i = 0, len = match.length; i < len; i += 4) {
+                parts.push(match.substring(i, i + 4));
+              }
+
+              if (parts.length > 0) {
+                setCardNumber(parts.join(' '));
+              } else {
+                setCardNumber(val);
+              }
+            }}
+            className="bg-white/5 border-white/10 text-white placeholder-zinc-500 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37] pr-10 font-mono"
+            required
+          />
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500">
+            💳
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 text-left">
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-zinc-300">Expiration</label>
+          <Input 
+            type="text" 
+            placeholder="MM/YY" 
+            value={expiry}
+            onChange={(e) => {
+              const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+              if (val.length >= 2) {
+                setExpiry(`${val.slice(0, 2)}/${val.slice(2)}`);
+              } else {
+                setExpiry(val);
+              }
+            }}
+            className="bg-white/5 border-white/10 text-white placeholder-zinc-500 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37] font-mono"
+            required
+          />
+        </div>
+
+        <div className="space-y-2 text-left">
+          <label className="text-sm font-medium text-zinc-300">CVC</label>
+          <Input 
+            type="text" 
+            placeholder="123" 
+            value={cvc}
+            onChange={(e) => setCvc(e.target.value.replace(/\D/g, '').slice(0, 3))}
+            className="bg-white/5 border-white/10 text-white placeholder-zinc-500 rounded-xl focus:border-[#d4af37] focus:ring-[#d4af37] font-mono"
+            required
+          />
+        </div>
+      </div>
+
+      <Button 
+        type="submit"
+        disabled={isLoading} 
+        className="w-full mt-8 bg-gradient-to-r from-[#d4af37] to-[#b49020] hover:from-[#e5c048] hover:to-[#c5a131] text-black font-semibold text-lg h-14 rounded-xl shadow-lg transition-all"
+      >
+        {isLoading && <Loader2 className="animate-spin mr-2" />}
+        <span>{isLoading ? 'Processing...' : `Pay ${getFormattedPrice(totalAmount)}`}</span>
+      </Button>
+    </form>
   );
 }

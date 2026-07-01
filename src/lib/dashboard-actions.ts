@@ -25,6 +25,13 @@ export interface TopProductData {
   revenue: number;
 }
 
+export interface SearchTrend {
+  query: string;
+  count: number;
+  resultsCount: number;
+  resultsFound: boolean;
+}
+
 export interface DashboardSummary {
   totalRevenue: number;
   revenueChangePercent: number;
@@ -36,6 +43,7 @@ export interface DashboardSummary {
   inventoryData: InventoryData[];
   topProducts: TopProductData[];
   liveOrdersCount: number;
+  searchTrends: SearchTrend[];
 }
 
 // Initial stock settings for item types
@@ -68,6 +76,13 @@ const HISTORICAL_PROD_SALES: Record<string, { name: string; value: number; reven
   'used-gear-2': { id: 'used-gear-2', name: 'DJI Mavic 3 Drone', value: 2, revenue: 3000 } as any,
 };
 
+const BASELINE_SEARCH_TRENDS: SearchTrend[] = [
+  { query: 'virtual production', count: 12, resultsCount: 1, resultsFound: true },
+  { query: 'brand identity', count: 8, resultsCount: 1, resultsFound: true },
+  { query: 'seo audit', count: 5, resultsCount: 1, resultsFound: true },
+  { query: 'ar production', count: 3, resultsCount: 0, resultsFound: false },
+];
+
 export async function getDashboardData(): Promise<DashboardSummary> {
   const defaultSummary: DashboardSummary = {
     totalRevenue: 32300,
@@ -89,7 +104,8 @@ export async function getDashboardData(): Promise<DashboardSummary> {
       solidSold: 2
     })),
     topProducts: Object.values(HISTORICAL_PROD_SALES),
-    liveOrdersCount: 0
+    liveOrdersCount: 0,
+    searchTrends: BASELINE_SEARCH_TRENDS
   };
 
   try {
@@ -99,9 +115,43 @@ export async function getDashboardData(): Promise<DashboardSummary> {
       return defaultSummary;
     }
 
+    // Try to fetch real search logs for trends
+    let finalSearchTrends: SearchTrend[] = [...BASELINE_SEARCH_TRENDS];
+    try {
+      const searchLogsSnapshot = await db.collection('search_logs').get();
+      if (!searchLogsSnapshot.empty) {
+        const queryCounts: Record<string, { count: number; resultsCount: number; resultsFound: boolean }> = {};
+        searchLogsSnapshot.docs.forEach(docSnap => {
+          const d = docSnap.data();
+          const q = (d.query || '').toLowerCase().trim();
+          if (!q) return;
+          if (!queryCounts[q]) {
+            queryCounts[q] = { count: 0, resultsCount: Number(d.resultsCount) || 0, resultsFound: !!d.resultsFound };
+          }
+          queryCounts[q].count += 1;
+        });
+
+        const realTrends = Object.entries(queryCounts).map(([query, info]) => ({
+          query,
+          count: info.count,
+          resultsCount: info.resultsCount,
+          resultsFound: info.resultsFound,
+        })).sort((a, b) => b.count - a.count);
+
+        if (realTrends.length > 0) {
+          finalSearchTrends = realTrends;
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching search logs in getDashboardData:', err);
+    }
+
     const snapshot = await db.collection('orders').get();
     if (snapshot.empty) {
-      return defaultSummary;
+      return {
+        ...defaultSummary,
+        searchTrends: finalSearchTrends
+      };
     }
 
     // Process real orders from Firestore
@@ -248,7 +298,8 @@ export async function getDashboardData(): Promise<DashboardSummary> {
       salesData: finalSalesData,
       inventoryData: finalInventoryData,
       topProducts: Object.values(finalTopProducts).sort((a, b) => b.value - a.value),
-      liveOrdersCount: realOrdersCount
+      liveOrdersCount: realOrdersCount,
+      searchTrends: finalSearchTrends
     };
 
   } catch (error) {

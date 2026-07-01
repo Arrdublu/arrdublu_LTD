@@ -8,20 +8,63 @@ import PortfolioSection from '@/components/home/PortfolioSection'
 import VirtualProductionShowcase from '@/components/work/VirtualProductionShowcase'
 import { ClientLogos } from '@/components/home/ClientLogos'
 import Link from 'next/link'
+import { z } from 'zod'
+
+const contactSchema = z.object({
+  name: z.string()
+    .min(2, { message: "Operator name must be at least 2 characters." })
+    .max(50, { message: "Operator name must be under 50 characters." }),
+  email: z.string()
+    .email({ message: "A valid return network address (email) is required." }),
+  message: z.string()
+    .min(10, { message: "Project specifications must be at least 10 characters." })
+    .max(1000, { message: "Project specifications must be under 1000 characters." })
+})
 
 export default function Home() {
   const [viewState, setViewState] = useState<'HERO' | 'PORTFOLIO'>('HERO')
   const [activeNodeIndex, setActiveNodeIndex] = useState<number | null>(null)
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false)
   const [formInput, setFormInput] = useState({ name: '', email: '', message: '' })
+  const [formErrors, setFormErrors] = useState<{ name?: string; email?: string; message?: string }>({})
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormInput({ ...formInput, [e.target.name]: e.target.value })
+    const { name, value } = e.target
+    const updatedInput = { ...formInput, [name]: value }
+    setFormInput(updatedInput)
+
+    // Immediate dynamic feedback
+    try {
+      const fieldSchema = contactSchema.pick({ [name]: true } as any)
+      const result = fieldSchema.safeParse({ [name]: value })
+      if (!result.success) {
+        const formatted = result.error.format() as any
+        setFormErrors(prev => ({ ...prev, [name]: formatted[name]?._errors[0] }))
+      } else {
+        setFormErrors(prev => {
+          const next = { ...prev }
+          delete next[name as keyof typeof next]
+          return next
+        })
+      }
+    } catch (err) {
+      // ignore
+    }
   }
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!formInput.email) return
+    const result = contactSchema.safeParse(formInput)
+    if (!result.success) {
+      const formatted = result.error.format()
+      setFormErrors({
+        name: formatted.name?._errors[0],
+        email: formatted.email?._errors[0],
+        message: formatted.message?._errors[0]
+      })
+      return
+    }
+    setFormErrors({})
     setFormSubmitted(true)
     setTimeout(() => {
       setFormSubmitted(false)
@@ -348,8 +391,17 @@ export default function Home() {
                       value={formInput.name}
                       onChange={handleFormChange}
                       placeholder="e.g., Lead Strategist"
-                      className="px-4 py-3 bg-slate-950/60 border border-slate-900 rounded focus:border-cyan-500/50 text-slate-100 font-sans text-xs focus:outline-none transition-colors duration-200"
+                      className={`px-4 py-3 bg-slate-950/60 border rounded text-slate-100 font-sans text-xs focus:outline-none transition-colors duration-200 ${
+                        formErrors.name 
+                          ? 'border-red-500/50 focus:border-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.1)]' 
+                          : 'border-slate-900 focus:border-cyan-500/50'
+                      }`}
                     />
+                    {formErrors.name && (
+                      <span className="text-[10px] font-mono text-red-400 mt-1 flex items-center gap-1 select-none">
+                        <span>[!]</span> {formErrors.name}
+                      </span>
+                    )}
                   </div>
                     
                   <div className="flex flex-col gap-1.5">
@@ -364,8 +416,17 @@ export default function Home() {
                       value={formInput.email}
                       onChange={handleFormChange}
                       placeholder="e.g., operator@network.com"
-                      className="px-4 py-3 bg-slate-950/60 border border-slate-900 rounded focus:border-cyan-500/50 text-slate-100 font-sans text-xs focus:outline-none transition-colors duration-200"
+                      className={`px-4 py-3 bg-slate-950/60 border rounded text-slate-100 font-sans text-xs focus:outline-none transition-colors duration-200 ${
+                        formErrors.email 
+                          ? 'border-red-500/50 focus:border-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.1)]' 
+                          : 'border-slate-900 focus:border-cyan-500/50'
+                      }`}
                     />
+                    {formErrors.email && (
+                      <span className="text-[10px] font-mono text-red-400 mt-1 flex items-center gap-1 select-none">
+                        <span>[!]</span> {formErrors.email}
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-1.5">
@@ -380,8 +441,17 @@ export default function Home() {
                       value={formInput.message}
                       onChange={handleFormChange}
                       placeholder="Describe target requirements, visibility parameters, scope or aesthetic intent..."
-                      className="px-4 py-3 bg-slate-950/60 border border-slate-900 rounded focus:border-cyan-500/50 text-slate-100 font-sans text-xs focus:outline-none transition-colors duration-200 resize-none"
+                      className={`px-4 py-3 bg-slate-950/60 border rounded text-slate-100 font-sans text-xs focus:outline-none transition-colors duration-200 resize-none ${
+                        formErrors.message 
+                          ? 'border-red-500/50 focus:border-red-500/80 shadow-[0_0_10px_rgba(239,68,68,0.1)]' 
+                          : 'border-slate-900 focus:border-cyan-500/50'
+                      }`}
                     />
+                    {formErrors.message && (
+                      <span className="text-[10px] font-mono text-red-400 mt-1 flex items-center gap-1 select-none">
+                        <span>[!]</span> {formErrors.message}
+                      </span>
+                    )}
                   </div>
 
                   <button

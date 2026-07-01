@@ -56,6 +56,26 @@ const faqItems: FaqItem[] = [
         category: "Services"
     },
     {
+        question: "Do you offer Virtual Production and Unreal Engine 5 integrations?",
+        answer: "Yes, Arrdublu specializes in next-generation virtual production services. We offer Unreal Engine 5 custom environment mapping and 3D digital stage creation, integrated with curved LED volume screen capture for reality-bending visual narratives.",
+        category: "Services"
+    },
+    {
+        question: "What is Holographic Production and how does it benefit my brand?",
+        answer: "Holographic Production at Arrdublu refers to our high-performance 3D WebGL experiences and real-time interactive product visualizations that break standard browser limitations to create high-impact, immersive engagement.",
+        category: "Services"
+    },
+    {
+        question: "What does Cognitive SEO mean?",
+        answer: "Cognitive SEO is our algorithmic dominance framework that goes beyond simple keyword stuffing. We construct advanced, semantically dense content structures and technical search architectures designed to establish permanent organic authority in your industry.",
+        category: "Services"
+    },
+    {
+        question: "Where are your headquarters, and do you work with international clients?",
+        answer: "Arrdublu is headquartered in Kingston, Jamaica, blending the vibrant creative energy of the Caribbean with cutting-edge global technical standards. We deploy high-fidelity digital solutions to enterprise and luxury brand partners worldwide.",
+        category: "General"
+    },
+    {
         question: "What is your refund policy?",
         answer: "Due to the digital nature of our services and the upfront creative work involved, we do not offer refunds once a project has commenced. However, client satisfaction is our absolute priority. If you have any concerns about a service, please contact us immediately so we can find a solution. You can view our full Terms & Conditions for more details.",
         category: "General"

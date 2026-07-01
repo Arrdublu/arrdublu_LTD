@@ -35,6 +35,7 @@ import {
   Package,
   Layers,
   ArrowUpRight,
+  Search,
 } from 'lucide-react';
 import {
   seedDemoOrders,
@@ -44,6 +45,7 @@ import {
   type MonthlySalesData,
   type InventoryData,
   type TopProductData,
+  type SearchTrend,
 } from '@/lib/dashboard-actions';
 
 interface DashboardChartsProps {
@@ -591,6 +593,77 @@ export function DashboardCharts({ initialData }: DashboardChartsProps) {
                 </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Search Query Trends & User Interest Analytics */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+      >
+        <Card className="shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-4">
+            <div>
+              <CardTitle className="text-base font-semibold">Search Query Trend Tracker</CardTitle>
+              <CardDescription>
+                Auditing customer search intent, query frequency, and fulfillment success.
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="flex items-center gap-1">
+                <Search className="h-3 w-3 text-cyan-500" />
+                Query Intent Analytics
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {data.searchTrends && data.searchTrends.length > 0 ? (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {data.searchTrends.slice(0, 8).map((trend, index) => (
+                  <div
+                    key={index}
+                    className="p-4 border rounded-lg bg-muted/5 hover:bg-muted/15 transition-all duration-200 flex flex-col justify-between space-y-3"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-1 truncate pr-2">
+                        <p className="font-mono text-xs font-semibold text-slate-800 dark:text-slate-100 truncate">
+                          "{trend.query}"
+                        </p>
+                        <p className="text-[10px] text-muted-foreground uppercase font-mono">
+                          {trend.resultsCount} catalog match{trend.resultsCount === 1 ? '' : 'es'}
+                        </p>
+                      </div>
+                      <Badge className={`font-mono text-[10px] uppercase shrink-0 ${
+                        trend.count >= 10 
+                          ? 'bg-blue-100 text-blue-800 border-blue-200' 
+                          : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                      }`} variant="outline">
+                        {trend.count} search{trend.count === 1 ? '' : 'es'}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[10px] font-mono">
+                      <span className="text-muted-foreground">Fulfillment Status:</span>
+                      {trend.resultsFound ? (
+                        <span className="text-emerald-500 font-semibold flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> MATCHED
+                        </span>
+                      ) : (
+                        <span className="text-amber-500 font-semibold flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" /> DEMAND_UNMET
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground text-sm font-sans">
+                No search queries registered yet. Searches on the public service finder will appear here in real-time.
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>

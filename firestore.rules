@@ -48,6 +48,16 @@ service cloud.firestore {
              data.isActive is bool;
     }
 
+    function isValidSearchLog(data) {
+      return data.keys().hasAll(['query', 'resultsCount', 'resultsFound', 'timestamp']) &&
+             data.keys().size() == 4 &&
+             data.query is string &&
+             data.query.size() <= 256 &&
+             data.resultsCount is number &&
+             data.resultsFound is bool &&
+             data.timestamp is string;
+    }
+
     // ===============================================================
     // Rules
     // ===============================================================
@@ -68,6 +78,11 @@ service cloud.firestore {
       allow list: if true;
       allow get, delete: if isValidId(discountId);
       allow create, update: if isValidId(discountId) && isValidDiscount(request.resource.data);
+    }
+
+    match /search_logs/{logId} {
+      allow list, get: if true;
+      allow create: if isValidId(logId) && isValidSearchLog(request.resource.data);
     }
   }
 }
