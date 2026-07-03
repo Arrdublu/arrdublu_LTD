@@ -1,16 +1,56 @@
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { ArrowRight, Sparkles, Activity, Archive } from 'lucide-react';
 import { caseStudies } from '@/lib/data';
+import { PortfolioItem, getPortfolioItems } from '@/lib/portfolio-actions';
 
-export function CaseStudyGrid() {
+interface CaseStudyGridProps {
+  initialItems?: PortfolioItem[];
+}
+
+export function CaseStudyGrid({ initialItems }: CaseStudyGridProps) {
+  const [items, setItems] = useState<PortfolioItem[]>(initialItems || []);
+
+  useEffect(() => {
+    if (!initialItems) {
+      getPortfolioItems().then(fetched => {
+        if (fetched && fetched.length > 0) {
+          setItems(fetched);
+        }
+      });
+    }
+  }, [initialItems]);
+
+  const displayItems = items.length > 0
+    ? items.map(item => ({
+        id: item.id || '',
+        title: item.title,
+        category: item.services[0] || 'Creative',
+        image: item.imageUrl || 'https://picsum.photos/seed/placeholder/800/600',
+        description: item.description,
+        link: `/discover/case-studies/${item.id}`,
+        status: item.status || 'Live',
+        dataAiHint: 'case study'
+      }))
+    : caseStudies.map(study => ({
+        id: study.id,
+        title: study.title,
+        category: study.category,
+        image: study.image,
+        description: study.description,
+        link: study.link,
+        status: study.status || 'Live',
+        dataAiHint: study.dataAiHint
+      }));
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {caseStudies.map((project, idx) => (
+      {displayItems.map((project, idx) => (
         <motion.div
           key={project.id}
           initial={{ opacity: 0, y: 20 }}
@@ -30,6 +70,7 @@ export function CaseStudyGrid() {
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 data-ai-hint={project.dataAiHint}
+                referrerPolicy="no-referrer"
               />
               {project.status && (
                 <div className="absolute top-4 right-4 z-20">

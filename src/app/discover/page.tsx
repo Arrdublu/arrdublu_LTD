@@ -1,8 +1,13 @@
 
 
 import { WorkShowcase } from '@/components/work/WorkShowcase';
+import { getPortfolioItems } from '@/lib/portfolio-actions';
 
-export default function DiscoverPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function DiscoverPage() {
+  const items = await getPortfolioItems();
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
@@ -13,7 +18,7 @@ export default function DiscoverPage() {
           A collection of our favorite projects. See how we&apos;ve helped clients elevate their vision.
         </p>
       </div>
-      <WorkShowcase />
+      <WorkShowcase initialItems={items} />
     </div>
   );
 }

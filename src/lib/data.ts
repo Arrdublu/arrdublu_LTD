@@ -151,12 +151,13 @@ export const caseStudies: CaseStudy[] = [
     },
     {
         id: 'viral-post',
-        title: 'Viral Visual: The Power of a Single Post',
+        title: 'KFC Viral Visual: The Power of a Single Post',
         category: 'Social Media Graphic',
         image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
         description: 'How one strategically designed graphic for a local cafe led to a 500% increase in weekly engagement and record foot traffic.',
         link: '/discover/case-studies/viral-post',
         dataAiHint: 'cafe social',
+        status: 'Live',
     },
     {
         id: 'executive-identity',
@@ -166,6 +167,7 @@ export const caseStudies: CaseStudy[] = [
         description: 'Designed a premium business card for a top consulting firm, resulting in a measurable increase in client callbacks.',
         link: '/discover/case-studies/executive-identity',
         dataAiHint: 'business networking',
+        status: 'Live',
     },
     {
         id: 'futuristic-tech-launch',
@@ -175,6 +177,7 @@ export const caseStudies: CaseStudy[] = [
         description: 'Created a stunning 3D animated product reveal for a next-generation gadget, generating massive pre-launch buzz.',
         link: '/discover/case-studies/futuristic-tech-launch',
         dataAiHint: 'tech circuit',
+        status: 'Live',
     },
     {
         id: 'luxury-real-estate-showcase',
@@ -184,6 +187,7 @@ export const caseStudies: CaseStudy[] = [
         description: 'A compelling video tour that brought a high-value property to life, resulting in a faster sale at the desired price point.',
         link: '/discover/case-studies/luxury-real-estate-showcase',
         dataAiHint: 'luxury home',
+        status: 'Live',
     }
 ];
 

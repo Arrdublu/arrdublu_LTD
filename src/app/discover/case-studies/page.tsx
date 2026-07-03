@@ -1,8 +1,13 @@
 
 import { CaseStudyGrid } from '@/components/case-studies/CaseStudyGrid';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
+import { getPortfolioItems } from '@/lib/portfolio-actions';
 
-export default function CaseStudiesPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function CaseStudiesPage() {
+  const items = await getPortfolioItems();
+
   return (
     <div className="container mx-auto px-4 py-24 min-h-screen">
       <Breadcrumbs items={[
@@ -21,7 +26,7 @@ export default function CaseStudiesPage() {
           Explore our high-fidelity productions, cognitive search architectures, and luxury identity transformations. Real-world applications of our core engineering capabilities.
         </p>
       </div>
-      <CaseStudyGrid />
+      <CaseStudyGrid initialItems={items} />
     </div>
   );
 }

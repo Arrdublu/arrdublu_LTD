@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { PortfolioItem } from '@/lib/portfolio-actions';
 import { Button } from '@/components/ui/button';
-import { deletePortfolioItem, updatePortfolioItem, addPortfolioItem } from '@/lib/portfolio-actions';
+import { deletePortfolioItem, updatePortfolioItem, addPortfolioItem, updatePortfolioOrders } from '@/lib/portfolio-actions';
 import { PortfolioForm } from './PortfolioForm';
 import { VideoEmbed } from '@/components/ui/video-embed';
 import { useToast } from '@/hooks/use-toast';
-import { Trash2, Edit } from 'lucide-react';
+import { Trash2, Edit, ChevronUp, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 
 interface PortfolioListProps {
@@ -56,15 +56,55 @@ export function PortfolioList({ initialItems }: PortfolioListProps) {
   const handleAdd = async (data: Omit<PortfolioItem, 'id' | 'createdAt'>) => {
     setIsLoading(true);
     try {
-      const result = await addPortfolioItem(data);
+      const nextSortOrder = items.length;
+      const dataWithSort = { ...data, sortOrder: nextSortOrder };
+      const result = await addPortfolioItem(dataWithSort);
       if (result.success && result.id) {
-        setItems([{ ...data, id: result.id }, ...items]);
+        setItems([...items, { ...dataWithSort, id: result.id }]);
         setIsAdding(false);
         toast({ title: 'Success', description: 'Case study added.' });
       }
     } catch (error) {
       console.error(error);
       toast({ title: 'Error', description: 'Failed to add case study.', variant: 'destructive' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleMoveUp = async (index: number) => {
+    if (index === 0) return;
+    const newItems = [...items];
+    const temp = newItems[index];
+    newItems[index] = newItems[index - 1];
+    newItems[index - 1] = temp;
+    
+    const reordered = newItems.map((item, idx) => ({ ...item, sortOrder: idx }));
+    setItems(reordered);
+    await saveNewOrder(reordered);
+  };
+
+  const handleMoveDown = async (index: number) => {
+    if (index === items.length - 1) return;
+    const newItems = [...items];
+    const temp = newItems[index];
+    newItems[index] = newItems[index + 1];
+    newItems[index + 1] = temp;
+    
+    const reordered = newItems.map((item, idx) => ({ ...item, sortOrder: idx }));
+    setItems(reordered);
+    await saveNewOrder(reordered);
+  };
+
+  const saveNewOrder = async (orderedList: PortfolioItem[]) => {
+    setIsLoading(true);
+    try {
+      const ids = orderedList.map(item => item.id).filter(Boolean) as string[];
+      await updatePortfolioOrders(ids);
+      toast({ title: 'Success', description: 'New order saved.' });
+    } catch (error) {
+      console.error(error);
+      toast({ title: 'Error', description: 'Failed to save new order.', variant: 'destructive' });
     } finally {
       setIsLoading(false);
     }
@@ -110,8 +150,35 @@ export function PortfolioList({ initialItems }: PortfolioListProps) {
               No case studies found. Click "Add New Case Study" to create one.
             </div>
           ) : (
-            items.map((item) => (
+            items.map((item, index) => (
               <div key={item.id} className="flex flex-col md:flex-row gap-6 p-4 bg-slate-900/30 border border-slate-800 rounded-lg items-center">
+                {/* Rearrange Controls */}
+                <div className="flex flex-row md:flex-col gap-1 flex-shrink-0 items-center justify-center border-b md:border-b-0 md:border-r border-slate-800 pb-2 md:pb-0 md:pr-4">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-20"
+                    disabled={index === 0 || isLoading}
+                    onClick={() => handleMoveUp(index)}
+                    title="Move Up"
+                  >
+                    <ChevronUp className="w-5 h-5" />
+                  </Button>
+                  <span className="font-mono text-xs text-slate-500 select-none px-2 py-1">
+                    {index + 1}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-20"
+                    disabled={index === items.length - 1 || isLoading}
+                    onClick={() => handleMoveDown(index)}
+                    title="Move Down"
+                  >
+                    <ChevronDown className="w-5 h-5" />
+                  </Button>
+                </div>
+
                 {item.imageUrl && (
                   <div className="relative w-full md:w-48 h-32 flex-shrink-0">
                     <Image
@@ -124,7 +191,14 @@ export function PortfolioList({ initialItems }: PortfolioListProps) {
                   </div>
                 )}
                 <div className="flex-grow space-y-2">
-                  <h3 className="text-lg font-bold text-white">{item.title}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-white">{item.title}</h3>
+                    <span 
+                      className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-mono border ${item.status === 'Live' ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'}`}
+                    >
+                      {item.status || 'Live'}
+                    </span>
+                  </div>
                   <p className="text-sm text-cyan-400">{item.client}</p>
                   <p className="text-sm text-slate-300 line-clamp-2">{item.description}</p>
                   {item.videoEmbed && (

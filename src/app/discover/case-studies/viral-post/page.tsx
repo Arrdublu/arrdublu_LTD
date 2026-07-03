@@ -4,7 +4,7 @@ import { ViralPostClient } from './CaseStudyClient';
 
 
 const caseStudy = {
-  title: 'Viral Visual: The Power of a Single Post',
+  title: 'KFC Viral Visual: The Power of a Single Post',
   category: 'Social Media Graphic',
   heroImage: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
   dataAiHint: 'cafe social media post',

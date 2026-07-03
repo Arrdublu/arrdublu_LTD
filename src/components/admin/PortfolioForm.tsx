@@ -19,6 +19,7 @@ export function PortfolioForm({ initialData, onSubmit, onCancel, isLoading }: Po
   const [videoEmbed, setVideoEmbed] = useState(initialData?.videoEmbed || '');
   const [videoCaption, setVideoCaption] = useState(initialData?.videoCaption || '');
   const [services, setServices] = useState(initialData?.services?.join(', ') || '');
+  const [status, setStatus] = useState<'Live' | 'Archived'>(initialData?.status || 'Live');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +32,7 @@ export function PortfolioForm({ initialData, onSubmit, onCancel, isLoading }: Po
       videoEmbed,
       videoCaption,
       services: servicesArray,
+      status,
     });
     if (!initialData) {
       setTitle('');
@@ -40,6 +42,7 @@ export function PortfolioForm({ initialData, onSubmit, onCancel, isLoading }: Po
       setVideoEmbed('');
       setVideoCaption('');
       setServices('');
+      setStatus('Live');
     }
   };
 
@@ -123,6 +126,18 @@ export function PortfolioForm({ initialData, onSubmit, onCancel, isLoading }: Po
           className="w-full p-2 bg-slate-900 border border-slate-700 rounded text-slate-100"
           placeholder="e.g. Virtual Production, CGI, Lighting"
         />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-slate-300">Status</label>
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value as 'Live' | 'Archived')}
+          className="w-full p-2 bg-slate-900 border border-slate-700 rounded text-slate-100 cursor-pointer"
+        >
+          <option value="Live">Live</option>
+          <option value="Archived">Archived</option>
+        </select>
       </div>
       
       <div className="flex justify-end gap-2 pt-4">
