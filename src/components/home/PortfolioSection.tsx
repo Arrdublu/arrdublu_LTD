@@ -21,9 +21,9 @@ const PORTFOLIO_NODES: PortfolioNode[] = [
     description: 'Fusing bespoke commercial photography, digital motion capture, and state-of-the-art camera dynamics. We produce cinematic, eye-catching visual content for brands demanding absolute technical precision.',
     accent: 'cyan',
     metrics: [
-      { label: 'Resolution Core', value: '8K RED V-Raptor' },
-      { label: 'Capture Velocity', value: '120fps Native' },
-      { label: 'Visual Impact', value: '+300% Organic CTR' }
+      { label: 'Resolution Core', value: '6K Blackmagic Design Pocket Cinema' },
+      { label: 'Capture Velocity', value: 'Dual Native ISO / 120fps' },
+      { label: 'Data Architecture', value: '12-bit Blackmagic RAW' }
     ],
     tags: ['Cinema', 'Branded Media', 'High-Fidelity Capture', 'Post-FX'],
     details: [

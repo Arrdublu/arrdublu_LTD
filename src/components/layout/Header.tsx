@@ -21,6 +21,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose 
 import { Toaster } from '@/components/ui/toaster';
 import { useLanguage } from '@/context/LanguageProvider';
 
+import { CurrencySwitcher } from '@/components/layout/CurrencySwitcher';
+
 const serviceItems: { title: string; href: string; description: string }[] = [
     {
         title: "Holographic Production",

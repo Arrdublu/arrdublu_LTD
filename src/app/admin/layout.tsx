@@ -227,6 +227,17 @@ export default function AdminLayout({
                 Free Downloads
               </Link>
               <Link
+                href="/admin/portfolio"
+                aria-label="Manage Portfolio"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                  pathname === '/admin/portfolio'
+                    ? 'text-cyan-400 bg-slate-900/80 border-l-2 border-cyan-500'
+                    : 'text-slate-400 hover:text-cyan-400 hover:bg-slate-900/50'
+                }`}
+              >
+                Portfolio
+              </Link>
+              <Link
                 href="/admin/services"
                 aria-label="Manage Services"
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${

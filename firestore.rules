@@ -80,6 +80,10 @@ service cloud.firestore {
       allow create, update: if isValidId(discountId) && isValidDiscount(request.resource.data);
     }
 
+    match /portfolio/{itemId} {
+      allow read, write: if true;
+    }
+
     match /search_logs/{logId} {
       allow list, get: if true;
       allow create: if isValidId(logId) && isValidSearchLog(request.resource.data);

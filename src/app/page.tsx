@@ -322,8 +322,8 @@ export default function Home() {
               <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Lighthouse Perf</div>
             </div>
             <div className="p-6 border border-slate-800 bg-slate-900/50 rounded-lg text-center">
-              <div className="text-3xl font-display font-bold text-white mb-1">8K</div>
-              <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">RED Cinema Capture</div>
+              <div className="text-3xl font-display font-bold text-white mb-1">6K</div>
+              <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">Blackmagic Capture</div>
             </div>
             <div className="p-6 border border-slate-800 bg-slate-900/50 rounded-lg text-center">
               <div className="text-3xl font-display font-bold text-white mb-1">UE5</div>

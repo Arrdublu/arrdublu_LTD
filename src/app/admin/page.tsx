@@ -1,8 +1,6 @@
 
 import { getDashboardData } from '@/lib/dashboard-actions';
 import { DashboardCharts } from '@/components/admin/DashboardCharts';
-import { ServiceCardManager } from '@/components/admin/ServiceCardManager';
-import { ProductManager } from '@/components/admin/ProductManager';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,10 +17,7 @@ export default async function AdminPage() {
         <DashboardCharts initialData={dashboardData} />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <ServiceCardManager />
-        <ProductManager />
-      </div>
+
     </div>
   );
 }

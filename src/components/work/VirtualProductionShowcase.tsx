@@ -20,9 +20,14 @@ export default function VirtualProductionShowcase() {
               Engineering Immersive <br />
               Digital Environments.
             </h3>
-            <p className="text-slate-400 text-base leading-relaxed mb-8">
+            <p className="text-slate-400 text-base leading-relaxed mb-6">
               We leverage cutting-edge real-time engines to create seamlessly integrated virtual sets. Our mastery over curved LED stages allows for unprecedented depth, lighting, and interactivity in your visual productions.
             </p>
+            <ul className="text-slate-400 text-xs md:text-sm leading-relaxed mb-8 space-y-3 border-l-2 border-cyan-500/30 pl-4">
+              <li><strong className="text-cyan-400 font-mono font-medium">12-bit Blackmagic RAW:</strong> Absolute fidelity capturing every photon of dynamic range for seamless grading.</li>
+              <li><strong className="text-cyan-400 font-mono font-medium">UE5 Color Integration:</strong> Unrestricted color science compatibility mapping directly into virtual volumes.</li>
+              <li><strong className="text-cyan-400 font-mono font-medium">High-Bandwidth Processing:</strong> Native SSD recording formats allowing blistering on-set edit turnarounds.</li>
+            </ul>
             <div className="grid grid-cols-2 gap-4 font-mono text-[10px] uppercase tracking-wider">
               <div className="bg-slate-900/50 p-3 rounded border border-slate-800 text-slate-300">
                 Unreal Engine 5 Integration

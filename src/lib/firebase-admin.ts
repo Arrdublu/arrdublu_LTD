@@ -7,6 +7,7 @@ import {
   getDocs, 
   updateDoc, 
   deleteDoc, 
+  setDoc,
   query, 
   where as fsWhere, 
   limit as fsLimit,
@@ -72,16 +73,36 @@ class DocRefWrapper {
   constructor(public path: string, public id: string) {}
 
   async get() {
-    const dSnapshot = await getDoc(doc(firestore, this.path, this.id));
-    return new DocSnapshotWrapper(dSnapshot, this.path);
+    try {
+      const dSnapshot = await getDoc(doc(firestore, this.path, this.id));
+      return new DocSnapshotWrapper(dSnapshot, this.path);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.GET, `${this.path}/${this.id}`);
+    }
   }
 
   async update(data: any) {
-    await updateDoc(doc(firestore, this.path, this.id), data);
+    try {
+      await updateDoc(doc(firestore, this.path, this.id), data);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.UPDATE, `${this.path}/${this.id}`);
+    }
+  }
+
+  async set(data: any) {
+    try {
+      await setDoc(doc(firestore, this.path, this.id), data);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, `${this.path}/${this.id}`);
+    }
   }
 
   async delete() {
-    await deleteDoc(doc(firestore, this.path, this.id));
+    try {
+      await deleteDoc(doc(firestore, this.path, this.id));
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, `${this.path}/${this.id}`);
+    }
   }
 }
 
@@ -135,9 +156,13 @@ class CollectionRefWrapper {
   }
 
   async add(data: any) {
-    const cleanData = this.cleanupTimestamps(data);
-    const docRef = await addDoc(collection(firestore, this.path), cleanData);
-    return new DocRefWrapper(this.path, docRef.id);
+    try {
+      const cleanData = this.cleanupTimestamps(data);
+      const docRef = await addDoc(collection(firestore, this.path), cleanData);
+      return new DocRefWrapper(this.path, docRef.id);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, this.path);
+    }
   }
 
   doc(id: string) {
@@ -145,9 +170,13 @@ class CollectionRefWrapper {
   }
 
   async get() {
-    const q = query(collection(firestore, this.path), ...this.constraints);
-    const qSnapshot = await getDocs(q);
-    return new QuerySnapshotWrapper(qSnapshot.docs, this.path);
+    try {
+      const q = query(collection(firestore, this.path), ...this.constraints);
+      const qSnapshot = await getDocs(q);
+      return new QuerySnapshotWrapper(qSnapshot.docs, this.path);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.LIST, this.path);
+    }
   }
 
   private cleanupTimestamps(data: any): any {
@@ -184,7 +213,11 @@ class BatchWrapper {
   }
 
   async commit() {
-    await this.batch.commit();
+    try {
+      await this.batch.commit();
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, 'batch');
+    }
   }
 }
 
