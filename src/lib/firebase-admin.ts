@@ -43,7 +43,7 @@ export interface FirestoreErrorInfo {
   };
 }
 
-export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null, userId?: string | null) {
+export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null, userId?: string | null): never {
   const errMessage = error instanceof Error ? error.message : String(error);
   const errInfo: FirestoreErrorInfo = {
     error: errMessage,
@@ -72,7 +72,7 @@ export const FieldValue = {
 class DocRefWrapper {
   constructor(public path: string, public id: string) {}
 
-  async get() {
+  async get(): Promise<DocSnapshotWrapper> {
     try {
       const dSnapshot = await getDoc(doc(firestore, this.path, this.id));
       return new DocSnapshotWrapper(dSnapshot, this.path);
@@ -169,7 +169,7 @@ class CollectionRefWrapper {
     return new DocRefWrapper(this.path, id);
   }
 
-  async get() {
+  async get(): Promise<QuerySnapshotWrapper> {
     try {
       const q = query(collection(firestore, this.path), ...this.constraints);
       const qSnapshot = await getDocs(q);
