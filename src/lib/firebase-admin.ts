@@ -36,7 +36,7 @@ export const FieldValue = {
 };
 
 class DocRefWrapper {
-  constructor(public ref: DocumentReference) {}
+  constructor(public ref: DocumentReference<any, any>) {}
 
   get id() {
     return this.ref.id;
@@ -107,7 +107,7 @@ class CollectionRefWrapper {
         id: d.id,
         exists: d.exists(),
         data: () => d.data(),
-        ref: new DocRefWrapper(d.ref)
+        ref: new DocRefWrapper(d.ref as DocumentReference<any, any>)
       })),
       empty: snapshot.empty
     };
