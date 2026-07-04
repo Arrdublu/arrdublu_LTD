@@ -59,7 +59,7 @@ export async function getDiscounts(): Promise<Discount[]> {
   try {
     const snapshot = await db.collection('discounts').get();
     return snapshot.docs.map(
-      (doc) => ({ id: doc.id, ...doc.data() } as Discount)
+      (doc) => ({ id: doc.id, ...(doc.data() as any) } as Discount)
     );
   } catch (error) {
     handleFirestoreError(error, OperationType.LIST, 'discounts');
@@ -98,7 +98,7 @@ export async function verifyDiscountCode(code: string): Promise<Discount> {
     }
 
     const doc = snapshot.docs[0];
-    return { id: doc.id, ...doc.data() } as Discount;
+    return { id: doc.id, ...(doc.data() as any) } as Discount;
   } catch (error) {
     if (error instanceof Error && error.message.includes('not valid or has expired')) {
       throw error;

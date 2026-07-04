@@ -31,14 +31,12 @@ import {
   DollarSign,
   AlertTriangle,
   RotateCcw,
-  Sparkles,
   Package,
   Layers,
   ArrowUpRight,
   Search,
 } from 'lucide-react';
 import {
-  seedDemoOrders,
   clearDemoOrders,
   getDashboardData,
   type DashboardSummary,
@@ -72,30 +70,6 @@ export function DashboardCharts({ initialData }: DashboardChartsProps) {
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  const handleSeedDemo = async () => {
-    try {
-      setLoading(true);
-      const res = await seedDemoOrders();
-      if (res.success) {
-        toast({
-          title: 'Success!',
-          description: `Successfully seeded ${res.count} mock sales and updated the dashboard.`,
-        });
-        // Fetch fresh parsed stats
-        const freshData = await getDashboardData();
-        setData(freshData);
-      }
-    } catch (err: any) {
-      toast({
-        title: 'Error',
-        description: err.message || 'Something went wrong while seeding.',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleClearDemo = async () => {
     try {
@@ -175,16 +149,6 @@ export function DashboardCharts({ initialData }: DashboardChartsProps) {
           >
             <RotateCcw className="h-3.5 w-3.5 mr-2" />
             Reset Orders
-          </Button>
-          <Button
-            size="sm"
-            className="bg-slate-900 hover:bg-slate-800 text-white"
-            disabled={loading}
-            onClick={handleSeedDemo}
-            id="btn-seed-demo"
-          >
-            <Sparkles className="h-3.5 w-3.5 mr-2" />
-            Seed Demo Sales
           </Button>
         </div>
       </div>

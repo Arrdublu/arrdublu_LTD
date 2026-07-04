@@ -1,6 +1,9 @@
 
 import type { Metadata } from 'next';
 import { ViralPostClient } from './CaseStudyClient';
+import { getCaseStudy, saveCaseStudy } from '@/lib/portfolio-actions';
+
+export const dynamic = 'force-dynamic';
 
 
 const caseStudy = {
@@ -50,8 +53,13 @@ export const metadata: Metadata = {
     },
 };
 
-export default function ViralPostPage() {
+export default async function ViralPostPage() {
+    let dbCaseStudy = await getCaseStudy('viral-post');
+    if (!dbCaseStudy) {
+        await saveCaseStudy('viral-post', caseStudy, true);
+        dbCaseStudy = caseStudy;
+    }
     return (
-        <ViralPostClient caseStudy={caseStudy} />
+        <ViralPostClient caseStudy={dbCaseStudy} />
     );
 }

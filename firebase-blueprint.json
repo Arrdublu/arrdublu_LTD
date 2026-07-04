@@ -117,6 +117,18 @@
         }
       },
       "required": ["query", "resultsCount", "resultsFound", "timestamp"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "Global application settings.",
+      "type": "object",
+      "properties": {
+        "inlineEditMode": {
+          "type": "boolean",
+          "description": "Whether inline editing mode is enabled for portfolio case studies."
+        }
+      },
+      "required": ["inlineEditMode"]
     }
   },
   "firestore": {
@@ -135,6 +147,10 @@
     "/search_logs/{logId}": {
       "schema": "SearchLog",
       "description": "Collection of search logs for trend analysis."
+    },
+    "/settings/{settingId}": {
+      "schema": "Settings",
+      "description": "Global application configurations."
     }
   }
 }

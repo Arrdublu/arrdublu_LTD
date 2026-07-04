@@ -3,23 +3,65 @@
 import { useState } from 'react';
 import { PortfolioItem } from '@/lib/portfolio-actions';
 import { Button } from '@/components/ui/button';
-import { deletePortfolioItem, updatePortfolioItem, addPortfolioItem, updatePortfolioOrders } from '@/lib/portfolio-actions';
+import { 
+  deletePortfolioItem, 
+  updatePortfolioItem, 
+  addPortfolioItem, 
+  updatePortfolioOrders, 
+  setInlineEditMode 
+} from '@/lib/portfolio-actions';
 import { PortfolioForm } from './PortfolioForm';
 import { VideoEmbed } from '@/components/ui/video-embed';
 import { useToast } from '@/hooks/use-toast';
 import { Trash2, Edit, ChevronUp, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface PortfolioListProps {
   initialItems: PortfolioItem[];
+  initialInlineEditMode?: boolean;
 }
 
-export function PortfolioList({ initialItems }: PortfolioListProps) {
+export function PortfolioList({ initialItems, initialInlineEditMode }: PortfolioListProps) {
   const [items, setItems] = useState<PortfolioItem[]>(initialItems);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [inlineEditMode, setInlineEditModeState] = useState(initialInlineEditMode || false);
   const [isAdding, setIsAdding] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const handleToggleInlineEdit = async (checked: boolean) => {
+    setInlineEditModeState(checked);
+    try {
+      const result = await setInlineEditMode(checked);
+      if (result.success) {
+        toast({
+          title: 'Success',
+          description: `Case study inline editing ${checked ? 'enabled' : 'disabled'}.`
+        });
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Failed to update inline editing mode.',
+          variant: 'destructive'
+        });
+        setInlineEditModeState(!checked);
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update inline editing mode.',
+        variant: 'destructive'
+      });
+      setInlineEditModeState(!checked);
+    }
+  };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this case study?')) return;
@@ -112,7 +154,31 @@ export function PortfolioList({ initialItems }: PortfolioListProps) {
 
   return (
     <div className="space-y-6">
-      {!isAdding && !editingId && (
+      {/* Inline Edit Mode Toggle Switch */}
+      <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h3 className="text-sm font-semibold text-white">Case Study Inline Edit Mode</h3>
+          <p className="text-xs text-slate-400 mt-1">
+            When enabled, authenticated administrators can edit text fields directly on individual case study pages and save on blur.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className={`text-xs font-mono font-medium ${inlineEditMode ? 'text-cyan-400' : 'text-slate-500'}`}>
+            {inlineEditMode ? 'ENABLED' : 'DISABLED'}
+          </span>
+          <button
+            type="button"
+            onClick={() => handleToggleInlineEdit(!inlineEditMode)}
+            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${inlineEditMode ? 'bg-cyan-500' : 'bg-slate-700'}`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${inlineEditMode ? 'translate-x-5' : 'translate-x-0'}`}
+            />
+          </button>
+        </div>
+      </div>
+
+      {!isAdding && (
         <div className="flex justify-end">
           <Button onClick={() => setIsAdding(true)} className="bg-cyan-600 hover:bg-cyan-500 text-white">
             Add New Case Study
@@ -131,19 +197,22 @@ export function PortfolioList({ initialItems }: PortfolioListProps) {
         </div>
       )}
 
-      {editingId && (
-        <div className="p-6 bg-slate-900/50 border border-slate-800 rounded-lg">
-          <h2 className="text-xl font-semibold text-white mb-4">Edit Case Study</h2>
+      {/* Structured Edit Modal */}
+      <Dialog open={editingId !== null} onOpenChange={(open) => { if (!open) setEditingId(null); }}>
+        <DialogContent className="max-w-2xl bg-slate-950 border border-slate-800 text-white overflow-y-auto max-h-[90vh] p-6">
+          <DialogHeader className="mb-4">
+            <DialogTitle className="text-xl font-semibold text-white">Edit Case Study</DialogTitle>
+          </DialogHeader>
           <PortfolioForm
             initialData={items.find(i => i.id === editingId)}
             onSubmit={handleUpdate}
             onCancel={() => setEditingId(null)}
             isLoading={isLoading}
           />
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
 
-      {!isAdding && !editingId && (
+      {!isAdding && (
         <div className="grid gap-4">
           {items.length === 0 ? (
             <div className="p-8 text-center text-slate-400 bg-slate-900/30 border border-slate-800 rounded-lg">

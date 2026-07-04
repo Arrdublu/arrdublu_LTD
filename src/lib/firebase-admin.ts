@@ -2,244 +2,155 @@
 import { 
   collection, 
   doc, 
-  addDoc, 
-  getDoc, 
   getDocs, 
+  getDoc, 
+  setDoc, 
   updateDoc, 
   deleteDoc, 
-  setDoc,
-  query, 
-  where as fsWhere, 
-  limit as fsLimit,
+  addDoc,
   writeBatch,
   serverTimestamp,
-  QueryConstraint
+  query,
+  where,
+  limit,
+  DocumentReference,
+  CollectionReference
 } from 'firebase/firestore';
-import { firestore } from './firebase';
+import { firestore as clientDb } from './firebase';
 
 export enum OperationType {
-  CREATE = 'create',
-  UPDATE = 'update',
-  DELETE = 'delete',
-  LIST = 'list',
-  GET = 'get',
-  WRITE = 'write',
+  GET = 'GET',
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
+  LIST = 'LIST'
 }
 
-export interface FirestoreErrorInfo {
-  error: string;
-  operationType: OperationType;
-  path: string | null;
-  authInfo: {
-    userId?: string | null;
-    email?: string | null;
-    emailVerified?: boolean | null;
-    isAnonymous?: boolean | null;
-    tenantId?: string | null;
-    providerInfo?: {
-      providerId?: string | null;
-      email?: string | null;
-    }[];
-  };
+export function handleFirestoreError(error: any, operation: OperationType, collectionName: string) {
+  console.error(`Firestore error during ${operation} on ${collectionName}:`, error);
+  throw new Error(`Database operation failed: ${error?.message || error}`);
 }
 
-export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null, userId?: string | null): never {
-  const errMessage = error instanceof Error ? error.message : String(error);
-  const errInfo: FirestoreErrorInfo = {
-    error: errMessage,
-    authInfo: {
-      userId: userId || null,
-      email: null,
-      emailVerified: null,
-      isAnonymous: null,
-      tenantId: null,
-      providerInfo: []
-    },
-    operationType,
-    path
-  };
-  const stringified = JSON.stringify(errInfo);
-  console.error('Firestore Error: ', stringified);
-  throw new Error(stringified);
-}
-
-// Mock of FieldValue for standard Firestore client
 export const FieldValue = {
   serverTimestamp: () => serverTimestamp()
 };
 
-// Lightweight wrappers around modular Client SDK to retain legacy/Admin SDK class structure
 class DocRefWrapper {
-  constructor(public path: string, public id: string) {}
+  constructor(public ref: DocumentReference) {}
 
-  async get(): Promise<DocSnapshotWrapper> {
-    try {
-      const dSnapshot = await getDoc(doc(firestore, this.path, this.id));
-      return new DocSnapshotWrapper(dSnapshot, this.path);
-    } catch (error) {
-      handleFirestoreError(error, OperationType.GET, `${this.path}/${this.id}`);
-    }
+  get id() {
+    return this.ref.id;
+  }
+
+  async get() {
+    const snapshot = await getDoc(this.ref);
+    return {
+      id: snapshot.id,
+      exists: snapshot.exists(),
+      data: () => snapshot.data(),
+      ref: this
+    };
   }
 
   async update(data: any) {
-    try {
-      await updateDoc(doc(firestore, this.path, this.id), data);
-    } catch (error) {
-      handleFirestoreError(error, OperationType.UPDATE, `${this.path}/${this.id}`);
-    }
+    await updateDoc(this.ref, data);
   }
 
-  async set(data: any) {
-    try {
-      await setDoc(doc(firestore, this.path, this.id), data);
-    } catch (error) {
-      handleFirestoreError(error, OperationType.CREATE, `${this.path}/${this.id}`);
+  async set(data: any, options?: { merge: boolean }) {
+    if (options) {
+      await setDoc(this.ref, data, options);
+    } else {
+      await setDoc(this.ref, data);
     }
   }
 
   async delete() {
-    try {
-      await deleteDoc(doc(firestore, this.path, this.id));
-    } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, `${this.path}/${this.id}`);
-    }
-  }
-}
-
-class DocSnapshotWrapper {
-  public id: string;
-  public exists: boolean;
-  constructor(private snapshot: any, private path: string) {
-    this.id = snapshot.id;
-    this.exists = snapshot.exists();
-  }
-
-  data() {
-    const d = this.snapshot.data();
-    if (d && d.createdAt && typeof d.createdAt.toDate !== 'function') {
-      if (d.createdAt.seconds) {
-        d.createdAt.toDate = () => new Date(d.createdAt.seconds * 1000);
-      } else if (d.createdAt instanceof Date) {
-        d.createdAt.toDate = () => d.createdAt;
-      } else {
-        d.createdAt.toDate = () => new Date(d.createdAt);
-      }
-    }
-    return d;
-  }
-
-  get ref() {
-    return new DocRefWrapper(this.path, this.id);
-  }
-}
-
-class QuerySnapshotWrapper {
-  public docs: any[];
-  public empty: boolean;
-  constructor(docs: any[], path: string) {
-    this.docs = docs.map(d => new DocSnapshotWrapper(d, path));
-    this.empty = docs.length === 0;
+    await deleteDoc(this.ref);
   }
 }
 
 class CollectionRefWrapper {
-  constructor(private path: string, private constraints: QueryConstraint[] = []) {}
+  private queryConstraints: any[] = [];
+  constructor(public ref: CollectionReference | any) {}
 
-  where(field: string, opStr: string, value: any) {
-    const newConstraints = [...this.constraints, fsWhere(field, opStr as any, value)];
-    return new CollectionRefWrapper(this.path, newConstraints);
+  where(field: string, op: string, value: any) {
+    this.queryConstraints.push(where(field, op as any, value));
+    return this;
   }
 
-  limit(num: number) {
-    const newConstraints = [...this.constraints, fsLimit(num)];
-    return new CollectionRefWrapper(this.path, newConstraints);
+  limit(n: number) {
+    this.queryConstraints.push(limit(n));
+    return this;
   }
 
   async add(data: any) {
-    try {
-      const cleanData = this.cleanupTimestamps(data);
-      const docRef = await addDoc(collection(firestore, this.path), cleanData);
-      return new DocRefWrapper(this.path, docRef.id);
-    } catch (error) {
-      handleFirestoreError(error, OperationType.CREATE, this.path);
+    const docRef = await addDoc(this.ref, data);
+    return new DocRefWrapper(docRef);
+  }
+
+  doc(id?: string) {
+    if (id) {
+      return new DocRefWrapper(doc(this.ref, id));
+    } else {
+      return new DocRefWrapper(doc(this.ref));
     }
   }
 
-  doc(id: string) {
-    return new DocRefWrapper(this.path, id);
-  }
-
-  async get(): Promise<QuerySnapshotWrapper> {
-    try {
-      const q = query(collection(firestore, this.path), ...this.constraints);
-      const qSnapshot = await getDocs(q);
-      return new QuerySnapshotWrapper(qSnapshot.docs, this.path);
-    } catch (error) {
-      handleFirestoreError(error, OperationType.LIST, this.path);
+  async get() {
+    let q = this.ref;
+    if (this.queryConstraints.length > 0) {
+      q = query(this.ref, ...this.queryConstraints);
     }
-  }
-
-  private cleanupTimestamps(data: any): any {
-    if (!data) return data;
-    const result = { ...data };
-    for (const key of Object.keys(result)) {
-      if (result[key] && typeof result[key] === 'object' && typeof result[key].toString === 'function' && result[key].toString().includes('serverTimestamp')) {
-        result[key] = serverTimestamp();
-      }
-    }
-    return result;
+    const snapshot = await getDocs(q);
+    return {
+      docs: snapshot.docs.map(d => ({
+        id: d.id,
+        exists: d.exists(),
+        data: () => d.data(),
+        ref: new DocRefWrapper(d.ref)
+      })),
+      empty: snapshot.empty
+    };
   }
 }
 
 class BatchWrapper {
-  private batch: any;
+  private batch;
   constructor() {
-    this.batch = writeBatch(firestore);
+    this.batch = writeBatch(clientDb);
   }
 
-  delete(docRef: DocRefWrapper) {
-    this.batch.delete(doc(firestore, docRef.path, docRef.id));
+  set(docWrapper: DocRefWrapper, data: any, options?: { merge: boolean }) {
+    this.batch.set(docWrapper.ref, data, options);
     return this;
   }
 
-  set(docRef: DocRefWrapper, data: any) {
-    this.batch.set(doc(firestore, docRef.path, docRef.id), data);
+  update(docWrapper: DocRefWrapper, data: any) {
+    this.batch.update(docWrapper.ref, data);
     return this;
   }
 
-  update(docRef: DocRefWrapper, data: any) {
-    this.batch.update(doc(firestore, docRef.path, docRef.id), data);
+  delete(docWrapper: DocRefWrapper) {
+    this.batch.delete(docWrapper.ref);
     return this;
   }
 
   async commit() {
-    try {
-      await this.batch.commit();
-    } catch (error) {
-      handleFirestoreError(error, OperationType.WRITE, 'batch');
-    }
+    await this.batch.commit();
   }
 }
 
-class AdminDbWrapper {
+class DbWrapper {
   collection(path: string) {
-    return new CollectionRefWrapper(path);
+    return new CollectionRefWrapper(collection(clientDb, path));
   }
-
+  
   batch() {
     return new BatchWrapper();
   }
 }
 
-const dbInstance = new AdminDbWrapper();
-
 export function getAdminDb() {
-  return dbInstance;
+  return new DbWrapper();
 }
-
-export function getAdminAuth() {
-  return null;
-}
-
-export { dbInstance as adminDb };
 

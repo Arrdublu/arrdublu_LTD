@@ -20,23 +20,35 @@ export interface PortfolioItem {
 
 export async function getPortfolioItems(): Promise<PortfolioItem[]> {
   const db = getAdminDb();
+  const DEFAULT_CLIENTS: Record<string, string> = {
+    'global-rebrand': 'The Saint T Collective',
+    'annual-corporate-summit': 'Corporate Tech Client',
+    'executive-portraits': 'C-Suite Executive',
+    'production-makeup-collaboration': 'Ioka Beautiful Purpose',
+    'luxury-lifestyle-launch': 'Luxury Brand',
+    'viral-post': 'Local Cafe',
+    'executive-identity': 'Top Consulting Firm',
+    'futuristic-tech-launch': 'Tech Innovator',
+    'luxury-real-estate-showcase': 'Elite Real Estate Group'
+  };
+
   if (!db) {
-    return [];
+    console.warn('getPortfolioItems: DB not initialized, returning high-fidelity static items.');
+    return caseStudies.map((study, idx) => ({
+      id: study.id,
+      title: study.id === 'viral-post' ? 'KFC Viral Visual: The Power of a Single Post' : study.title,
+      client: DEFAULT_CLIENTS[study.id] || study.category || 'Elite Client',
+      description: study.description,
+      imageUrl: study.image,
+      services: [study.category],
+      videoEmbed: '',
+      videoCaption: '',
+      status: study.status || 'Live',
+      sortOrder: idx,
+    }));
   }
   try {
     const snapshot = await db.collection('portfolio').get();
-    
-    const DEFAULT_CLIENTS: Record<string, string> = {
-      'global-rebrand': 'The Saint T Collective',
-      'annual-corporate-summit': 'Corporate Tech Client',
-      'executive-portraits': 'C-Suite Executive',
-      'production-makeup-collaboration': 'Ioka Beautiful Purpose',
-      'luxury-lifestyle-launch': 'Luxury Brand',
-      'viral-post': 'Local Cafe',
-      'executive-identity': 'Top Consulting Firm',
-      'futuristic-tech-launch': 'Tech Innovator',
-      'luxury-real-estate-showcase': 'Elite Real Estate Group'
-    };
 
     if (snapshot.empty) {
       const seededItems: PortfolioItem[] = [];
@@ -189,4 +201,65 @@ export async function deletePortfolioItem(id: string): Promise<{ success: boolea
   await db.collection('portfolio').doc(id).delete();
   revalidatePath('/admin/portfolio');
   return { success: true };
+}
+
+export async function getCaseStudy(id: string): Promise<any> {
+  const db = getAdminDb();
+  if (!db) {
+    return null;
+  }
+  try {
+    const doc = await db.collection('case_studies').doc(id).get();
+    if (doc.exists) {
+      return doc.data();
+    }
+  } catch (error) {
+    console.error("Error fetching case study:", error);
+  }
+  return null;
+}
+
+export async function saveCaseStudy(id: string, data: any, skipRevalidate = false): Promise<{ success: boolean }> {
+  const db = getAdminDb();
+  if (!db) {
+    return { success: false };
+  }
+  try {
+    await db.collection('case_studies').doc(id).set(data);
+    if (!skipRevalidate) {
+      revalidatePath(`/discover/case-studies/${id}`);
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Error saving case study:", error);
+    return { success: false };
+  }
+}
+
+export async function getInlineEditMode(): Promise<boolean> {
+  const db = getAdminDb();
+  if (!db) return false;
+  try {
+    const doc = await db.collection('settings').doc('admin').get();
+    if (doc.exists) {
+      return !!doc.data()?.inlineEditMode;
+    }
+  } catch (error) {
+    console.error("Error fetching inline edit mode:", error);
+  }
+  return false;
+}
+
+export async function setInlineEditMode(enabled: boolean): Promise<{ success: boolean }> {
+  const db = getAdminDb();
+  if (!db) return { success: false };
+  try {
+    await db.collection('settings').doc('admin').set({ inlineEditMode: enabled }, { merge: true });
+    revalidatePath('/admin/portfolio');
+    revalidatePath('/discover/case-studies/viral-post');
+    return { success: true };
+  } catch (error) {
+    console.error("Error setting inline edit mode:", error);
+    return { success: false };
+  }
 }

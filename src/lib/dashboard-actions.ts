@@ -59,70 +59,49 @@ const INITIAL_INVENTORY: Record<string, { id: string; name: string; category: st
 };
 
 // Base historical statistics leading up to June 2026
-const HISTORICAL_MONTHS = [
-  { month: 'Jan 2026', revenue: 4200, orders: 18 },
-  { month: 'Feb 2026', revenue: 5100, orders: 22 },
-  { month: 'Mar 2026', revenue: 6300, orders: 25 },
-  { month: 'Apr 2026', revenue: 5800, orders: 20 },
-  { month: 'May 2026', revenue: 7200, orders: 31 },
-];
+const HISTORICAL_MONTHS: MonthlySalesData[] = [];
 
-const HISTORICAL_PROD_SALES: Record<string, { name: string; value: number; revenue: number }> = {
-  'brand-identity': { name: 'Brand Identity Suite', value: 8, revenue: 9600 },
-  'event-video': { name: 'Event Videography', value: 14, revenue: 3500 },
-  'lifestyle-photography': { name: 'Product Photography', value: 6, revenue: 5700 },
-  'print-1': { name: 'Serenity Bridge Print', value: 18, revenue: 810 },
-  'print-3': { name: 'Golden Hour Peaks Print', value: 12, revenue: 780 },
-  'used-gear-2': { id: 'used-gear-2', name: 'DJI Mavic 3 Drone', value: 2, revenue: 3000 } as any,
-};
+const HISTORICAL_PROD_SALES: Record<string, { name: string; value: number; revenue: number }> = {};
 
-const BASELINE_SEARCH_TRENDS: SearchTrend[] = [
-  { query: 'virtual production', count: 12, resultsCount: 1, resultsFound: true },
-  { query: 'brand identity', count: 8, resultsCount: 1, resultsFound: true },
-  { query: 'seo audit', count: 5, resultsCount: 1, resultsFound: true },
-  { query: 'ar production', count: 3, resultsCount: 0, resultsFound: false },
-];
+const BASELINE_SEARCH_TRENDS: SearchTrend[] = [];
 
 export async function getDashboardData(): Promise<DashboardSummary> {
   const defaultSummary: DashboardSummary = {
-    totalRevenue: 32300,
-    revenueChangePercent: 12.4,
-    totalOrders: 130,
-    ordersChangePercent: 8.5,
-    averageOrderValue: 248.46,
-    lowStockItemsCount: 3,
-    salesData: [
-      ...HISTORICAL_MONTHS,
-      { month: 'Jun 2026', revenue: 3700, orders: 14 }
-    ],
+    totalRevenue: 0,
+    revenueChangePercent: 0,
+    totalOrders: 0,
+    ordersChangePercent: 0,
+    averageOrderValue: 0,
+    lowStockItemsCount: Object.values(INITIAL_INVENTORY).filter(item => item.stock <= 3).length,
+    salesData: [],
     inventoryData: Object.values(INITIAL_INVENTORY).map(item => ({
       id: item.id,
       name: item.name,
       category: item.category,
       stock: item.stock,
-      initialStock: item.stock + 2,
-      solidSold: 2
+      initialStock: item.stock,
+      solidSold: 0
     })),
-    topProducts: Object.values(HISTORICAL_PROD_SALES),
+    topProducts: [],
     liveOrdersCount: 0,
-    searchTrends: BASELINE_SEARCH_TRENDS
+    searchTrends: []
   };
 
   try {
     const db = getAdminDb();
     if (!db) {
-      console.warn('getDashboardData: DB is not initialized. Returning high-fidelity base data.');
+      console.warn('getDashboardData: DB is not initialized. Returning zeroed base data.');
       return defaultSummary;
     }
 
     // Try to fetch real search logs for trends
-    let finalSearchTrends: SearchTrend[] = [...BASELINE_SEARCH_TRENDS];
+    let finalSearchTrends: SearchTrend[] = [];
     try {
       const searchLogsSnapshot = await db.collection('search_logs').get();
       if (!searchLogsSnapshot.empty) {
         const queryCounts: Record<string, { count: number; resultsCount: number; resultsFound: boolean }> = {};
         searchLogsSnapshot.docs.forEach(docSnap => {
-          const d = docSnap.data();
+          const d = docSnap.data() as any;
           const q = (d.query || '').toLowerCase().trim();
           if (!q) return;
           if (!queryCounts[q]) {
@@ -164,7 +143,7 @@ export async function getDashboardData(): Promise<DashboardSummary> {
     const monthlyAgg: Record<string, { revenue: number; orders: number }> = {};
 
     snapshot.docs.forEach(docSnap => {
-      const data = docSnap.data();
+      const data = docSnap.data() as any;
       const status = data.status || 'pending';
       const items = data.items || [];
       const totalAmount = Number(data.totalAmount) || 0;
@@ -211,27 +190,18 @@ export async function getDashboardData(): Promise<DashboardSummary> {
       });
     });
 
-    // 1. Compile Monthly Sales Timeline
-    // Merge historical timeline with real database counts
-    const finalSalesData: MonthlySalesData[] = [...HISTORICAL_MONTHS];
-    
-    // For June 2026 (or any other month present in Firestore), add real orders onto the base
-    const currentMonthLabel = 'Jun 2026';
-    const juneReal = monthlyAgg[currentMonthLabel] || { revenue: 0, orders: 0 };
-    finalSalesData.push({
-      month: currentMonthLabel,
-      revenue: 3700 + juneReal.revenue,
-      orders: 14 + juneReal.orders
-    });
-
-    // Add any other months that might appear in the database
-    Object.keys(monthlyAgg).forEach(mCode => {
-      if (mCode !== currentMonthLabel && !HISTORICAL_MONTHS.some(h => h.month === mCode)) {
-        finalSalesData.push({
-          month: mCode,
-          revenue: monthlyAgg[mCode].revenue,
-          orders: monthlyAgg[mCode].orders
-        });
+    // 1. Compile Monthly Sales Timeline purely from Firestore
+    const finalSalesData: MonthlySalesData[] = Object.entries(monthlyAgg).map(([month, info]) => ({
+      month,
+      revenue: info.revenue,
+      orders: info.orders
+    })).sort((a, b) => {
+      try {
+        const dateA = new Date(a.month);
+        const dateB = new Date(b.month);
+        return dateA.getTime() - dateB.getTime();
+      } catch {
+        return 0;
       }
     });
 
@@ -255,34 +225,15 @@ export async function getDashboardData(): Promise<DashboardSummary> {
     });
 
     // 3. Aggregate Top Selling Products
-    const finalTopProducts: Record<string, TopProductData> = {};
-    
-    // Load historical top sellers
-    Object.keys(HISTORICAL_PROD_SALES).forEach(itemId => {
-      finalTopProducts[itemId] = { ...HISTORICAL_PROD_SALES[itemId] };
-    });
-
-    // Merge in live product sales
-    Object.keys(liveProductSales).forEach(itemId => {
-      const liveItem = liveProductSales[itemId];
-      if (finalTopProducts[itemId]) {
-        finalTopProducts[itemId].value += liveItem.value;
-        finalTopProducts[itemId].revenue += liveItem.revenue;
-      } else {
-        finalTopProducts[itemId] = {
-          name: liveItem.name,
-          value: liveItem.value,
-          revenue: liveItem.revenue
-        };
-      }
-    });
+    const finalTopProducts: TopProductData[] = Object.values(liveProductSales).map(item => ({
+      name: item.name,
+      value: item.value,
+      revenue: item.revenue
+    }));
 
     // 4. Calculate Final Unified Stats
-    const totalHistoricalRevenue = HISTORICAL_MONTHS.reduce((sum, item) => sum + item.revenue, 0) + 3700;
-    const totalHistoricalOrders = HISTORICAL_MONTHS.reduce((sum, item) => sum + item.orders, 0) + 14;
-
-    const totalRevenue = totalHistoricalRevenue + realRevenueTotal;
-    const totalOrders = totalHistoricalOrders + realOrdersCount;
+    const totalRevenue = realRevenueTotal;
+    const totalOrders = realOrdersCount;
     const averageOrderValue = totalOrders > 0 ? (totalRevenue / totalOrders) : 0;
     
     // Low stock count: Any physical item with stock <= 3
@@ -290,103 +241,24 @@ export async function getDashboardData(): Promise<DashboardSummary> {
 
     return {
       totalRevenue: Math.round(totalRevenue * 100) / 100,
-      revenueChangePercent: 14.2, // Mock growth index representation
+      revenueChangePercent: 0,
       totalOrders,
-      ordersChangePercent: 9.1,
+      ordersChangePercent: 0,
       averageOrderValue: Math.round(averageOrderValue * 100) / 100,
       lowStockItemsCount,
       salesData: finalSalesData,
       inventoryData: finalInventoryData,
-      topProducts: Object.values(finalTopProducts).sort((a, b) => b.value - a.value),
+      topProducts: finalTopProducts.sort((a, b) => b.value - a.value),
       liveOrdersCount: realOrdersCount,
       searchTrends: finalSearchTrends
     };
 
   } catch (error) {
-    console.error('getDashboardData: general handler failure, returning mock fallback grid.', error);
+    console.error('getDashboardData: general handler failure, returning zeroed fallback grid.', error);
     return defaultSummary;
   }
 }
 
-// Administrative action to seed mock orders for sandboxed testing
-export async function seedDemoOrders(): Promise<{ success: boolean; count: number }> {
-  try {
-    const db = getAdminDb();
-    if (!db) {
-      throw new Error('Database connection is not available.');
-    }
-
-    const demoOrdersList = [
-      {
-        items: [
-          { itemId: 'used-gear-2', name: 'DJI Mavic 3 Drone', quantity: 1, price: 1500 }
-        ],
-        subtotal: 1500,
-        totalAmount: 1500,
-        status: 'paid',
-        currency: 'USD',
-        createdAt: FieldValue.serverTimestamp()
-      },
-      {
-        items: [
-          { itemId: 'print-1', name: 'Serenity Bridge Print', quantity: 2, price: 45 },
-          { itemId: 'print-3', name: 'Golden Hour Peaks Print', quantity: 1, price: 65 }
-        ],
-        subtotal: 155,
-        totalAmount: 155,
-        status: 'paid',
-        currency: 'USD',
-        createdAt: FieldValue.serverTimestamp()
-      },
-      {
-        items: [
-          { itemId: 'brand-identity', name: 'Brand Identity Suite', quantity: 1, price: 1200 }
-        ],
-        subtotal: 1200,
-        totalAmount: 1080,
-        status: 'paid',
-        currency: 'USD',
-        discountCode: 'NEWYEAR10',
-        discountAmount: 120,
-        createdAt: FieldValue.serverTimestamp()
-      },
-      {
-        items: [
-          { itemId: 'print-4', name: 'Ocean\'s Breath Print', quantity: 3, price: 50 }
-        ],
-        subtotal: 150,
-        totalAmount: 150,
-        status: 'pending',
-        currency: 'USD',
-        createdAt: FieldValue.serverTimestamp()
-      },
-      {
-        items: [
-          { itemId: 'used-gear-4', name: 'Aputure LS C300d', quantity: 1, price: 850 },
-          { itemId: 'print-2', name: 'Urban Geometry Print', quantity: 1, price: 55 }
-        ],
-        subtotal: 905,
-        totalAmount: 905,
-        status: 'paid',
-        currency: 'USD',
-        createdAt: FieldValue.serverTimestamp()
-      }
-    ];
-
-    let createdCount = 0;
-    for (const order of demoOrdersList) {
-      await db.collection('orders').add(order);
-      createdCount++;
-    }
-
-    revalidatePath('/admin');
-    return { success: true, count: createdCount };
-
-  } catch (error) {
-    console.error('Failed to seed demo orders:', error);
-    throw error;
-  }
-}
 
 // Administrative action to clear all orders in the Database (useful helper for resetting demo states)
 export async function clearDemoOrders(): Promise<{ success: boolean }> {
