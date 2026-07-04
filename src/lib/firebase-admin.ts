@@ -107,7 +107,7 @@ class CollectionRefWrapper {
         id: d.id,
         exists: d.exists(),
         data: () => d.data(),
-        ref: new DocRefWrapper(d.ref as DocumentReference<any, any>)
+        ref: new DocRefWrapper(d.ref)
       })),
       empty: snapshot.empty
     };
@@ -121,7 +121,7 @@ class BatchWrapper {
   }
 
   set(docWrapper: DocRefWrapper, data: any, options?: { merge: boolean }) {
-    this.batch.set(docWrapper.ref, data, options);
+    this.batch.set(docWrapper.ref, data, options as any);
     return this;
   }
 
