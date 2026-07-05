@@ -13,6 +13,7 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
   const containerRef = useRef<HTMLDivElement>(null)
   const requestRef = useRef<number | null>(null)
   const [isLowPower, setIsLowPower] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false);
   
   // Keep states in refs so loop always has access to latest values without re-triggering effect
   const viewStateRef = useRef(viewState)
@@ -25,6 +26,16 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
   const mouseRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 })
 
   useEffect(() => {
+    async function initAssets() {
+        try {
+            await document.fonts.ready;
+        } catch (e) {
+            console.error("Font loading error", e);
+        }
+        setIsLoaded(true);
+    }
+    initAssets();
+
     // Check for user preferences
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const isMobile = window.innerWidth < 768
@@ -49,7 +60,7 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
   }, [])
 
   useEffect(() => {
-    if (!containerRef.current) return
+    if (!containerRef.current || !isLoaded) return
 
     const container = containerRef.current
     const width = container.clientWidth

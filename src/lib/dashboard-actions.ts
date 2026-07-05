@@ -10,6 +10,11 @@ export interface MonthlySalesData {
   orders: number;
 }
 
+export interface DailySalesData {
+  date: string;
+  revenue: number;
+}
+
 export interface InventoryData {
   id: string;
   name: string;
@@ -40,6 +45,7 @@ export interface DashboardSummary {
   averageOrderValue: number;
   lowStockItemsCount: number;
   salesData: MonthlySalesData[];
+  dailySales30Days: DailySalesData[];
   inventoryData: InventoryData[];
   topProducts: TopProductData[];
   liveOrdersCount: number;
@@ -190,6 +196,35 @@ export async function getDashboardData(): Promise<DashboardSummary> {
       });
     });
 
+    // New: Calculate Daily Sales for last 30 days
+    const dailyAgg: Record<string, number> = {};
+    const now = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(now.getDate() - 30);
+    
+    for (let i = 0; i <= 30; i++) {
+        const d = new Date(thirtyDaysAgo);
+        d.setDate(thirtyDaysAgo.getDate() + i);
+        dailyAgg[d.toISOString().split('T')[0]] = 0;
+    }
+
+    snapshot.docs.forEach(docSnap => {
+        const data = docSnap.data() as any;
+        const status = data.status || 'pending';
+        const totalAmount = Number(data.totalAmount) || 0;
+        const isCountable = status === 'paid' || status === 'pending';
+        if (!isCountable) return;
+        
+        const date = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+        const dateStr = date.toISOString().split('T')[0];
+        
+        if (dailyAgg.hasOwnProperty(dateStr)) {
+            dailyAgg[dateStr] += totalAmount;
+        }
+    });
+
+    const finalDailySalesData: DailySalesData[] = Object.entries(dailyAgg).map(([date, revenue]) => ({ date, revenue }));
+
     // 1. Compile Monthly Sales Timeline purely from Firestore
     const finalSalesData: MonthlySalesData[] = Object.entries(monthlyAgg).map(([month, info]) => ({
       month,
@@ -247,6 +282,7 @@ export async function getDashboardData(): Promise<DashboardSummary> {
       averageOrderValue: Math.round(averageOrderValue * 100) / 100,
       lowStockItemsCount,
       salesData: finalSalesData,
+      dailySales30Days: finalDailySalesData,
       inventoryData: finalInventoryData,
       topProducts: finalTopProducts.sort((a, b) => b.value - a.value),
       liveOrdersCount: realOrdersCount,

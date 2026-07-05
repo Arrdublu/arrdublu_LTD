@@ -14,7 +14,8 @@ import {
   where,
   limit,
   DocumentReference,
-  CollectionReference
+  CollectionReference,
+  SetOptions
 } from 'firebase/firestore';
 import { firestore as clientDb } from './firebase';
 
@@ -120,8 +121,12 @@ class BatchWrapper {
     this.batch = writeBatch(clientDb);
   }
 
-  set(docWrapper: DocRefWrapper, data: any, options?: { merge: boolean }) {
-    this.batch.set(docWrapper.ref, data, options as any);
+  set(docWrapper: DocRefWrapper, data: any, options?: SetOptions) {
+    if (options) {
+      this.batch.set(docWrapper.ref, data, options);
+    } else {
+      this.batch.set(docWrapper.ref, data);
+    }
     return this;
   }
 

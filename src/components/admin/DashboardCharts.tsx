@@ -354,6 +354,34 @@ export function DashboardCharts({ initialData }: DashboardChartsProps) {
           </Card>
         </motion.div>
 
+        {/* New: Daily Sales Trends (Line Chart) */}
+        <motion.div
+            className="lg:col-span-3"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.05 }}
+        >
+            <Card className="h-full shadow-sm">
+                <CardHeader className="flex flex-row items-start justify-between pb-4">
+                    <div>
+                        <CardTitle className="text-base font-semibold">30-Day Sales Trend</CardTitle>
+                        <CardDescription>Daily revenue breakdown for the last month.</CardDescription>
+                    </div>
+                </CardHeader>
+                <CardContent className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={data.dailySales30Days}>
+                            <CartesianGrid strokeDasharray="3 3" opacity={0.3} className="stroke-slate-200 dark:stroke-slate-800"/>
+                            <XAxis dataKey="date" fontSize={11} />
+                            <YAxis tickFormatter={(val) => `$${val}`} fontSize={11}/>
+                            <Tooltip formatter={(value: any) => [`$${value.toLocaleString()}`, 'Revenue']} />
+                            <Area type="monotone" dataKey="revenue" stroke="#10b981" fill="#10b981" fillOpacity={0.1} />
+                        </AreaChart>
+                    </ResponsiveContainer>
+                </CardContent>
+            </Card>
+        </motion.div>
+
         {/* Top-Selling Products Donut Chart */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
