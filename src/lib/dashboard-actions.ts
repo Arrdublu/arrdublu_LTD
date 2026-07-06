@@ -80,6 +80,7 @@ export async function getDashboardData(): Promise<DashboardSummary> {
     averageOrderValue: 0,
     lowStockItemsCount: Object.values(INITIAL_INVENTORY).filter(item => item.stock <= 3).length,
     salesData: [],
+    dailySales30Days: [],
     inventoryData: Object.values(INITIAL_INVENTORY).map(item => ({
       id: item.id,
       name: item.name,
