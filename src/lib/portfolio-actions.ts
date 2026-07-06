@@ -80,7 +80,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     const batch = db.batch();
     
     snapshot.docs.forEach((doc, idx) => {
-      const data = doc.data();
+      const data: any = doc.data();
       let updatedData: any = {};
       
       if (doc.id === 'viral-post' && data.title !== 'KFC Viral Visual: The Power of a Single Post') {
