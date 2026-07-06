@@ -109,7 +109,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
       // Re-fetch fresh data after batch commit completes
       const freshSnapshot = await db.collection('portfolio').get();
       const items = freshSnapshot.docs.map(doc => {
-        const data = doc.data();
+        const data = doc.data() as Record<string, any>;
         return {
           id: doc.id,
           title: data.title || '',
@@ -127,7 +127,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     }
 
     const items = snapshot.docs.map(doc => {
-      const data = doc.data();
+      const data = doc.data() as Record<string, any>;
       return {
         id: doc.id,
         title: data.title || '',
