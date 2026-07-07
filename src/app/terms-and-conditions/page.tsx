@@ -1,5 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms & Conditions | Arrdublu',
+  description: 'Read Arrdublu\'s terms and conditions for using our website and services.',
+};
 
 export default function TermsAndConditionsPage() {
   return (

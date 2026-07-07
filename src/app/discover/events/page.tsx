@@ -1,5 +1,21 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Event Cinematography | Arrdublu',
+  description: 'From corporate summits to live performances, we capture the energy and narrative of every event.',
+  openGraph: {
+    title: 'Event Cinematography | Arrdublu',
+    description: 'From corporate summits to live performances, we capture the energy and narrative of every event.',
+    images: [{
+      url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/Header_Starting_white_Logo.png?alt=media&token=1fcb002e-29e8-499a-bd7a-66ef2c125021',
+      width: 1200,
+      height: 630,
+      alt: 'Arrdublu Events',
+    }],
+  },
+};
 
 export default function EventsPage() {
   return (

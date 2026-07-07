@@ -13,6 +13,7 @@ import {
   query,
   where,
   limit,
+  orderBy,
   DocumentReference,
   CollectionReference,
   SetOptions
@@ -81,6 +82,11 @@ class CollectionRefWrapper {
 
   limit(n: number) {
     this.queryConstraints.push(limit(n));
+    return this;
+  }
+
+  orderBy(field: string, direction?: 'asc' | 'desc') {
+    this.queryConstraints.push(orderBy(field, direction));
     return this;
   }
 

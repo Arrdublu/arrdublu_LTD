@@ -1,5 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | Arrdublu',
+  description: 'Read Arrdublu\'s privacy policy to understand how we collect, use, and protect your personal information.',
+};
 
 export default function PrivacyPage() {
   return (

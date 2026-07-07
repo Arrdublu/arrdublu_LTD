@@ -1,5 +1,21 @@
 
 import { FaqAccordion } from '@/components/faq/FaqAccordion';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Frequently Asked Questions | Arrdublu',
+  description: 'Find answers to common questions about Arrdublu\'s digital services, pricing, and project processes.',
+  openGraph: {
+    title: 'Frequently Asked Questions | Arrdublu',
+    description: 'Find answers to common questions about Arrdublu\'s digital services, pricing, and project processes.',
+    images: [{
+      url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/Header_Starting_white_Logo.png?alt=media&token=1fcb002e-29e8-499a-bd7a-66ef2c125021',
+      width: 1200,
+      height: 630,
+      alt: 'Arrdublu FAQ',
+    }],
+  },
+};
 
 export default function FaqPage() {
   const faqSchema = {

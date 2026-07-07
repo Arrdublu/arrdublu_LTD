@@ -1,6 +1,22 @@
 
 import { FeaturedArticle } from '@/components/magazine/FeaturedArticle';
 import { ArticleGrid } from '@/components/magazine/ArticleGrid';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Arrdublu Mag | Insights & Inspiration',
+  description: 'Explore insightful articles, trends, and inspiration from the world of digital media and experiential design.',
+  openGraph: {
+    title: 'Arrdublu Mag | Insights & Inspiration',
+    description: 'Explore insightful articles, trends, and inspiration from the world of digital media and experiential design.',
+    images: [{
+      url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/Header_Starting_white_Logo.png?alt=media&token=1fcb002e-29e8-499a-bd7a-66ef2c125021',
+      width: 1200,
+      height: 630,
+      alt: 'Arrdublu Mag',
+    }],
+  },
+};
 
 export default function ArrdubluMagPage() {
   return (

@@ -1,5 +1,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Cookie Policy | Arrdublu',
+  description: 'Read Arrdublu\'s cookie policy to understand how we use cookies and similar technologies.',
+};
 
 export default function CookiePolicyPage() {
   return (

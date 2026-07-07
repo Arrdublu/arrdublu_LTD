@@ -117,6 +117,11 @@ export function SiteHeader() {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-cyan-950/30 hover:text-cyan-400 font-mono uppercase tracking-wider text-xs cursor-pointer")}>
+                    <Link href="/dropship-media">Dropship Media</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-cyan-950/30 hover:text-cyan-400 font-mono uppercase tracking-wider text-xs cursor-pointer")}>
                     <Link href="/discover/case-studies">Portfolio</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
@@ -176,6 +181,11 @@ export function SiteHeader() {
                        ))}
                      </div>
                      <div className="h-px w-full bg-cyan-500/10" />
+                     <SheetClose asChild>
+                         <Link href="/dropship-media" className="text-slate-300 hover:text-cyan-400 transition-colors">
+                             Dropship Media
+                         </Link>
+                     </SheetClose>
                      <SheetClose asChild>
                          <Link href="/discover/case-studies" className="text-slate-300 hover:text-cyan-400 transition-colors">
                              Portfolio
