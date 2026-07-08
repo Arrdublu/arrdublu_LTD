@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: 'Contact | Arrdublu',
     description: 'Request a secure consultation or project specification review. Our team of elite directors and search architects is standing by.',
     images: [{
-      url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/Header_Starting_white_Logo.png?alt=media&token=1fcb002e-29e8-499a-bd7a-66ef2c125021',
+      url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_logoArtboard%201.jpg?alt=media&token=e701d629-1649-4abb-90fa-c85ff38cb9f0',
       width: 1200,
       height: 630,
       alt: 'Contact Arrdublu',
