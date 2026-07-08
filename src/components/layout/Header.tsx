@@ -44,6 +44,11 @@ const serviceItems: { title: string; href: string; description: string }[] = [
         href: '/service/virtual-production',
         description: 'Unreal Engine 5 and curved LED stages.',
     },
+    {
+        title: 'Dropship Media',
+        href: '/dropship-media',
+        description: 'High-performance e-commerce media production and supply chain scaling.',
+    },
 ]
 
 export function SiteHeader() {
@@ -67,13 +72,13 @@ export function SiteHeader() {
           <a
             ref={ref}
             className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-cyan-950/40 hover:text-cyan-400 focus:bg-cyan-950/40 focus:text-cyan-400",
+              "block select-none space-y-1.5 rounded-lg p-3.5 leading-none no-underline outline-none transition-colors bg-slate-900/60 border border-slate-800/80 hover:bg-cyan-950/60 hover:border-cyan-500/40 hover:text-cyan-400 focus:bg-cyan-950/60 focus:text-cyan-400",
               className
             )}
             {...props}
           >
-            <div className="text-sm font-mono tracking-wider font-semibold leading-none">{title}</div>
-            <p className="line-clamp-2 text-xs leading-snug text-slate-400 mt-2 font-sans">
+            <div className="text-sm font-mono tracking-wider font-semibold leading-tight text-slate-100">{title}</div>
+            <p className="line-clamp-2 text-xs leading-relaxed text-slate-400 font-sans mt-1">
               {children}
             </p>
           </a>
@@ -114,11 +119,6 @@ export function SiteHeader() {
                         ))}
                     </ul>
                     </NavigationMenuContent>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-cyan-950/30 hover:text-cyan-400 font-mono uppercase tracking-wider text-xs cursor-pointer")}>
-                    <Link href="/dropship-media">Dropship Media</Link>
-                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-cyan-950/30 hover:text-cyan-400 font-mono uppercase tracking-wider text-xs cursor-pointer")}>

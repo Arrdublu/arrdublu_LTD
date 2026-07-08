@@ -11,6 +11,7 @@ export async function createPaymentIntent(
   currency: Currency,
   discountCode?: string
 ): Promise<{ clientSecret: string; orderId: string }> {
+  // Verification comment
   const db = getAdminDb();
   if (!db) {
     throw new Error('Database connection is not available. Please try again later.');
@@ -69,10 +70,8 @@ export async function createPaymentIntent(
 
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
   if (!stripeSecretKey) {
-    console.warn("STRIPE_SECRET_KEY is not set. Using mock client secret.");
-    return { clientSecret: 'mock_client_secret_for_preview', orderId: orderRef.id };
+    throw new Error("STRIPE_SECRET_KEY is not set.");
   }
-
   const stripe = new Stripe(stripeSecretKey, {
     apiVersion: '2026-05-27.dahlia' as any,
   });
@@ -92,10 +91,6 @@ export async function createPaymentIntent(
     });
   } catch (error: any) {
     console.error("Stripe Error:", error.message);
-    if (error.type === 'StripeAuthenticationError' || error.message.includes('No API key provided')) {
-      // Provide a mock client secret so the UI doesn't completely break for preview purposes
-      return { clientSecret: 'mock_client_secret_for_preview', orderId: orderRef.id };
-    }
     throw new Error('Failed to create Payment Intent: ' + error.message);
   }
 
