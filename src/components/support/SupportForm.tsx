@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Send } from "lucide-react";
+import { submitContactRequest } from "@/lib/actions";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -39,21 +40,22 @@ export function SupportForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const mailtoLink = `mailto:hi@arrdublu.us?subject=${encodeURIComponent(
-      values.subject
-    )}&body=${encodeURIComponent(
-      `Name: ${values.name}\nEmail: ${values.email}\n\nMessage:\n${values.message}`
-    )}`;
-    
-    window.location.href = mailtoLink;
-
-    toast({
-      title: "Opening Email Client",
-      description: "Your message has been prepared. Please send it from your email application.",
-      className: "bg-cyan-950 border-cyan-500 text-white",
-    });
-    form.reset();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await submitContactRequest(values);
+      toast({
+        title: "Message Sent",
+        description: "Your message has been successfully transmitted.",
+        className: "bg-cyan-950 border-cyan-500 text-white",
+      });
+      form.reset();
+    } catch (error) {
+      toast({
+        title: "Submission Failed",
+        description: "There was an error sending your message. Please try again.",
+        variant: "destructive",
+      });
+    }
   }
 
   return (

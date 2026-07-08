@@ -76,7 +76,7 @@ export function DropshipMediaCheckout() {
 
   useEffect(() => {
     if (selectedService && subtotal > 0) {
-      createPaymentIntent([{ service: { ...selectedService, category: 'Creative', description: details } as Service, quantity }], 'USD')
+      createPaymentIntent([{ service: { ...selectedService, category: 'Creative', description: details, image: '', previews: [] } as Service, quantity }], 'USD')
         .then(({ clientSecret }) => setClientSecret(clientSecret))
         .catch(err => toast({ title: 'Error', description: 'Failed to initialize payment.', variant: 'destructive' }));
     }
