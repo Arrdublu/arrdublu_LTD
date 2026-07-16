@@ -107,5 +107,8 @@ service cloud.firestore {
     match /case_studies/{studyId} {
       allow read, write: if isValidId(studyId);
     }
+    match /hero_slides/{slideId} {
+      allow read, write: if true;
+    }
   }
 }

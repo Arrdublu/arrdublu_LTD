@@ -40,109 +40,74 @@ const VimeoIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const Footer = () => {
   return (
-    <footer className="bg-muted/50 py-10 mt-12">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-foreground/80">
+    <footer className="bg-[#020304] border-t border-slate-900 py-16 text-slate-400 font-sans font-light text-sm">
+      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div>
-            <div className="mb-4">
+            <div className="mb-6">
               <FooterLogo />
             </div>
+            <p className="text-slate-500 mb-6 max-w-xs">
+              A boutique creative studio engineering elite digital experiences and cinematic production.
+            </p>
           </div>
           <div>
-            <h3 className="font-bold mb-4 text-foreground">Legal</h3>
-            <ul>
-              <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/privacy-policy">Privacy Policy & Opt-Out</Link>
+            <h3 className="font-medium text-white mb-6 uppercase tracking-widest text-xs">Legal</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
               </li>
-              <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/terms-of-service">Terms of Service</Link>
+              <li>
+                <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
               </li>
-              <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/terms-and-conditions">Terms & Conditions</Link>
+              <li>
+                <Link href="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link>
               </li>
-              <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/terms-arrdublu-rig-agent">
-                  Terms & Conditions for ARRDUBLU™ Rig/agent (the “Rig/Agent”)
-                </Link>
-              </li>
-              <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/cookie-policy">Cookie Policy</Link>
-              </li>
-              <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/modern-slavery-act">Modern Slavery Act Statement</Link>
+              <li>
+                <Link href="/modern-slavery-act" className="hover:text-white transition-colors">Modern Slavery Act</Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="font-bold mb-4 text-foreground">Support</h3>
-            <ul>
-              <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/faq">FAQ</Link>
+            <h3 className="font-medium text-white mb-6 uppercase tracking-widest text-xs">Support</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/faq" className="hover:text-white transition-colors">FAQ</Link>
               </li>
-              <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/contact">Contact</Link>
+              <li>
+                <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
               </li>
-              <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/careers">Career</Link>
-              </li>
-               <li className="mb-2 hover:text-primary transition-colors">
-                <Link href="/donation">Donation</Link>
+              <li>
+                <Link href="/careers" className="hover:text-white transition-colors">Careers</Link>
               </li>
             </ul>
           </div>
           <div>
-            <h3 className="font-bold mb-4 text-foreground">Follow Us [@arrdublu]</h3>
+            <h3 className="font-medium text-white mb-6 uppercase tracking-widest text-xs">Follow Us</h3>
             <div className="flex space-x-4">
               <a
                 href={SOCIAL_MEDIA_LINKS.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
+                className="text-slate-500 hover:text-white transition-colors"
                 aria-label="Instagram"
               >
-                <Instagram size={24} />
-              </a>
-              <a
-                href={SOCIAL_MEDIA_LINKS.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook size={24} />
-              </a>
-              <a
-                href={SOCIAL_MEDIA_LINKS.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter size={24} />
+                <Instagram size={20} />
               </a>
               <a
                 href={SOCIAL_MEDIA_LINKS.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
+                className="text-slate-500 hover:text-white transition-colors"
                 aria-label="LinkedIn"
               >
-                <Linkedin size={24} />
-              </a>
-              <a
-                href={SOCIAL_MEDIA_LINKS.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
-                aria-label="Youtube"
-              >
-                <Youtube size={24} />
+                <Linkedin size={20} />
               </a>
               <a
                 href={SOCIAL_MEDIA_LINKS.vimeo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-primary transition-colors"
+                className="text-slate-500 hover:text-white transition-colors"
                 aria-label="Vimeo"
               >
                 <VimeoIcon />
@@ -150,15 +115,15 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <div className="text-center mt-8 text-foreground/60">
+        <div className="flex flex-col md:flex-row justify-between items-center mt-16 pt-8 border-t border-slate-900 text-xs text-slate-600">
           <p>© {new Date().getFullYear()} Arrdublu. All rights reserved.</p>
-          <p>
-            Developed by{' '}
+          <p className="mt-2 md:mt-0">
+            Director-Led Studio by{' '}
             <a
               href={DEVELOPER_INFO.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-primary"
+              className="hover:text-slate-300 transition-colors"
             >
               {DEVELOPER_INFO.name}
             </a>
