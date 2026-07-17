@@ -95,6 +95,53 @@ export const services: Service[] = [
     image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b',
     previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b'],
     paymentLink: 'https://buy.stripe.com/placeholder_virtual_production',
+  },
+  {
+    id: 'event-photo',
+    name: 'Event Photography & Videography',
+    category: 'Lifestyle',
+    description: 'Capturing the raw energy, elegance, and key milestones of your events in 6K resolution. Meticulously timed, light-balanced, and color-graded to match elite brand or personal standards.',
+    price: 120,
+    unit: 'hr',
+    image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9',
+    previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9'],
+    paymentLink: 'https://buy.stripe.com/placeholder_event_photo',
+    whatsIncluded: [
+      '6K resolution cinematic captures',
+      'Professional color-grading and finishing',
+      'Flexible hourly packages',
+      'High-end lighting setups',
+      'Digital delivery within 5-7 business days'
+    ],
+    goodToKnow: [
+      'Minimum booking of 1 hour.',
+      'Includes travel within metropolitan area; additional fees apply for regional locations.',
+      'Standard turnaround is 5-7 business days.'
+    ],
+    caseStudyIds: ['annual-corporate-summit']
+  },
+  {
+    id: 'video-editing',
+    name: 'Video Editing & VFX',
+    category: 'Creative',
+    description: 'Professional video editing and visual effects services. We transform raw footage into captivating cinematic stories, tailored to your brand.',
+    price: 75,
+    unit: 'hr',
+    image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
+    previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4'],
+    paymentLink: 'https://buy.stripe.com/placeholder_video_editing',
+    whatsIncluded: [
+      'Advanced color grading',
+      'Audio mixing & sound design',
+      'Custom motion graphics',
+      'VFX integration',
+      'Flexible revisions'
+    ],
+    goodToKnow: [
+      'Minimum booking of 1 hour.',
+      'Project files are delivered upon request.',
+      'Rush delivery available for an additional fee.'
+    ]
   }
 ];
 

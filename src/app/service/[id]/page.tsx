@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { ServicePageClient } from './ServicePageClient';
 import type { CaseStudy } from '@/lib/types';
 import type { Metadata, ResolvingMetadata } from 'next';
+import { constructMetadata } from '@/lib/utils';
 
 interface ServicePageProps {
   params: Promise<{
@@ -19,45 +20,18 @@ export async function generateMetadata(
   const service = getServiceById(id)
 
   if (!service) {
-    return {
+    return constructMetadata({
       title: 'Service Not Found',
-    }
+    })
   }
-
-  const parentOpenGraph = (await parent).openGraph ?? {};
-  const parentTwitter = (await parent).twitter ?? {};
 
   const imageUrl = service.image;
 
-  return {
+  return constructMetadata({
     title: `${service.name} | Arrdublu`,
     description: service.description.substring(0, 160),
-    openGraph: {
-      ...parentOpenGraph,
-      title: `${service.name} | Arrdublu`,
-      description: service.description.substring(0, 160),
-      url: `/service/${service.id}`,
-      siteName: 'Arrdublu Creative Agency',
-      type: 'website',
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: service.name,
-        },
-      ],
-    },
-    twitter: {
-      ...parentTwitter,
-      card: 'summary_large_image',
-      title: `${service.name} | Arrdublu`,
-      description: service.description.substring(0, 160),
-      images: [imageUrl],
-      creator: '@arrdublu',
-      site: '@arrdublu',
-    },
-  }
+    image: imageUrl,
+  })
 }
 
 

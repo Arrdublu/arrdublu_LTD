@@ -1,3 +1,4 @@
+import { constructMetadata } from '@/lib/utils';
 
 import type { Metadata } from 'next';
 import { LuxuryLifestyleLaunchClient } from './CaseStudyClient';
@@ -26,28 +27,10 @@ const caseStudy = {
   ]
 };
 
-export const metadata: Metadata = {
-    title: `${caseStudy.title} | Arrdublu Case Study`,
-    description: caseStudy.overview,
-    openGraph: {
-        title: caseStudy.title,
-        description: caseStudy.overview,
-        images: [
-            {
-                url: caseStudy.heroImage,
-                width: 1200,
-                height: 630,
-                alt: caseStudy.title,
-            },
-        ],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: caseStudy.title,
-        description: caseStudy.overview,
-        images: [caseStudy.heroImage],
-    },
-};
+export const metadata: Metadata = constructMetadata({
+  title: '${caseStudy.title} | Arrdublu Case Study',
+  description: '',
+});
 
 export default function LuxuryLifestyleLaunchPage() {
     return (

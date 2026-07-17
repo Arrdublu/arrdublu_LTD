@@ -159,7 +159,7 @@ export function CartPageClient() {
                         Total: <span className="font-semibold text-[#d4af37]">{getFormattedPrice(total)}</span>
                     </CardTitle>
                     <p className="text-center text-sm text-zinc-400 mt-2">
-                        {clientSecret === 'mock_client_secret_for_preview' ? "Secure checkout (Preview Mode)" : "Secure checkout powered by Stripe"}
+                        {clientSecret === 'mock_client_secret_for_preview' ? "Secure checkout (Preview Mode)" : "Secure checkout"}
                     </p>
                 </CardHeader>
                 <CardContent className="p-8">
@@ -332,8 +332,8 @@ function MockCheckoutForm({ totalAmount, orderId, getFormattedPrice, clearCart }
   return (
     <form onSubmit={handlePay} className="space-y-6 text-white">
       <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-amber-200 text-xs leading-relaxed mb-4">
-        <span className="font-semibold block mb-1 text-sm">⚠️ Stripe Sandbox Mode</span>
-        The Stripe secret key is not configured. We have enabled a simulated checkout so you can test complete order fulfillment. Use any mock credit card details to complete payment.
+        <span className="font-semibold block mb-1 text-sm">⚠️ Sandbox Mode</span>
+        The payment gateway is not configured. We have enabled a simulated checkout so you can test complete order fulfillment. Use any mock credit card details to complete payment.
       </div>
 
       <div className="space-y-2 text-left">

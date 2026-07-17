@@ -35,6 +35,7 @@ export default function HeroSlideManager() {
           description: editForm.description || '',
           videoUrlMobile: editForm.videoUrlMobile || '',
           videoUrlDesktop: editForm.videoUrlDesktop || '',
+          backgroundImage: editForm.backgroundImage || '',
           order: slides.length,
         };
         await addHeroSlide(newSlide);
@@ -66,6 +67,7 @@ export default function HeroSlideManager() {
       description: '',
       videoUrlMobile: '',
       videoUrlDesktop: '',
+      backgroundImage: '',
     });
   };
 
@@ -98,8 +100,9 @@ export default function HeroSlideManager() {
                   <h3 className="text-lg font-bold text-white mb-2">{slide.title}</h3>
                   <p className="text-slate-400 text-sm mb-4 line-clamp-2">{slide.description}</p>
                   <div className="text-xs text-slate-500 flex flex-col gap-1">
-                    <span className="truncate w-[300px]" title={slide.videoUrlDesktop}>Desktop: {slide.videoUrlDesktop}</span>
-                    <span className="truncate w-[300px]" title={slide.videoUrlMobile}>Mobile: {slide.videoUrlMobile}</span>
+                    {slide.videoUrlDesktop && <span className="truncate w-[300px]" title={slide.videoUrlDesktop}>Desktop: {slide.videoUrlDesktop}</span>}
+                    {slide.videoUrlMobile && <span className="truncate w-[300px]" title={slide.videoUrlMobile}>Mobile: {slide.videoUrlMobile}</span>}
+                    {slide.backgroundImage && <span className="truncate w-[300px]" title={slide.backgroundImage}>Background Image: {slide.backgroundImage}</span>}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -137,6 +140,10 @@ function SlideForm({ form, setForm, onSave, onCancel }: { form: Partial<HeroSlid
       <div>
         <label className="block text-xs text-slate-400 mb-1">Description</label>
         <textarea value={form.description || ''} onChange={e => setForm({...form, description: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-white text-sm h-24 focus:border-cyan-500 outline-none" />
+      </div>
+      <div>
+        <label className="block text-xs text-slate-400 mb-1">Background Image URL (used if videos aren't loaded or as fallback)</label>
+        <input type="text" value={form.backgroundImage || ''} onChange={e => setForm({...form, backgroundImage: e.target.value})} className="w-full bg-slate-950 border border-slate-800 rounded px-3 py-2 text-white text-sm focus:border-cyan-500 outline-none" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>

@@ -21,29 +21,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose 
 import { Toaster } from '@/components/ui/toaster';
 import { useLanguage } from '@/context/LanguageProvider';
 
-const serviceItems: { title: string; href: string; description: string }[] = [
-    {
-        title: "Cinematic Production",
-        href: '/service/cinematic-production',
-        description: 'High-end commercial video and photography.',
-    },
-    {
-        title: 'Virtual Production',
-        href: '/service/virtual-production',
-        description: 'Unreal Engine 5 and curved LED stages.',
-    },
-    {
-        title: 'Luxury Identity',
-        href: '/service/luxury-identity',
-        description: 'Elite brand curation and storytelling.',
-    },
-    {
-        title: 'Cognitive SEO',
-        href: '/service/cognitive-seo',
-        description: 'Search architecture for premium brands.',
-    },
-]
-
 export function SiteHeader() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
@@ -54,32 +31,6 @@ export function SiteHeader() {
     const currentIndex = langs.indexOf(language);
     setLanguage(langs[(currentIndex + 1) % langs.length]);
   };
-
-  const ListItem = React.forwardRef<
-    React.ElementRef<"a">,
-    React.ComponentPropsWithoutRef<"a">
-  >(({ className, title, children, ...props }, ref) => {
-    return (
-      <li>
-        <NavigationMenuLink asChild>
-          <a
-            ref={ref}
-            className={cn(
-              "block select-none space-y-1.5 rounded-sm p-4 leading-none no-underline outline-none transition-colors bg-slate-900/40 hover:bg-slate-900/80 focus:bg-slate-900/80",
-              className
-            )}
-            {...props}
-          >
-            <div className="text-sm font-sans tracking-wide font-medium leading-tight text-white">{title}</div>
-            <p className="line-clamp-2 text-xs leading-relaxed text-slate-400 font-sans font-light mt-1">
-              {children}
-            </p>
-          </a>
-        </NavigationMenuLink>
-      </li>
-    )
-  })
-  ListItem.displayName = "ListItem"
 
   return (
     <>
@@ -98,24 +49,18 @@ export function SiteHeader() {
           <NavigationMenu className="hidden md:flex mx-auto">
             <NavigationMenuList className="gap-2">
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-transparent hover:bg-slate-900 hover:text-white data-[state=open]:bg-slate-900 data-[state=open]:text-white font-sans uppercase tracking-widest text-xs font-medium">Services</NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] bg-[#020304] border border-slate-800 rounded-sm">
-                        {serviceItems.map((component) => (
-                        <ListItem
-                            key={component.title}
-                            title={component.title}
-                            href={component.href}
-                        >
-                            {component.description}
-                        </ListItem>
-                        ))}
-                    </ul>
-                    </NavigationMenuContent>
+                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium")}>
+                    <Link href="/service">Services</Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium")}>
                     <Link href="/discover/case-studies">Selected Works</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium")}>
+                    <Link href="/shop">Shop</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
@@ -157,22 +102,21 @@ export function SiteHeader() {
                 </SheetHeader>
                 <nav className="flex flex-col gap-6 font-sans uppercase tracking-widest text-xs">
                      <div className="space-y-4">
-                        <p className="text-[10px] text-slate-500 mb-2 font-medium">DISCIPLINES</p>
-                        {serviceItems.map((item) => (
-                           <SheetClose asChild key={item.href}>
-                                <Link
-                                   href={item.href}
-                                   className="block text-slate-300 hover:text-white transition-colors"
-                               >
-                                   {item.title}
-                               </Link>
-                           </SheetClose>
-                       ))}
+                        <SheetClose asChild>
+                            <Link href="/service" className="block text-slate-300 hover:text-white transition-colors">
+                                Services
+                            </Link>
+                        </SheetClose>
                      </div>
                      <div className="h-px w-full bg-slate-900" />
                      <SheetClose asChild>
                          <Link href="/discover/case-studies" className="text-slate-300 hover:text-white transition-colors">
                              Selected Works
+                         </Link>
+                     </SheetClose>
+                     <SheetClose asChild>
+                         <Link href="/shop" className="text-slate-300 hover:text-white transition-colors">
+                             Shop
                          </Link>
                      </SheetClose>
                      <SheetClose asChild>

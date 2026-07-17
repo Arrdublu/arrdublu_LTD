@@ -8,6 +8,7 @@ export interface HeroSlide {
   description: string;
   videoUrlMobile: string;
   videoUrlDesktop: string;
+  backgroundImage?: string;
   order: number;
 }
 

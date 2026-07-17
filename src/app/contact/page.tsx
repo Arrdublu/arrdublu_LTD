@@ -1,21 +1,12 @@
+import { constructMetadata } from '@/lib/utils';
 
 import { SupportForm } from '@/components/support/SupportForm';
 import { Metadata } from 'next';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = constructMetadata({
   title: 'Contact | Arrdublu',
   description: 'Request a secure consultation or project specification review. Our team of elite directors and search architects is standing by.',
-  openGraph: {
-    title: 'Contact | Arrdublu',
-    description: 'Request a secure consultation or project specification review. Our team of elite directors and search architects is standing by.',
-    images: [{
-      url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_logoArtboard%201.jpg?alt=media&token=e701d629-1649-4abb-90fa-c85ff38cb9f0',
-      width: 1200,
-      height: 630,
-      alt: 'Contact Arrdublu',
-    }],
-  },
-};
+});
 
 export default function ContactPage() {
   return (

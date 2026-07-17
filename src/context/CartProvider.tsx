@@ -19,7 +19,7 @@ const MOCK_RATES: ExchangeRates = {
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (service: Service) => void;
+  addToCart: (service: Service, quantity?: number) => void;
   removeFromCart: (serviceId: string) => void;
   updateQuantity: (serviceId: string, quantity: number) => void;
   clearCart: () => void;
@@ -46,28 +46,31 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   }, []);
 
-  const addToCart = (service: Service) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.service.id === service.id);
-      if (existingItem) {
-        // If item exists and is not hourly, just show toast
-        if (existingItem.service.unit !== 'hr') {
-             toast({
-                title: `${service.name} is already in your bag.`,
-                description: "You can adjust the quantity in the cart if needed.",
-             });
-            return prevItems;
-        }
-        // If it's hourly, increase quantity
-        return prevItems.map((item) =>
-          item.service.id === service.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
+  const addToCart = (service: Service, quantity: number = 1) => {
+    const existingItem = cartItems.find((item) => item.service.id === service.id);
+
+    if (existingItem) {
+      // If item exists and is not hourly, just show toast
+      if (existingItem.service.unit !== 'hr') {
+        toast({
+          title: `${service.name} is already in your bag.`,
+          description: "You can adjust the quantity in the cart if needed.",
+        });
+        return;
       }
+      // If it's hourly, set quantity to the chosen value directly
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.service.id === service.id
+            ? { ...item, quantity: quantity }
+            : item
+        )
+      );
+    } else {
       // If item doesn't exist, add it
-      return [...prevItems, { service, quantity: 1 }];
-    });
+      setCartItems((prevItems) => [...prevItems, { service, quantity }]);
+    }
+
     toast({
         title: "Added to Bag",
         description: `${service.name} has been added to your shopping bag.`,

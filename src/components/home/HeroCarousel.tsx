@@ -36,24 +36,11 @@ export default function HeroCarousel({ triggerStateToggle }: { triggerStateToggl
       <div className="absolute inset-0 w-full h-full -z-10">
         <div className="absolute inset-0 bg-[#020304]/60 z-10 mix-blend-multiply" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#020304] via-transparent to-[#020304]/40 z-10" />
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="w-full h-full object-cover hidden md:block opacity-80"
-        >
-          <source src="https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/mobile_web_wide.mp4?alt=media&token=4b5c3db0-22a1-4bea-8f3e-f5a0361d774b" type="video/mp4" />
-        </video>
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="w-full h-full object-cover md:hidden opacity-80"
-        >
-          <source src="https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/motion_portrait.mp4?alt=media&token=74cddd9f-390f-4a2f-b23d-84fbe7ef3042" type="video/mp4" />
-        </video>
+        <img
+          src="https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4"
+          alt="Hero Background"
+          className="w-full h-full object-cover opacity-80"
+        />
         
         <div className="absolute inset-0 flex flex-col items-center justify-center relative z-20 w-full max-w-7xl mx-auto px-4 text-center">
           <motion.div
@@ -88,12 +75,20 @@ export default function HeroCarousel({ triggerStateToggle }: { triggerStateToggl
         {slides.map((slide, index) => (
           <div key={slide.id} className="relative flex-[0_0_100%] min-w-0 w-full h-full flex flex-col items-center justify-center text-center px-4 md:px-8">
             <div className="absolute inset-0 w-full h-full -z-10 bg-[#020304]">
-              {/* Background gradient overlays only if video exists */}
-              {(slide.videoUrlDesktop || slide.videoUrlMobile) && (
+              {/* Background gradient overlays if video or image exists */}
+              {(slide.videoUrlDesktop || slide.videoUrlMobile || slide.backgroundImage) && (
                 <>
                   <div className="absolute inset-0 bg-[#020304]/60 z-10 mix-blend-multiply" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#020304] via-transparent to-[#020304]/40 z-10" />
                 </>
+              )}
+
+              {slide.backgroundImage && (
+                <img
+                  src={slide.backgroundImage}
+                  alt={slide.title || "Hero Slide Background"}
+                  className="absolute inset-0 w-full h-full object-cover opacity-80"
+                />
               )}
               
               {slide.videoUrlDesktop && (

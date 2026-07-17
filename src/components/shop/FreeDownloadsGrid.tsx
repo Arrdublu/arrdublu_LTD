@@ -12,28 +12,28 @@ const freeMedia = [
     id: 'free-photo-1',
     type: 'photo',
     title: 'Coastal Drone Shot',
-    src: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_01.png?alt=media&token=7883a21a-472d-4876-8f36-391f17387431',
+    src: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=800',
     dataAiHint: 'coastal landscape',
   },
   {
     id: 'free-video-1',
     type: 'video',
     title: 'City Night View',
-    thumbnail: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_02.png?alt=media&token=f074a381-8742-498c-8519-7589d891636c',
+    thumbnail: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&q=80&w=800',
     dataAiHint: 'city night',
   },
   {
     id: 'free-photo-2',
     type: 'photo',
     title: 'Forest Path',
-    src: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9',
+    src: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=800',
     dataAiHint: 'forest path',
   },
   {
     id: 'free-photo-3',
     type: 'photo',
     title: 'Abstract Texture',
-    src: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
+    src: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&q=80&w=800',
     dataAiHint: 'abstract texture',
   }
 ];

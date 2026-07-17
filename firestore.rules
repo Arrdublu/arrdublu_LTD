@@ -110,5 +110,8 @@ service cloud.firestore {
     match /hero_slides/{slideId} {
       allow read, write: if true;
     }
+    match /prints/{printId} {
+      allow read, write: if true;
+    }
   }
 }

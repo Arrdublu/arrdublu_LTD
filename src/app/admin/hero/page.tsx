@@ -1,9 +1,11 @@
 import React from 'react';
 import HeroSlideManager from '@/components/admin/HeroSlideManager';
+import { constructMetadata } from '@/lib/utils';
+import { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = constructMetadata({
   title: 'Manage Hero Slides - Admin',
-};
+});
 
 export default function AdminHeroPage() {
   return (

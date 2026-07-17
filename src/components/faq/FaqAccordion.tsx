@@ -84,15 +84,32 @@ const faqItems: FaqItem[] = [
 
 export function FaqAccordion() {
   const [activeCategory, setActiveCategory] = useState<FaqCategory | 'All'>('All');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredItems = faqItems.filter(
-    (item) => activeCategory === 'All' || item.category === activeCategory
-  );
+  const filteredItems = faqItems.filter((item) => {
+    const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
+    const matchesSearch = item.question.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          item.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const categories: (FaqCategory | 'All')[] = ['All', 'Services', 'Pricing', 'General'];
 
   return (
     <div className="w-full">
+      <div className="relative mb-6 max-w-lg mx-auto">
+        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Search questions..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-10 pr-4 py-2 bg-slate-950/60 border border-slate-800 rounded-md text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all"
+        />
+      </div>
+
       <div className="flex flex-wrap justify-center gap-2 mb-8">
         {categories.map((cat) => (
           <Button
@@ -112,23 +129,29 @@ export function FaqAccordion() {
         ))}
       </div>
 
-      <Accordion type="single" collapsible className="w-full">
-          {filteredItems.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index + 1}`} className="border-b border-slate-800/50">
-                  <AccordionTrigger className="text-left hover:no-underline py-4 text-white hover:text-cyan-400 transition-colors">
-                      <div className="flex flex-col md:flex-row md:items-center gap-3">
-                        <span className="font-sans text-base md:text-lg font-medium">{item.question}</span>
-                        <span className="md:ml-auto w-fit text-[10px] font-mono uppercase tracking-widest text-cyan-500/70 border border-cyan-500/20 px-2 py-0.5 rounded-sm bg-cyan-950/20">
-                          {item.category}
-                        </span>
-                      </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm md:text-base text-slate-400 leading-relaxed pb-6 pt-2">
-                      <p>{item.answer}</p>
-                  </AccordionContent>
-              </AccordionItem>
-          ))}
-      </Accordion>
+      {filteredItems.length === 0 ? (
+        <div className="text-center py-8 text-slate-400 font-sans">
+          No matching questions found. Please try a different search term.
+        </div>
+      ) : (
+        <Accordion type="single" collapsible className="w-full">
+            {filteredItems.map((item, index) => (
+                <AccordionItem key={index} value={`item-${index + 1}`} className="border-b border-slate-800/50">
+                    <AccordionTrigger className="text-left hover:no-underline py-4 text-white hover:text-cyan-400 transition-colors">
+                        <div className="flex flex-col md:flex-row md:items-center gap-3">
+                          <span className="font-sans text-base md:text-lg font-medium">{item.question}</span>
+                          <span className="md:ml-auto w-fit text-[10px] font-mono uppercase tracking-widest text-cyan-500/70 border border-cyan-500/20 px-2 py-0.5 rounded-sm bg-cyan-950/20">
+                            {item.category}
+                          </span>
+                        </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-sm md:text-base text-slate-400 leading-relaxed pb-6 pt-2">
+                        <p>{item.answer}</p>
+                    </AccordionContent>
+                </AccordionItem>
+            ))}
+        </Accordion>
+      )}
     </div>
   );
 }

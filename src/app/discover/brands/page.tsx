@@ -1,22 +1,13 @@
+import { constructMetadata } from '@/lib/utils';
 
 import { BrandGrid } from '@/components/brands/BrandGrid';
 import { ClientLogos } from '@/components/home/ClientLogos';
 import { Metadata } from 'next';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = constructMetadata({
   title: 'Our Partners & Collaborators | Arrdublu',
   description: 'We are proud to have worked with a diverse range of innovative and inspiring brands to elevate their digital presence.',
-  openGraph: {
-    title: 'Our Partners & Collaborators | Arrdublu',
-    description: 'We are proud to have worked with a diverse range of innovative and inspiring brands to elevate their digital presence.',
-    images: [{
-      url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/Header_Starting_white_Logo.png?alt=media&token=1fcb002e-29e8-499a-bd7a-66ef2c125021',
-      width: 1200,
-      height: 630,
-      alt: 'Arrdublu Partners',
-    }],
-  },
-};
+});
 
 export default function BrandsPage() {
   return (

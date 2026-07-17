@@ -1,21 +1,12 @@
+import { constructMetadata } from '@/lib/utils';
 
 import { SupportForm } from '@/components/support/SupportForm';
 import { Metadata } from 'next';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = constructMetadata({
   title: 'Support Center | Arrdublu',
-  description: 'We\'re here to help. Reach out to our support team for any questions or issues.',
-  openGraph: {
-    title: 'Support Center | Arrdublu',
-    description: 'We\'re here to help. Reach out to our support team for any questions or issues.',
-    images: [{
-      url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/Header_Starting_white_Logo.png?alt=media&token=1fcb002e-29e8-499a-bd7a-66ef2c125021',
-      width: 1200,
-      height: 630,
-      alt: 'Arrdublu Support',
-    }],
-  },
-};
+  description: 'We are here to help. Contact Arrdublu support.',
+});
 
 export default function SupportPage() {
   return (

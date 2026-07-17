@@ -24,38 +24,9 @@ import { ThemeProvider } from '@/components/layout/ThemeProvider';
 import { CartProvider } from '@/context/CartProvider';
 import { CurrencyProvider } from '@/context/CurrencyProvider';
 import { LanguageProvider } from '@/context/LanguageProvider';
+import { constructMetadata } from '@/lib/utils';
 
-export const metadata: Metadata = {
-  title: 'Arrdublu | Digital & Experiential Design Agency',
-  description: 'Arrdublu is a leading digital and experiential design agency specializing in immersive WebGL, virtual production, luxury branding, and real-time environments.',
-  icons: {
-    icon: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_logoArtboard%201.jpg?alt=media&token=e701d629-1649-4abb-90fa-c85ff38cb9f0',
-    shortcut: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_logoArtboard%201.jpg?alt=media&token=e701d629-1649-4abb-90fa-c85ff38cb9f0',
-    apple: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_logoArtboard%201.jpg?alt=media&token=e701d629-1649-4abb-90fa-c85ff38cb9f0',
-  },
-  openGraph: {
-    title: 'Arrdublu | Immersive Digital Environments',
-    description: 'Discover Arrdublu\'s portfolio of high-end digital experiences, virtual production, and global branding.',
-    url: 'https://arrdublu.us',
-    siteName: 'Arrdublu',
-    images: [
-      {
-        url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_logoArtboard%201.jpg?alt=media&token=e701d629-1649-4abb-90fa-c85ff38cb9f0',
-        width: 1200,
-        height: 630,
-        alt: 'Arrdublu Logo',
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Arrdublu | Immersive Digital Environments',
-    description: 'Discover Arrdublu\'s portfolio of high-end digital experiences, virtual production, and global branding.',
-    images: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_logoArtboard%201.jpg?alt=media&token=e701d629-1649-4abb-90fa-c85ff38cb9f0'],
-  },
-}
+export const metadata: Metadata = constructMetadata();
 
 export default function RootLayout({
   children,

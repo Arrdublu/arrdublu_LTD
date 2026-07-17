@@ -1,143 +1,101 @@
-
+import { constructMetadata } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Metadata } from 'next';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = constructMetadata({
   title: 'Privacy Policy | Arrdublu',
-  description: 'Read Arrdublu\'s privacy policy to understand how we collect, use, and protect your personal information.',
-};
+  description: 'Learn how Arrdublu collects, uses, and protects your personal information.',
+});
 
-export default function PrivacyPage() {
+export default function PrivacyPolicyPage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-headline font-bold text-primary mb-8">Privacy Policy</h1>
-      <Card>
-        <CardContent className="prose prose-lg max-w-none pt-6">
-          <section id="scope-of-policy" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Scope of Policy</h2>
-            <p>
-              This Privacy Policy applies to the personal information collected by Arrdublu in connection with our website, services, and associated applications. It details our practices for acquiring, maintaining, using, and disclosing information.
-            </p>
-          </section>
+    <div className="container mx-auto px-4 py-16 max-w-5xl">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl md:text-5xl font-headline font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-600 mb-6">
+          Privacy Policy
+        </h1>
+        <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+          Learn how Arrdublu collects, uses, and protects your personal information across our services.
+        </p>
+      </div>
 
-          <section id="who-we-are" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Who We Are</h2>
-            <p>
-              Arrdublu is a forward-thinking entity committed to providing top-quality products and services. We are dedicated to maintaining the trust of our users by respecting and protecting your privacy throughout your engagement with our family of companies.
-            </p>
-          </section>
-
-          <section id="types-of-information-we-collect" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Types of Information We Collect</h2>
-            <p>
-              We collect information that identifies, relates to, describes, or could reasonably be linked to you. This includes:
-            </p>
-            <ul>
-              <li><strong>Identifiers:</strong> such as your name, email address, phone number, and IP address.</li>
-              <li><strong>Commercial Information:</strong> including records of products or services purchased, obtained, or considered.</li>
-              <li><strong>Internet or Network Activity:</strong> such as browsing history, search history, and interactions with our websites or advertisements.</li>
-              <li><strong>Geolocation Data:</strong> derived from your IP address or mobile device settings.</li>
+      <div className="grid md:grid-cols-4 gap-8">
+        <div className="hidden md:block col-span-1">
+          <div className="sticky top-24 bg-slate-950/60 border border-slate-800 rounded-xl p-6">
+            <h3 className="font-headline text-lg font-semibold text-white mb-4">Contents</h3>
+            <ul className="space-y-3 text-sm font-sans text-slate-400">
+              <li><a href="#who-we-are" className="hover:text-cyan-400 transition-colors">1. Who We Are</a></li>
+              <li><a href="#types" className="hover:text-cyan-400 transition-colors">2. Info We Collect</a></li>
+              <li><a href="#use" className="hover:text-cyan-400 transition-colors">3. Use of Information</a></li>
+              <li><a href="#sharing" className="hover:text-cyan-400 transition-colors">4. Sharing Info</a></li>
+              <li><a href="#control" className="hover:text-cyan-400 transition-colors">5. Your Control</a></li>
+              <li><a href="#security" className="hover:text-cyan-400 transition-colors">6. Data Security</a></li>
+              <li><a href="#global" className="hover:text-cyan-400 transition-colors">7. Global Transfer</a></li>
+              <li><a href="#rights" className="hover:text-cyan-400 transition-colors">8. User Rights</a></li>
             </ul>
-          </section>
+          </div>
+        </div>
 
-          <section id="use-of-your-information-by-the-arrdublu-family-of-companies" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Use of Your Information by the Arrdublu Family of Companies</h2>
-            <p>
-              We use the collected information for our business and commercial purposes, including:
-            </p>
-            <ul>
-              <li>Providing, supporting, and personalizing our services.</li>
-              <li>Processing transactions and sending related information like confirmations and receipts.</li>
-              <li>Communicating about promotions, upcoming events, and other news about our products and services.</li>
-              <li>Auditing, research, and analysis to maintain, protect, and improve our services.</li>
-            </ul>
-          </section>
-
-          <section id="sharing-your-information-with-other-entities" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Sharing Your Information with Other Entities</h2>
-            <p>
-              We may share your personal information with:
-            </p>
-            <ul>
-              <li><strong>Affiliates:</strong> members of the Arrdublu family of companies.</li>
-              <li><strong>Service Providers:</strong> entities processing data on our behalf for business purposes.</li>
-              <li><strong>Legal Authorities:</strong> when required by law or to protect our rights and safety.</li>
-              <li><strong>Business Transfers:</strong> in connection with a merger, sale of company assets, financing, or acquisition.</li>
-            </ul>
-          </section>
-
-          <section id="your-control-and-choices" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Your Control and Choices</h2>
-            <p>
-              You have choices regarding the information we collect and how it's used:
-            </p>
-            <ul>
-              <li><strong>Opt-Out:</strong> You may opt out of receiving promotional communications by following the instructions in those messages.</li>
-              <li><strong>Cookie Controls:</strong> You can manage your cookie preferences through your browser settings.</li>
-              <li><strong>Account Settings:</strong> You can update or correct your personal profile information at any time within your account settings.</li>
-            </ul>
-          </section>
-
-          <section id="data-security-integrity-and-retention" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Data Security, Integrity, and Retention</h2>
-            <p>
-              We implement reasonable security measures designed to protect your information from unauthorized access, alteration, disclosure, or destruction. We retain personal data only for as long as necessary to fulfill the purposes for which it was collected, comply with our legal obligations, resolve disputes, and enforce our agreements.
-            </p>
-          </section>
-
-          <section id="data-transfers-storage-and-processing-globally" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Data Transfers, Storage, and Processing Globally</h2>
-            <p>
-              Your information may be transferred to, and maintained on, computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ. By submitting your information, you agree to this transfer, storing, or processing globally, subject to appropriate safeguards.
-            </p>
-          </section>
-
-          <section id="changes-to-this-privacy-policy" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Changes to This Privacy Policy</h2>
-            <p>
-              We may update this privacy policy periodically. If we make material changes, we will notify you by revising the date at the top of the policy and, in some cases, we may provide you with more prominent notice (such as adding a statement to our homepage or sending you a notification).
-            </p>
-          </section>
-
-          <section id="comments-and-questions" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Comments and Questions</h2>
-            <p>
-              If you have any comments or questions about this privacy policy or our privacy practices, please contact us at our <a href="/support" className="text-primary hover:underline">Support page</a>.
-            </p>
-          </section>
-
-          <section id="us-resident-rights" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">US Resident Rights</h2>
-            <p>
-              Depending on your US state of residence (e.g., California, Virginia, Colorado), you may have specific rights regarding your personal information, including the right to know what is collected, a right to delete, a right to correct inaccurate data, and a right to opt-out of the sale or sharing of personal information.
-            </p>
-          </section>
-
-          <section id="uk-eu-emea-residents-rights" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">UK, EU, & EMEA Residents Rights</h2>
-            <p>
-              If you are located in the European Economic Area (EEA), the UK, or EMEA region, you have rights under the GDPR and analogous laws. These include the right to access, rectify, or erase your personal data, the right to restrict or object to processing, and the right to data portability. You also have the right to lodge a complaint with your local supervisory authority.
-            </p>
-          </section>
-
-          <section id="brazilian-residents-rights" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Brazilian Residents Rights</h2>
-            <p>
-              Under the Brazilian General Data Protection Law (LGPD), residents of Brazil have the right to confirmation of processing, access to data, correction of incomplete/inaccurate data, anonymization, blocking, or deletion of unnecessary data, data portability, and information about public/private entities with which we have shared data.
-            </p>
-          </section>
-
-          <section id="definitions" className="mb-8">
-            <h2 className="text-2xl font-bold mt-8 mb-4">Definitions</h2>
-            <ul>
-              <li><strong>Personal Information:</strong> Information that identifies, relates to, or could reasonably be linked with you or your household.</li>
-              <li><strong>Processing:</strong> Any operation performed on personal data, whether or not by automated means.</li>
-              <li><strong>Service Provider:</strong> A legal entity that processes information on behalf of a business.</li>
-            </ul>
-          </section>
-
-        </CardContent>
-      </Card>
+        <div className="md:col-span-3">
+          <Card className="bg-slate-950/40 border-slate-800 backdrop-blur-sm shadow-xl">
+            <CardHeader className="border-b border-slate-800/50 pb-6">
+              <CardTitle className="text-2xl font-headline text-white">Global Privacy Policy</CardTitle>
+              <p className="text-xs text-slate-500 font-mono mt-2">LAST UPDATED: JULY 2026</p>
+            </CardHeader>
+            <CardContent className="prose prose-invert prose-lg max-w-none pt-8">
+               <p className="text-slate-300 font-sans font-light leading-relaxed">This Global Privacy Policy describes how the Arrdublu family of companies collects, uses, and discloses your personal information. It applies to all of our brands, products, services, and websites. By using our services, you consent to the data practices described in this policy.</p>
+                
+               <h2 id="who-we-are" className="text-cyan-400 font-headline">1. Who We Are</h2>
+                <p className="text-slate-300 font-sans font-light leading-relaxed">Arrdublu is a forward-thinking entity committed to providing top-quality products and services. We are dedicated to maintaining the trust of our users by respecting and protecting your privacy throughout your engagement with our family of companies.</p>
+                
+               <h2 id="types" className="text-cyan-400 font-headline">2. Types of Information We Collect</h2>
+                <p className="text-slate-300 font-sans font-light leading-relaxed">We collect information that identifies, relates to, describes, or could reasonably be linked to you. This includes:</p>
+                <ul className="text-slate-300 font-sans font-light leading-relaxed list-disc list-inside">
+                  <li><strong>Identifiers:</strong> such as your name, email address, phone number, and IP address.</li>
+                  <li><strong>Commercial Information:</strong> including records of products or services purchased, obtained, or considered.</li>
+                  <li><strong>Internet or Network Activity:</strong> such as browsing history, search history, and interactions with our websites or advertisements.</li>
+                  <li><strong>Geolocation Data:</strong> derived from your IP address or mobile device settings.</li>
+                </ul>
+                
+               <h2 id="use" className="text-cyan-400 font-headline">3. Use of Your Information</h2>
+                <p className="text-slate-300 font-sans font-light leading-relaxed">We use the collected information for our business and commercial purposes, including:</p>
+                <ul className="text-slate-300 font-sans font-light leading-relaxed list-disc list-inside">
+                  <li>Providing, supporting, and personalizing our services.</li>
+                  <li>Processing transactions and sending related information like confirmations and receipts.</li>
+                  <li>Communicating about promotions, upcoming events, and other news about our products and services.</li>
+                  <li>Auditing, research, and analysis to maintain, protect, and improve our services.</li>
+                </ul>
+                
+               <h2 id="sharing" className="text-cyan-400 font-headline">4. Sharing Your Information</h2>
+                <p className="text-slate-300 font-sans font-light leading-relaxed">We may share your personal information with:</p>
+                <ul className="text-slate-300 font-sans font-light leading-relaxed list-disc list-inside">
+                  <li><strong>Affiliates:</strong> members of the Arrdublu family of companies.</li>
+                  <li><strong>Service Providers:</strong> entities processing data on our behalf for business purposes.</li>
+                  <li><strong>Legal Authorities:</strong> when required by law or to protect our rights and safety.</li>
+                  <li><strong>Business Transfers:</strong> in connection with a merger, sale of company assets, financing, or acquisition.</li>
+                </ul>
+                
+               <h2 id="control" className="text-cyan-400 font-headline">5. Your Control and Choices</h2>
+                <p className="text-slate-300 font-sans font-light leading-relaxed">You have choices regarding the information we collect and how it's used:</p>
+                <ul className="text-slate-300 font-sans font-light leading-relaxed list-disc list-inside">
+                  <li><strong>Opt-Out:</strong> You may opt out of receiving promotional communications by following the instructions in those messages.</li>
+                  <li><strong>Cookie Controls:</strong> You can manage your cookie preferences through your browser settings.</li>
+                  <li><strong>Account Settings:</strong> You can update or correct your personal profile information at any time within your account settings.</li>
+                </ul>
+                
+               <h2 id="security" className="text-cyan-400 font-headline">6. Data Security and Retention</h2>
+                <p className="text-slate-300 font-sans font-light leading-relaxed">We implement reasonable security measures designed to protect your information from unauthorized access, alteration, disclosure, or destruction. We retain personal data only for as long as necessary to fulfill the purposes for which it was collected, comply with our legal obligations, resolve disputes, and enforce our agreements.</p>
+                
+               <h2 id="global" className="text-cyan-400 font-headline">7. Data Transfers Globally</h2>
+                <p className="text-slate-300 font-sans font-light leading-relaxed">Your information may be transferred to, and maintained on, computers located outside of your state, province, country, or other governmental jurisdiction where the data protection laws may differ. By submitting your information, you agree to this transfer, storing, or processing globally, subject to appropriate safeguards.</p>
+                
+               <h2 id="rights" className="text-cyan-400 font-headline">8. Global User Rights</h2>
+                <p className="text-slate-300 font-sans font-light leading-relaxed">Depending on your residence (e.g., US states, UK, EU, Brazil), you may have specific rights regarding your personal information, including the right to know what is collected, a right to delete, a right to correct inaccurate data, a right to data portability, and a right to opt-out of the sale or sharing of personal information.</p>
+                <p className="text-slate-300 font-sans font-light leading-relaxed mt-4">If you have any comments or questions about this privacy policy, please contact us at our <a href="/support" className="text-cyan-500 hover:text-cyan-400">Support page</a>.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }

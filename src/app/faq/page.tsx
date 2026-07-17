@@ -1,21 +1,12 @@
+import { constructMetadata } from '@/lib/utils';
 
 import { FaqAccordion } from '@/components/faq/FaqAccordion';
 import { Metadata } from 'next';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = constructMetadata({
   title: 'Frequently Asked Questions | Arrdublu',
-  description: 'Find answers to common questions about Arrdublu\'s digital services, pricing, and project processes.',
-  openGraph: {
-    title: 'Frequently Asked Questions | Arrdublu',
-    description: 'Find answers to common questions about Arrdublu\'s digital services, pricing, and project processes.',
-    images: [{
-      url: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/Header_Starting_white_Logo.png?alt=media&token=1fcb002e-29e8-499a-bd7a-66ef2c125021',
-      width: 1200,
-      height: 630,
-      alt: 'Arrdublu FAQ',
-    }],
-  },
-};
+  description: 'Find answers to common questions about Arrdublu\'s services.',
+});
 
 export default function FaqPage() {
   const faqSchema = {
@@ -128,11 +119,11 @@ export default function FaqPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-headline font-bold text-primary">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl md:text-5xl font-headline font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-cyan-600 mb-6">
           Frequently Asked Questions
         </h1>
-        <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-foreground/80">
+        <p className="mt-4 text-lg md:text-xl max-w-2xl mx-auto text-slate-400 font-light">
           Find answers to common questions about our services and policies.
         </p>
       </div>

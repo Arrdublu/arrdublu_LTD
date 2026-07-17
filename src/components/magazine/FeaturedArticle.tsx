@@ -9,7 +9,7 @@ import Link from 'next/link';
 const featuredArticle = {
   title: 'Special Ops: The Art of Covert Creative Campaigns',
   category: 'Special Operations',
-  image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_06.jpg?alt=media&token=b317a006-5cfb-4591-83fb-6f0a2f61f80b',
+  image: 'https://images.unsplash.com/photo-1542744094-3a31f103e35f?auto=format&fit=crop&q=80&w=1200',
   dataAiHint: 'special ops',
   excerpt: 'Dive deep into the strategies behind our most successful and unconventional creative campaigns. Discover how we blend stealth, precision, and artistry to deliver results that make a massive impact without making a sound.',
   url: '/discover/arrdublu-mag/special-ops-creative-campaigns',
