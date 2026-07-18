@@ -129,6 +129,43 @@
         }
       },
       "required": ["inlineEditMode"]
+    },
+    "Contact": {
+      "title": "Contact",
+      "description": "A visitor contact submission form.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Visitor's full name.",
+          "minLength": 2,
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Visitor's email address.",
+          "maxLength": 128
+        },
+        "subject": {
+          "type": "string",
+          "description": "Subject of the message.",
+          "minLength": 5,
+          "maxLength": 256
+        },
+        "message": {
+          "type": "string",
+          "description": "Message content.",
+          "minLength": 10,
+          "maxLength": 4096
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the contact request was submitted."
+        }
+      },
+      "required": ["name", "email", "subject", "message", "createdAt"]
     }
   },
   "firestore": {
@@ -151,6 +188,10 @@
     "/settings/{settingId}": {
       "schema": "Settings",
       "description": "Global application configurations."
+    },
+    "/contacts/{contactId}": {
+      "schema": "Contact",
+      "description": "Collection of customer contact form submissions."
     }
   }
 }

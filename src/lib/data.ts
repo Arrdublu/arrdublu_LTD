@@ -3,9 +3,6 @@ import type { Service, CaseStudy, ExchangeRates } from './types';
 // Mock exchange rates should be consistent with the provider
 export const MOCK_RATES: ExchangeRates = {
   USD: 1,
-  EUR: 0.92,
-  GBP: 0.79,
-  JPY: 157,
   JMD: 155,
 };
 

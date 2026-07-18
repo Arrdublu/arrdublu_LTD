@@ -119,7 +119,7 @@ export function SupportForm() {
               </FormItem>
           )}
           />
-          <Button type="submit" className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 hover:text-slate-900 transition-colors uppercase font-mono tracking-wider text-xs font-bold py-6 group">
+          <Button id="contact-submit-button" type="submit" className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 hover:text-slate-900 transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] focus-visible:ring-2 focus-visible:ring-cyan-500/50 uppercase font-mono tracking-wider text-xs font-bold py-6 group">
             <Send className="mr-2 h-4 w-4 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
             Transmit Data
           </Button>

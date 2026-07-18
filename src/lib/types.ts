@@ -55,7 +55,7 @@ export type Discount = {
   value: number;
 };
 
-export type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'JMD';
+export type Currency = 'USD' | 'JMD';
 
 export type ExchangeRates = {
   [key in Currency]: number;

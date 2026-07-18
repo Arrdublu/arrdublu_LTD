@@ -3,6 +3,7 @@
 
 import Stripe from 'stripe';
 import * as z from 'zod';
+import nodemailer from 'nodemailer';
 import { getAdminDb, handleFirestoreError, OperationType, FieldValue } from './firebase-admin';
 import { verifyDiscountCode } from './discount-actions';
 import type { Currency, Service } from './types';
@@ -28,6 +29,44 @@ export async function submitContactRequest(values: z.infer<typeof contactFormSch
       ...validatedFields.data,
       createdAt: FieldValue.serverTimestamp(),
     });
+
+    // Check if SMTP configuration is available to notify hi@arrdublu.us
+    if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+      try {
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT) || 587,
+          secure: process.env.SMTP_SECURE === 'true',
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        });
+
+        const mailOptions = {
+          from: process.env.SMTP_FROM_EMAIL || '"ArrDuBlu Studio" <noreply@arrdublu.us>',
+          to: 'hi@arrdublu.us',
+          replyTo: validatedFields.data.email,
+          subject: `New Contact Submission: ${validatedFields.data.subject}`,
+          text: `You have received a new Contact Request from ${validatedFields.data.name} (${validatedFields.data.email}).\n\nSubject: ${validatedFields.data.subject}\n\nMessage:\n${validatedFields.data.message}`,
+          html: `
+            <h2>New Contact Submission</h2>
+            <p><strong>Name:</strong> ${validatedFields.data.name}</p>
+            <p><strong>Email:</strong> ${validatedFields.data.email}</p>
+            <p><strong>Subject:</strong> ${validatedFields.data.subject}</p>
+            <p><strong>Message:</strong></p>
+            <p>${validatedFields.data.message ? validatedFields.data.message.replace(/\n/g, '<br>') : 'No message provided.'}</p>
+          `,
+        };
+
+        await transporter.sendMail(mailOptions);
+      } catch (emailError) {
+        console.error("Failed to send contact notification email to hi@arrdublu.us:", emailError);
+      }
+    } else {
+      console.warn("SMTP environment variables are not configured. Email to hi@arrdublu.us skipped, but contact stored in database.");
+    }
+
     return { success: true };
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, 'contacts');
