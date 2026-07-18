@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { auth } from '@/lib/firebase';
-import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailAndPassword, type User } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailAndPassword, sendPasswordResetEmail, type User } from 'firebase/auth';
 import { Lock, LogOut, Shield, ArrowRight } from 'lucide-react';
 
 const ADMIN_EMAILS = ['arrdublu@gmail.com', 'hi@arrdublu.us'];
@@ -17,10 +17,12 @@ export default function AdminLayout({
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [resetMessage, setResetMessage] = useState<string | null>(null);
   const [loginMethod, setLoginMethod] = useState<'password' | 'google'>('password');
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [signingIn, setSigningIn] = useState(false);
+  const [resettingPassword, setResettingPassword] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -30,6 +32,32 @@ export default function AdminLayout({
     });
     return () => unsubscribe();
   }, []);
+
+  const handlePasswordReset = async () => {
+    setError(null);
+    setResetMessage(null);
+    if (!emailInput) {
+      setError('Please specify your Operator Email first to request a password reset.');
+      return;
+    }
+    
+    setResettingPassword(true);
+    try {
+      await sendPasswordResetEmail(auth, emailInput);
+      setResetMessage('A security password reset link has been dispatched to your email.');
+    } catch (err: any) {
+      console.error("Password reset error: ", err);
+      if (err.code === 'auth/invalid-email') {
+        setError('Invalid email format. Please specify a valid email address.');
+      } else if (err.code === 'auth/user-not-found') {
+        setError('No operator found with this email address.');
+      } else {
+        setError(err.message || 'An unexpected error occurred during password reset request.');
+      }
+    } finally {
+      setResettingPassword(false);
+    }
+  };
 
   const handleGoogleSignIn = async () => {
     setError(null);
@@ -136,6 +164,11 @@ export default function AdminLayout({
                 {error}
               </div>
             )}
+            {resetMessage && (
+              <div className="p-3 bg-emerald-950/20 border border-emerald-500/30 rounded text-xs text-emerald-300 font-sans text-center">
+                {resetMessage}
+              </div>
+            )}
             <div className="p-4 bg-slate-900/50 rounded border border-cyan-500/10 text-xs leading-relaxed text-slate-400 font-sans">
               <span className="text-cyan-400 font-bold font-mono">[!] NOTICE:</span> Access to this administrative interface requires credential verification. All operations are logged.
             </div>
@@ -154,7 +187,18 @@ export default function AdminLayout({
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] text-slate-400 uppercase tracking-wider font-mono block">Security Passphrase</label>
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] text-slate-400 uppercase tracking-wider font-mono block">Security Passphrase</label>
+                    <button
+                      type="button"
+                      id="reset-passphrase-button"
+                      onClick={handlePasswordReset}
+                      disabled={resettingPassword}
+                      className="text-[9px] text-cyan-500 hover:text-cyan-400 transition-colors uppercase tracking-wider font-mono cursor-pointer disabled:opacity-50"
+                    >
+                      {resettingPassword ? 'Sending...' : 'Reset Passphrase'}
+                    </button>
+                  </div>
                   <input
                     type="password"
                     required

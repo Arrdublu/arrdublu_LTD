@@ -229,10 +229,10 @@ export default function Home() {
       <section className="w-full bg-[#05080a] py-24 px-4 md:px-8 relative z-20 border-y border-slate-900">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
           <div className="flex-1 w-full relative">
-            <div className="aspect-[3/4] w-full rounded-sm overflow-hidden bg-slate-900 border border-slate-800 relative">
+            <div id="founder-portrait-container" className="aspect-[3/4] w-full rounded-sm overflow-hidden bg-slate-900 border border-slate-800 relative">
               {/* Replace with actual founder image, using placeholder style for now */}
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-80 mix-blend-luminosity"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-[#05080a] via-transparent to-transparent"></div>
+              <div id="founder-portrait-image" className="absolute inset-0 bg-[url('https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/self_portrait.jpg?alt=media&token=3cb1aee5-4d8d-4e0e-a749-bdf979a9a4bc')] bg-cover bg-center opacity-80 mix-blend-luminosity"></div>
+              <div id="founder-portrait-overlay" className="absolute inset-0 bg-gradient-to-t from-[#05080a] via-transparent to-transparent"></div>
             </div>
           </div>
           <div className="flex-1 space-y-6">
