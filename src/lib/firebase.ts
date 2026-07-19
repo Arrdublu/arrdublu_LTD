@@ -1,11 +1,13 @@
 import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getAuth, type Auth } from 'firebase/auth';
+import { getStorage, type FirebaseStorage } from 'firebase/storage';
 import firebaseConfig from '../../firebase-applet-config.json';
 
 let app: FirebaseApp;
 let firestore: Firestore;
 let auth: Auth;
+let storage: FirebaseStorage;
 
 if (getApps().length) {
   app = getApp();
@@ -19,5 +21,6 @@ if (getApps().length) {
 
 firestore = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 auth = getAuth(app);
+storage = getStorage(app);
 
-export { app, firestore, auth, firebaseConfig };
+export { app, firestore, firestore as db, auth, storage, firebaseConfig };

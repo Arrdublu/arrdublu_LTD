@@ -199,3 +199,17 @@ export async function simulateMockPayment(orderId: string): Promise<{ success: b
     throw new Error('Failed to complete mock payment');
   }
 }
+
+export async function getWebsiteImage(id: string): Promise<string | null> {
+  const db = getAdminDb();
+  if (!db) return null;
+  try {
+    const doc = await db.collection('website_images').doc(id).get();
+    if (doc.exists) {
+      return doc.data()?.url || null;
+    }
+  } catch (error) {
+    console.error("Error fetching website image:", error);
+  }
+  return null;
+}

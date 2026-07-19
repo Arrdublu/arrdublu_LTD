@@ -6,7 +6,11 @@ import { motion } from 'motion/react';
 import { ArrowRight, Video, Target, Camera } from 'lucide-react';
 import { ClientLogos } from '@/components/home/ClientLogos';
 
-export default function AboutDirectorClient() {
+interface AboutDirectorClientProps {
+  directorImage?: string | null;
+}
+
+export default function AboutDirectorClient({ directorImage }: AboutDirectorClientProps) {
   return (
     <main className="w-full min-h-screen bg-[#020304] text-slate-100 flex flex-col pt-24 pb-16">
       {/* Header Section */}
@@ -30,7 +34,10 @@ export default function AboutDirectorClient() {
       <section className="px-4 md:px-8 max-w-7xl mx-auto w-full mt-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
           <div className="aspect-[4/5] rounded-sm overflow-hidden bg-slate-900 relative">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1579547621113-e4bb2a19bdd6?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center mix-blend-luminosity opacity-80" />
+            <div 
+              className="absolute inset-0 bg-cover bg-center mix-blend-luminosity opacity-80" 
+              style={{ backgroundImage: `url('${directorImage || 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/IMG_5975.jpg?alt=media&token=34d72a2d-67a0-43fb-a8da-e52bd6152e4e'}')` }}
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-[#020304] via-transparent to-transparent" />
           </div>
 
