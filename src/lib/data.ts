@@ -25,13 +25,13 @@ export const services: Service[] = [
     id: 'cinematic-production',
     name: 'Cinematic Production',
     category: 'Creative',
-    description: 'High-end 6K commercial photography and video. Meticulously directed and graded to match premium brand standards.',
+    description: 'High-end 12K commercial photography and video. Meticulously directed and graded to match premium brand standards.',
     price: 3500,
     image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9',
     previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9'],
     paymentLink: 'https://book.stripe.com/9B6aEXef41Dugl88TA93y0g',
     whatsIncluded: [
-      '6K resolution cinematic capture',
+      '12K resolution cinematic capture',
       'Professional color grading & finishing',
       'High-end lighting design',
       'Location scouting and management',
@@ -97,14 +97,14 @@ export const services: Service[] = [
     id: 'event-photo',
     name: 'Event Photography & Videography',
     category: 'Lifestyle',
-    description: 'Capturing the raw energy, elegance, and key milestones of your events in 6K resolution. Meticulously timed, light-balanced, and color-graded to match elite brand or personal standards.',
+    description: 'Capturing the raw energy, elegance, and key milestones of your events in 12K resolution. Meticulously timed, light-balanced, and color-graded to match elite brand or personal standards.',
     price: 120,
     unit: 'hr',
     image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9',
     previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/arrdublu_03.png?alt=media&token=941dd80b-98e9-4ff4-92b4-222ddf15e8d9'],
     paymentLink: 'https://buy.stripe.com/placeholder_event_photo',
     whatsIncluded: [
-      '6K resolution cinematic captures',
+      '12K resolution cinematic captures',
       'Professional color-grading and finishing',
       'Flexible hourly packages',
       'High-end lighting setups',
@@ -119,25 +119,24 @@ export const services: Service[] = [
   },
   {
     id: 'video-editing',
-    name: 'Video Editing & VFX',
+    name: 'Video Editing, VFX & Music Video Post-Production',
     category: 'Creative',
-    description: 'Professional video editing and visual effects services. We transform raw footage into captivating cinematic stories, tailored to your brand.',
+    description: 'Turning raw studio, live-session, and multi-cam footage into premium cinematic visual narratives. Personally directed and finished to elite color and acoustic standards.',
     price: 75,
     unit: 'hr',
     image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4',
     previews: ['https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4'],
     paymentLink: 'https://buy.stripe.com/placeholder_video_editing',
     whatsIncluded: [
-      'Advanced color grading',
-      'Audio mixing & sound design',
-      'Custom motion graphics',
-      'VFX integration',
-      'Flexible revisions'
+      'High-fidelity visual editing and pace synchronization to master tracks.',
+      'Director-led color-grading, 12K/8K/4K mastering, and advanced dynamic range balancing.',
+      'Timeline editing for session highlights, behind-the-scenes (BTS), or official music video formats.',
+      'Turnaround: 5-7 business days standard delivery.'
     ],
     goodToKnow: [
-      'Minimum booking of 1 hour.',
-      'Project files are delivered upon request.',
-      'Rush delivery available for an additional fee.'
+      'Base Industry Rate: $75.00 / hr (to maintain professional brand equity).',
+      'Bookings require a minimum of 2 hours for standard hourly project intake.',
+      'Enables direct feedback loops managed directly by director Ramone Wynter.'
     ]
   }
 ];

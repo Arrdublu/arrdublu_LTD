@@ -217,7 +217,7 @@ export default function Home({ founderImage }: { founderImage?: string | null })
                 <Video className="w-5 h-5 text-slate-300" />
               </div>
               <h3 className="text-lg font-sans font-medium text-white mb-3">Cinematic Production</h3>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6 font-light">High-end 6K commercial photography and video. Meticulously directed and graded to match premium brand standards.</p>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6 font-light">High-end 12K commercial photography and video. Meticulously directed and graded to match premium brand standards.</p>
               <Link href="/service/cinematic-production" className="font-sans text-xs text-white tracking-widest uppercase flex items-center gap-1 group-hover:gap-2 transition-all">
                 Explore <ArrowRight className="w-3 h-3" />
               </Link>
@@ -273,7 +273,7 @@ export default function Home({ founderImage }: { founderImage?: string | null })
               A Personal Commitment <br /> to <span className="font-serif italic text-slate-300">Creative Excellence.</span>
             </h3>
             <p className="text-slate-400 leading-relaxed font-light text-lg">
-              "At Arrdublu, we don't hand your project off to junior teams. I personally direct and oversee every phase of production—from the initial lighting setups on our LED stages to the final 6K color grade."
+              "At Arrdublu, we don't hand your project off to junior teams. I personally direct and oversee every phase of production—from the initial lighting setups on our LED stages to the final 12K color grade."
             </p>
             <p className="text-slate-500 leading-relaxed font-light text-sm">
               — Ramone Wynter, Founder & Creative Director

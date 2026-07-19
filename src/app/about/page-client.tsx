@@ -45,7 +45,7 @@ export default function AboutDirectorClient({ directorImage }: AboutDirectorClie
             <div>
               <h2 className="text-2xl font-display font-light text-white mb-4">The Hands-On Approach</h2>
               <p className="text-slate-400 leading-relaxed font-light">
-                In an industry of outsourced post-production and disconnected creative teams, Arrdublu operates differently. Ramone is on set, operating the 6K Blackmagic cameras, tweaking the Unreal Engine lighting on our curved LED stages, and personally approving the final color grade. This isn't just about control; it's about a relentless commitment to craft.
+                In an industry of outsourced post-production and disconnected creative teams, Arrdublu operates differently. Ramone is on set, operating the 12K Blackmagic cameras, tweaking the Unreal Engine lighting on our curved LED stages, and personally approving the final color grade. This isn't just about control; it's about a relentless commitment to craft.
               </p>
             </div>
 

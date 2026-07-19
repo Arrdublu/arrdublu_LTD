@@ -21,7 +21,7 @@ const PORTFOLIO_NODES: PortfolioNode[] = [
     description: 'Fusing bespoke commercial photography, digital motion capture, and state-of-the-art camera dynamics. Directed personally by Ramone Wynter, ensuring absolute cinematic quality and technical precision.',
     accent: 'cyan',
     metrics: [
-      { label: 'Quality Standard', value: '6K Cinematic' },
+      { label: 'Quality Standard', value: '12K Cinematic' },
       { label: 'Color Science', value: 'Premium Grade' },
       { label: 'Oversight', value: 'Director-Led' }
     ],
