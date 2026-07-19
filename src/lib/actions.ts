@@ -34,18 +34,32 @@ export async function submitContactRequest(values: z.infer<typeof contactFormSch
     // Check if SMTP configuration is available to notify hi@arrdublu.us
     if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
       try {
+        const smtpPort = Number(process.env.SMTP_PORT) || 587;
+        const isSecure = process.env.SMTP_SECURE !== undefined
+          ? process.env.SMTP_SECURE === 'true'
+          : smtpPort === 465;
+
         const transporter = nodemailer.createTransport({
           host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT) || 587,
-          secure: process.env.SMTP_SECURE === 'true',
+          port: smtpPort,
+          secure: isSecure,
           auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS,
           },
+          // Resilient networking settings for cloud deployment
+          connectionTimeout: 10000, // 10s connection timeout
+          greetingTimeout: 10000,   // 10s greeting timeout
+          socketTimeout: 15000,     // 15s socket timeout
+          tls: {
+            // Do not fail if the host certificate cannot be verified by local container CA bundle
+            rejectUnauthorized: false
+          }
         });
 
+        const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
         const mailOptions = {
-          from: process.env.SMTP_FROM_EMAIL || '"ArrDuBlu Studio" <noreply@arrdublu.us>',
+          from: `"${validatedFields.data.name} via ArrDuBlu Studio" <${fromEmail}>`, // Use authenticated email as sender, but visitor name in display
           to: 'hi@arrdublu.us',
           replyTo: validatedFields.data.email,
           subject: `New Contact Submission: ${validatedFields.data.subject}`,
