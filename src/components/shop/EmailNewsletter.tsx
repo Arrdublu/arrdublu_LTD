@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Mail } from 'lucide-react';
+import { subscribeToNewsletter } from '@/lib/actions';
 
 export function EmailNewsletter() {
   const [email, setEmail] = useState('');
@@ -15,15 +16,22 @@ export function EmailNewsletter() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    setIsSubmitting(false);
-    setEmail('');
-    toast({
-      title: 'Subscribed!',
-      description: 'Thank you for subscribing to our newsletter.',
-    });
+    try {
+      await subscribeToNewsletter(email);
+      setEmail('');
+      toast({
+        title: 'Subscribed!',
+        description: 'Thank you for subscribing to our newsletter.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to subscribe. Please try again later.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

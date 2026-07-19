@@ -151,7 +151,7 @@ export function LogoManager() {
             <div key={logo.id} className="bg-slate-900/50 p-4 rounded-lg border border-slate-700/50 flex flex-col md:flex-row items-center gap-6">
               <div className="w-32 h-16 relative bg-slate-950 rounded border border-slate-800 overflow-hidden flex-shrink-0 flex items-center justify-center p-2">
                 {logo.imageUrl ? (
-                  <img src={logo.imageUrl} alt={logo.name} className="max-w-full max-h-full object-contain" />
+                  <Image src={logo.imageUrl} alt={logo.name} fill referrerPolicy="no-referrer" className="object-contain p-2" />
                 ) : (
                   <ImageIcon className="w-6 h-6 text-slate-700" />
                 )}

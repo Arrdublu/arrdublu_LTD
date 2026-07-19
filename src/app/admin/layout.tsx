@@ -419,6 +419,17 @@ export default function AdminLayout({
               >
                 Website Images
               </Link>
+              <Link
+                href="/admin/newsletter"
+                aria-label="Manage Newsletter"
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${
+                  pathname === '/admin/newsletter'
+                    ? 'text-cyan-400 bg-slate-900/80 border-l-2 border-cyan-500'
+                    : 'text-slate-400 hover:text-cyan-400 hover:bg-slate-900/50'
+                }`}
+              >
+                Newsletter
+              </Link>
             </nav>
           </div>
           <div className="mt-auto p-4 border-t border-slate-800 bg-slate-950/80 font-mono">

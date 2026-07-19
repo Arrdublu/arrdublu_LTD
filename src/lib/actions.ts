@@ -6,6 +6,7 @@ import * as z from 'zod';
 import nodemailer from 'nodemailer';
 import { getAdminDb, handleFirestoreError, OperationType, FieldValue } from './firebase-admin';
 import { verifyDiscountCode } from './discount-actions';
+import { MOCK_RATES } from './data';
 import type { Currency, Service } from './types';
 
 const contactFormSchema = z.object({
@@ -146,12 +147,14 @@ export async function createPaymentIntent(
   });
 
   // Note: Stripe requires the amount in the lowest denomination (cents for USD).
-  // The amount sent to Stripe is always based on the USD totalAmount.
-  // The `currency` parameter in paymentIntent is for display and processing.
+  // The amount sent to Stripe should match the currency.
+  const rate = MOCK_RATES[currency] || 1;
+  const amountInCurrency = totalAmount * rate;
+
   let paymentIntent;
   try {
     paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(totalAmount * 100), // Amount in cents, based on USD
+      amount: Math.round(amountInCurrency * 100), // Amount in cents of the target currency
       currency: currency.toLowerCase(), // Stripe expects lowercase currency codes
       receipt_email: 'customer@example.com', // Placeholder, Stripe will use the email from the payment form if available
       metadata: {
@@ -197,6 +200,51 @@ export async function simulateMockPayment(orderId: string): Promise<{ success: b
   } catch (error) {
     console.error('Failed to update mock order status:', error);
     throw new Error('Failed to complete mock payment');
+  }
+}
+
+export async function subscribeToNewsletter(email: string) {
+  const db = getAdminDb();
+  if (!db) throw new Error("Database connection is not available.");
+  
+  try {
+    // Basic email validation
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      throw new Error("Invalid email address.");
+    }
+    
+    // Check if email already exists
+    const existing = await db.collection('newsletter_subscribers').where('email', '==', email).get();
+    if (!existing.empty) {
+      return { success: true, message: 'Already subscribed' };
+    }
+    
+    await db.collection("newsletter_subscribers").add({
+      email,
+      status: 'subscribed',
+      createdAt: FieldValue.serverTimestamp(),
+    });
+    return { success: true };
+  } catch (error) {
+    handleFirestoreError(error, OperationType.CREATE, 'newsletter_subscribers');
+    throw new Error("Failed to subscribe to newsletter");
+  }
+}
+
+export async function getNewsletterSubscribers() {
+  const db = getAdminDb();
+  if (!db) return [];
+  
+  try {
+    const snapshot = await db.collection('newsletter_subscribers').orderBy('createdAt', 'desc').get();
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...(doc.data() as any),
+      createdAt: (doc.data() as any).createdAt?.toDate?.()?.toISOString() || null
+    }));
+  } catch (error) {
+    console.error("Error fetching newsletter subscribers:", error);
+    return [];
   }
 }
 

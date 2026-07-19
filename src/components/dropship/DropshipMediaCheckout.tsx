@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Link as LinkIcon, CreditCard, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { createPaymentIntent } from '@/lib/actions';
+import { useCurrency } from '@/context/CurrencyProvider';
 import type { Service } from '@/lib/types';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
@@ -25,7 +26,7 @@ const DROPSHIP_SERVICES = [
   { id: 'virtual-production', name: 'Virtual Production Mapping', price: 250, type: 'hourly' },
 ];
 
-function CheckoutForm({ clientSecret, subtotal, selectedService, quantity, details }: { clientSecret: string, subtotal: number, selectedService: any, quantity: number, details: string }) {
+function CheckoutForm({ clientSecret, formattedTotal }: { clientSecret: string, formattedTotal: string }) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -57,7 +58,7 @@ function CheckoutForm({ clientSecret, subtotal, selectedService, quantity, detai
         className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition-all hover:scale-[1.02]"
         disabled={!stripe || isProcessing}
       >
-        {isProcessing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</> : `Pay $${subtotal}`}
+        {isProcessing ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</> : `Pay ${formattedTotal}`}
       </Button>
     </form>
   );
@@ -70,17 +71,18 @@ export function DropshipMediaCheckout() {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   
   const { toast } = useToast();
+  const { selectedCurrency, getFormattedPrice } = useCurrency();
 
   const selectedService = DROPSHIP_SERVICES.find(s => s.id === selectedServiceId);
   const subtotal = selectedService ? selectedService.price * quantity : 0;
 
   useEffect(() => {
     if (selectedService && subtotal > 0) {
-      createPaymentIntent([{ service: { ...selectedService, category: 'Creative', description: details, image: '', previews: [] } as Service, quantity }], 'USD')
+      createPaymentIntent([{ service: { ...selectedService, category: 'Creative', description: details, image: '', previews: [] } as Service, quantity }], selectedCurrency)
         .then(({ clientSecret }) => setClientSecret(clientSecret))
         .catch(err => toast({ title: 'Error', description: 'Failed to initialize payment.', variant: 'destructive' }));
     }
-  }, [selectedService, quantity, details, subtotal]);
+  }, [selectedService, quantity, details, subtotal, toast, selectedCurrency]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -107,7 +109,7 @@ export function DropshipMediaCheckout() {
                 <SelectContent>
                   {DROPSHIP_SERVICES.map(service => (
                     <SelectItem key={service.id} value={service.id}>
-                      {service.name} - ${service.price}{service.type === 'hourly' ? '/hr' : ''}
+                      {service.name} - {getFormattedPrice(service.price)}{service.type === 'hourly' ? '/hr' : ''}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -158,7 +160,7 @@ export function DropshipMediaCheckout() {
               <div className="flex justify-between items-start">
                 <span className="text-slate-200">{selectedService ? selectedService.name : 'No service selected'}</span>
                 <span className="font-mono text-slate-200">
-                  {selectedService ? `${selectedService.price}` : '$0'}
+                  {selectedService ? getFormattedPrice(selectedService.price) : getFormattedPrice(0)}
                 </span>
               </div>
               {selectedService && (
@@ -169,13 +171,13 @@ export function DropshipMediaCheckout() {
               )}
               <div className="pt-4 mt-4 border-t border-slate-800 flex justify-between items-center">
                 <span className="font-bold text-lg text-white">Total</span>
-                <span className="font-mono font-bold text-xl text-cyan-400">${subtotal}</span>
+                <span className="font-mono font-bold text-xl text-cyan-400">{getFormattedPrice(subtotal)}</span>
               </div>
             </div>
 
             {clientSecret && (
               <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <CheckoutForm clientSecret={clientSecret} subtotal={subtotal} selectedService={selectedService} quantity={quantity} details={details} />
+                <CheckoutForm clientSecret={clientSecret} formattedTotal={getFormattedPrice(subtotal)} />
               </Elements>
             )}
           </CardContent>

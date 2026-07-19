@@ -424,7 +424,7 @@ export default function HeroCanvas({ viewState, activeIndex, onNodeClick }: Hero
 
       renderer.dispose()
     }
-  }, [isLowPower])
+  }, [isLowPower, isLoaded])
 
   return (
     <div 

@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 import { HeroSlide, getHeroSlides } from '@/lib/firebase/hero-slides';
 import { ArrowRight, Play } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function HeroCarousel({ triggerStateToggle }: { triggerStateToggle: (state: 'HERO' | 'PORTFOLIO') => void }) {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
@@ -36,10 +37,12 @@ export default function HeroCarousel({ triggerStateToggle }: { triggerStateToggl
       <div className="absolute inset-0 w-full h-full -z-10">
         <div className="absolute inset-0 bg-[#020304]/60 z-10 mix-blend-multiply" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#020304] via-transparent to-[#020304]/40 z-10" />
-        <img
+        <Image
           src="https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/blurred%20water%20front.jpg?alt=media&token=3cb002b8-eedb-40b3-9394-ce115accc1d4"
           alt="Hero Background"
-          className="w-full h-full object-cover opacity-80"
+          fill
+          referrerPolicy="no-referrer"
+          className="object-cover opacity-80"
         />
         
         <div className="absolute inset-0 flex flex-col items-center justify-center relative z-20 w-full max-w-7xl mx-auto px-4 text-center">
@@ -84,10 +87,12 @@ export default function HeroCarousel({ triggerStateToggle }: { triggerStateToggl
               )}
 
               {slide.backgroundImage && (
-                <img
+                <Image
                   src={slide.backgroundImage}
                   alt={slide.title || "Hero Slide Background"}
-                  className="absolute inset-0 w-full h-full object-cover opacity-80"
+                  fill
+                  referrerPolicy="no-referrer"
+                  className="object-cover opacity-80"
                 />
               )}
               

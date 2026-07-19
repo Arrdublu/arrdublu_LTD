@@ -26,8 +26,9 @@ export default function Home({ founderImage }: { founderImage?: string | null })
   const [viewState, setViewState] = useState<'HERO' | 'PORTFOLIO'>('HERO')
   const [activeNodeIndex, setActiveNodeIndex] = useState<number | null>(null)
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [formInput, setFormInput] = useState({ name: '', email: '', message: '' })
-  const [formErrors, setFormErrors] = useState<{ name?: string; email?: string; message?: string }>({})
+  const [formErrors, setFormErrors] = useState<{ name?: string; email?: string; message?: string; submit?: string }>({})
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -52,8 +53,11 @@ export default function Home({ founderImage }: { founderImage?: string | null })
     }
   }
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (isSubmitting) return;
+
     const result = contactSchema.safeParse(formInput)
     if (!result.success) {
       const formatted = result.error.format()
@@ -64,12 +68,39 @@ export default function Home({ founderImage }: { founderImage?: string | null })
       })
       return
     }
+
     setFormErrors({})
-    setFormSubmitted(true)
-    setTimeout(() => {
-      setFormSubmitted(false)
-      setFormInput({ name: '', email: '', message: '' })
-    }, 4500)
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formInput.name,
+          email: formInput.email,
+          message: formInput.message,
+          serviceName: 'General Inquiry (Home Page)',
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send inquiry');
+      }
+
+      setFormSubmitted(true)
+      setTimeout(() => {
+        setFormSubmitted(false)
+        setFormInput({ name: '', email: '', message: '' })
+      }, 4500)
+    } catch (err) {
+      console.error(err);
+      setFormErrors(prev => ({ ...prev, submit: 'Failed to send your inquiry. Please try again later.' }));
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const { scrollYProgress } = useScroll()
@@ -384,12 +415,18 @@ export default function Home({ founderImage }: { founderImage?: string | null })
                     )}
                   </div>
 
+                  {formErrors.submit && (
+                    <div className="text-sm font-sans text-red-400 mt-2 text-center">
+                      {formErrors.submit}
+                    </div>
+                  )}
                   <button
                     id="contact-submit-button"
                     type="submit"
-                    className="w-full py-4 rounded-sm bg-white hover:bg-slate-200 text-slate-950 font-sans text-sm uppercase tracking-widest font-medium transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer mt-4"
+                    disabled={isSubmitting}
+                    className={`w-full py-4 rounded-sm bg-white hover:bg-slate-200 text-slate-950 font-sans text-sm uppercase tracking-widest font-medium transition-all duration-300 flex items-center justify-center gap-2 mt-4 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
                   >
-                    Send Inquiry
+                    {isSubmitting ? 'Sending...' : 'Send Inquiry'}
                   </button>
                 </motion.form>
               ) : (
@@ -405,7 +442,7 @@ export default function Home({ founderImage }: { founderImage?: string | null })
                   </div>
                   <div>
                     <h4 className="font-sans text-lg text-white font-medium mb-2">
-                      Inquiry Received
+                      Inquiry Received. with hi@arrdublu.us
                     </h4>
                     <p className="text-slate-400 text-sm max-w-xs mx-auto leading-relaxed font-light">
                       Thank you for reaching out. Director Ramone Wynter or a member of our team will be in touch shortly.
