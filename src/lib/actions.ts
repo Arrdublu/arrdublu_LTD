@@ -75,8 +75,18 @@ export async function submitContactRequest(values: z.infer<typeof contactFormSch
         };
 
         await transporter.sendMail(mailOptions);
-      } catch (emailError) {
+      } catch (emailError: any) {
         console.error("Failed to send contact notification email to hi@arrdublu.us:", emailError);
+        try {
+          await db.collection("email_delivery_errors").add({
+             error: emailError instanceof Error ? emailError.message : String(emailError),
+             stack: emailError instanceof Error ? emailError.stack : null,
+             contactEmail: validatedFields.data.email,
+             createdAt: FieldValue.serverTimestamp(),
+          });
+        } catch (dbError) {
+          console.error("Failed to log email delivery error to Firestore", dbError);
+        }
       }
     } else {
       console.warn("SMTP environment variables are not configured. Email to hi@arrdublu.us skipped, but contact stored in database.");

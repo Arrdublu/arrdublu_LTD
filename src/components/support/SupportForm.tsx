@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -16,8 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { Send } from "lucide-react";
+import { Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { submitContactRequest } from "@/lib/actions";
 
 const formSchema = z.object({
@@ -28,10 +28,11 @@ const formSchema = z.object({
 });
 
 export function SupportForm() {
-    const { toast } = useToast();
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    mode: "onTouched",
     defaultValues: {
       name: "",
       email: "",
@@ -41,26 +42,40 @@ export function SupportForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setSubmitStatus("loading");
     try {
       await submitContactRequest(values);
-      toast({
-        title: "Message Sent",
-        description: "Your message has been successfully transmitted.",
-        className: "bg-cyan-950 border-cyan-500 text-white",
-      });
+      setSubmitStatus("success");
       form.reset();
     } catch (error) {
-      toast({
-        title: "Submission Failed",
-        description: "There was an error sending your message. Please try again.",
-        variant: "destructive",
-      });
+      setSubmitStatus("error");
     }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        
+        {submitStatus === "success" && (
+          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-md flex items-start gap-3 text-emerald-400">
+            <CheckCircle2 className="w-5 h-5 mt-0.5 shrink-0" />
+            <div>
+              <p className="font-mono text-sm font-bold uppercase tracking-wider">Transmission Successful</p>
+              <p className="text-sm mt-1 text-emerald-400/80">Your message has been securely transmitted to our support team.</p>
+            </div>
+          </div>
+        )}
+
+        {submitStatus === "error" && (
+          <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-md flex items-start gap-3 text-red-400">
+            <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
+            <div>
+              <p className="font-mono text-sm font-bold uppercase tracking-wider">Transmission Failed</p>
+              <p className="text-sm mt-1 text-red-400/80">There was an error communicating with the server. Please try again later.</p>
+            </div>
+          </div>
+        )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
               control={form.control}
@@ -119,9 +134,13 @@ export function SupportForm() {
               </FormItem>
           )}
           />
-          <Button id="contact-submit-button" type="submit" className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 hover:text-slate-900 transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] focus-visible:ring-2 focus-visible:ring-cyan-500/50 uppercase font-mono tracking-wider text-xs font-bold py-6 group">
-            <Send className="mr-2 h-4 w-4 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
-            Transmit Data
+          <Button id="contact-submit-button" disabled={submitStatus === "loading"} type="submit" className="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 hover:text-slate-900 transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] focus-visible:ring-2 focus-visible:ring-cyan-500/50 uppercase font-mono tracking-wider text-xs font-bold py-6 group disabled:opacity-70 disabled:cursor-not-allowed">
+            {submitStatus === "loading" ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="mr-2 h-4 w-4 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
+            )}
+            {submitStatus === "loading" ? "Transmitting..." : "Transmit Data"}
           </Button>
       </form>
     </Form>
