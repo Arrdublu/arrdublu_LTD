@@ -1,7 +1,6 @@
 import { constructMetadata } from '@/lib/utils';
 import { services } from '@/lib/data';
 import { ServiceCard } from '@/components/services/ServiceCard';
-import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = constructMetadata({
@@ -12,9 +11,6 @@ export const metadata: Metadata = constructMetadata({
 export default function ServicesPage() {
   return (
     <div className="container mx-auto px-4 py-12">
-      <Breadcrumbs items={[
-        { label: 'Services', href: '/service' },
-      ]} />
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-headline font-bold text-primary">
           Our Services

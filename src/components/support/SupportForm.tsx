@@ -29,6 +29,7 @@ const formSchema = z.object({
 
 export function SupportForm() {
   const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,12 +44,19 @@ export function SupportForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setSubmitStatus("loading");
+    setErrorMessage(null);
     try {
-      await submitContactRequest(values);
-      setSubmitStatus("success");
-      form.reset();
+      const result = await submitContactRequest(values);
+      if (result && !result.success) {
+        setSubmitStatus("error");
+        setErrorMessage(result.error || "There was an error communicating with the server. Please try again later.");
+      } else {
+        setSubmitStatus("success");
+        form.reset();
+      }
     } catch (error) {
       setSubmitStatus("error");
+      setErrorMessage("An unexpected error occurred. Please try again later.");
     }
   }
 
@@ -71,7 +79,7 @@ export function SupportForm() {
             <AlertCircle className="w-5 h-5 mt-0.5 shrink-0" />
             <div>
               <p className="font-mono text-sm font-bold uppercase tracking-wider">Transmission Failed</p>
-              <p className="text-sm mt-1 text-red-400/80">There was an error communicating with the server. Please try again later.</p>
+              <p className="text-sm mt-1 text-red-400/80">{errorMessage || "There was an error communicating with the server. Please try again later."}</p>
             </div>
           </div>
         )}

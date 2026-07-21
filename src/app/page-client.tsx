@@ -87,7 +87,8 @@ export default function Home({ founderImage }: { founderImage?: string | null })
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send inquiry');
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to send inquiry');
       }
 
       setFormSubmitted(true)
@@ -95,9 +96,9 @@ export default function Home({ founderImage }: { founderImage?: string | null })
         setFormSubmitted(false)
         setFormInput({ name: '', email: '', message: '' })
       }, 4500)
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setFormErrors(prev => ({ ...prev, submit: 'Failed to send your inquiry. Please try again later.' }));
+      setFormErrors(prev => ({ ...prev, submit: err.message || 'Failed to send your inquiry. Please try again later.' }));
     } finally {
       setIsSubmitting(false)
     }

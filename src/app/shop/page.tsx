@@ -5,7 +5,6 @@ import { PrintsGrid } from '@/components/shop/PrintsGrid';
 import { UsedEquipmentGrid } from '@/components/shop/UsedEquipmentGrid';
 import { EmailNewsletter } from '@/components/shop/EmailNewsletter';
 import { Separator } from '@/components/ui/separator';
-import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = constructMetadata({
@@ -16,9 +15,6 @@ export const metadata: Metadata = constructMetadata({
 export default function ShopPage() {
   return (
     <div className="container mx-auto px-4 py-12">
-      <Breadcrumbs items={[
-        { label: 'Shop', href: '/shop' },
-      ]} />
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-headline font-bold text-primary">
           Shop

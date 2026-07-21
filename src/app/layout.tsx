@@ -20,6 +20,8 @@ const unbounded = Unbounded({
 
 import { SiteHeader } from '@/components/layout/Header';
 import { SiteFooter } from '@/components/layout/Footer';
+import { DynamicBreadcrumbs } from '@/components/layout/DynamicBreadcrumbs';
+import { ExitIntentPopup } from '@/components/layout/ExitIntentPopup';
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 import { CartProvider } from '@/context/CartProvider';
 import { CurrencyProvider } from '@/context/CurrencyProvider';
@@ -41,8 +43,10 @@ export default function RootLayout({
             <CurrencyProvider>
               <CartProvider>
                 <SiteHeader />
+                <DynamicBreadcrumbs />
                 {children}
                 <SiteFooter />
+                <ExitIntentPopup />
               </CartProvider>
             </CurrencyProvider>
           </LanguageProvider>

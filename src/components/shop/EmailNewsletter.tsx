@@ -40,10 +40,10 @@ export function EmailNewsletter() {
         <Mail className="w-6 h-6 text-primary" />
       </div>
       <h2 className="text-2xl md:text-3xl font-headline font-bold text-white mb-4">
-        Join the Inner Circle
+        Subscribe to our Newsletter
       </h2>
       <p className="text-slate-400 mb-8 max-w-lg mx-auto text-sm md:text-base">
-        Get exclusive access to new print releases, used equipment drops, and behind-the-scenes insights.
+        Subscribe to our newsletter to get the latest updates on free downloads, new prints, and exclusive offers.
       </p>
       
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">

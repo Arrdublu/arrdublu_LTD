@@ -1,6 +1,5 @@
 
 import { CaseStudyGrid } from '@/components/case-studies/CaseStudyGrid';
-import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { getPortfolioItems } from '@/lib/portfolio-actions';
 
 export const dynamic = 'force-dynamic';
@@ -10,10 +9,6 @@ export default async function CaseStudiesPage() {
 
   return (
     <div className="container mx-auto px-4 py-24 min-h-screen">
-      <Breadcrumbs items={[
-        { label: 'Discover', href: '/discover' },
-        { label: 'Case Studies', href: '/discover/case-studies' },
-      ]} />
       <div className="text-center mb-16">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-950/30 border border-cyan-500/30 rounded-full mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />

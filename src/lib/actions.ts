@@ -19,11 +19,13 @@ const contactFormSchema = z.object({
 export async function submitContactRequest(values: z.infer<typeof contactFormSchema>) {
   const validatedFields = contactFormSchema.safeParse(values);
   if (!validatedFields.success) {
-    throw new Error("Invalid form data");
+    return { success: false, error: "Invalid form data" };
   }
 
   const db = getAdminDb();
-  if (!db) throw new Error("Database connection is not available.");
+  if (!db) {
+    return { success: false, error: "Database connection is not available." };
+  }
 
   try {
     await db.collection("contacts").add({
@@ -31,71 +33,88 @@ export async function submitContactRequest(values: z.infer<typeof contactFormSch
       createdAt: FieldValue.serverTimestamp(),
     });
 
-    // Check if SMTP configuration is available to notify hi@arrdublu.us
     if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
-      try {
-        const smtpPort = Number(process.env.SMTP_PORT) || 587;
-        const isSecure = process.env.SMTP_SECURE !== undefined
-          ? process.env.SMTP_SECURE === 'true'
-          : smtpPort === 465;
+      const smtpPort = Number(process.env.SMTP_PORT) || 587;
+      const isSecure = process.env.SMTP_SECURE !== undefined
+        ? process.env.SMTP_SECURE === 'true'
+        : smtpPort === 465;
 
-        const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: smtpPort,
-          secure: isSecure,
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-          // Resilient networking settings for cloud deployment
-          connectionTimeout: 10000, // 10s connection timeout
-          greetingTimeout: 10000,   // 10s greeting timeout
-          socketTimeout: 15000,     // 15s socket timeout
-          tls: {
-            // Do not fail if the host certificate cannot be verified by local container CA bundle
-            rejectUnauthorized: false
-          }
-        });
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: smtpPort,
+        secure: isSecure,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000,
+        tls: { rejectUnauthorized: false }
+      });
 
-        const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
-        const mailOptions = {
-          from: `"${validatedFields.data.name} via ArrDuBlu Studio" <${fromEmail}>`, // Use authenticated email as sender, but visitor name in display
-          to: 'hi@arrdublu.us',
-          replyTo: validatedFields.data.email,
-          subject: `New Contact Submission: ${validatedFields.data.subject}`,
-          text: `You have received a new Contact Request from ${validatedFields.data.name} (${validatedFields.data.email}).\n\nSubject: ${validatedFields.data.subject}\n\nMessage:\n${validatedFields.data.message}`,
-          html: `
-            <h2>New Contact Submission</h2>
-            <p><strong>Name:</strong> ${validatedFields.data.name}</p>
-            <p><strong>Email:</strong> ${validatedFields.data.email}</p>
-            <p><strong>Subject:</strong> ${validatedFields.data.subject}</p>
-            <p><strong>Message:</strong></p>
-            <p>${validatedFields.data.message ? validatedFields.data.message.replace(/\n/g, '<br>') : 'No message provided.'}</p>
-          `,
-        };
+      const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER;
+      const mailOptions = {
+        from: `"${validatedFields.data.name} via ArrDuBlu Studio" <${fromEmail}>`,
+        to: 'hi@arrdublu.us',
+        replyTo: validatedFields.data.email,
+        subject: `New Contact Submission: ${validatedFields.data.subject}`,
+        text: `You have received a new Contact Request from ${validatedFields.data.name} (${validatedFields.data.email}).\n\nSubject: ${validatedFields.data.subject}\n\nMessage:\n${validatedFields.data.message}`,
+        html: `
+          <h2>New Contact Submission</h2>
+          <p><strong>Name:</strong> ${validatedFields.data.name}</p>
+          <p><strong>Email:</strong> ${validatedFields.data.email}</p>
+          <p><strong>Subject:</strong> ${validatedFields.data.subject}</p>
+          <p><strong>Message:</strong></p>
+          <p>${validatedFields.data.message ? validatedFields.data.message.replace(/\n/g, '<br>') : 'No message provided.'}</p>
+        `,
+      };
 
-        await transporter.sendMail(mailOptions);
-      } catch (emailError: any) {
-        console.error("Failed to send contact notification email to hi@arrdublu.us:", emailError);
+      const MAX_RETRIES = 3;
+      let attempt = 0;
+      let emailSent = false;
+      let lastError = null;
+
+      while (attempt < MAX_RETRIES && !emailSent) {
         try {
-          await db.collection("email_delivery_errors").add({
-             error: emailError instanceof Error ? emailError.message : String(emailError),
-             stack: emailError instanceof Error ? emailError.stack : null,
-             contactEmail: validatedFields.data.email,
-             createdAt: FieldValue.serverTimestamp(),
-          });
-        } catch (dbError) {
-          console.error("Failed to log email delivery error to Firestore", dbError);
+          console.log(`[Diagnostic] Attempting to send email (Attempt ${attempt + 1}/${MAX_RETRIES})`);
+          await transporter.sendMail(mailOptions);
+          emailSent = true;
+          console.log('[Diagnostic] Server-side SMTP connection and transmission successful.');
+        } catch (error: any) {
+          lastError = error;
+          console.error(`[Diagnostic] Server-side SMTP connection or transmission failed on attempt ${attempt + 1}:`, error);
+          attempt++;
+          if (attempt < MAX_RETRIES) {
+            const delay = Math.pow(2, attempt) * 1000;
+            console.log(`[Diagnostic] Waiting ${delay}ms before next retry...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+          }
         }
+      }
+
+      if (!emailSent) {
+        try {
+          await db.collection("failed_messages").add({
+            error: lastError instanceof Error ? lastError.message : String(lastError),
+            contactData: validatedFields.data,
+            createdAt: FieldValue.serverTimestamp(),
+          });
+          console.log("[Diagnostic] Failed message saved to 'failed_messages' collection for admin retry.");
+        } catch (dbError) {
+          console.error("Failed to log failed message to Firestore", dbError);
+        }
+        return { success: false, error: "Transmission partially failed: Saved to database, but email notification failed. Admins can retry later." };
       }
     } else {
       console.warn("SMTP environment variables are not configured. Email to hi@arrdublu.us skipped, but contact stored in database.");
+      return { success: true, message: "Request received and saved successfully. Email notification skipped (SMTP not configured)." };
     }
 
     return { success: true };
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, 'contacts');
-    throw new Error("Failed to submit contact request");
+    return { success: false, error: "Failed to submit contact request" };
   }
 }
 

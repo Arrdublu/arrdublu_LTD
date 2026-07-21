@@ -104,7 +104,8 @@ export function ServiceActions({ service }: ServiceActionsProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit quote request');
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to submit quote request');
       }
 
       toast({
@@ -119,11 +120,11 @@ export function ServiceActions({ service }: ServiceActionsProps) {
         targetBudget: '100',
         message: '',
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
         title: "Submission Error",
-        description: "There was a problem sending your details. Please try again.",
+        description: error.message || "There was a problem sending your details. Please try again.",
         variant: "destructive",
       });
     } finally {

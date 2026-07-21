@@ -12,3 +12,13 @@ env:
     secret: GEMINI_API_KEY
   - variable: STRIPE_SECRET_KEY
     secret: STRIPE_SECRET_KEY
+  - variable: SMTP_HOST
+    secret: SMTP_HOST
+  - variable: SMTP_USER
+    secret: SMTP_USER
+  - variable: SMTP_PASS
+    secret: SMTP_PASS
+  - variable: SMTP_PORT
+    secret: SMTP_PORT
+  - variable: SMTP_FROM_EMAIL
+    secret: SMTP_FROM_EMAIL

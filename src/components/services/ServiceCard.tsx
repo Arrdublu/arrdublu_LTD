@@ -65,7 +65,8 @@ export function ServiceCard({ service }: ServiceCardProps) {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send request');
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to send request');
       }
 
       toast({
@@ -73,10 +74,10 @@ export function ServiceCard({ service }: ServiceCardProps) {
         description: `We'll be in touch regarding ${service.name} shortly.`,
       });
       setOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "There was a problem sending your request. Please try again.",
+        description: error.message || "There was a problem sending your request. Please try again.",
         variant: "destructive",
       });
     } finally {
