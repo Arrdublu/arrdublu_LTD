@@ -135,6 +135,12 @@ service cloud.firestore {
       allow read, write: if true;
     }
 
+    match /email_delivery_errors/{errorId} {
+      allow create: if true; // Allows anyone to log an error
+      allow list, get: if true; // Allows admin api to read
+      allow update, delete: if false;
+    }
+
     match /contacts/{contactId} {
       allow create: if isValidId(contactId) && isValidContact(request.resource.data) && request.resource.data.createdAt == request.time;
       allow read, update, delete: if false;
