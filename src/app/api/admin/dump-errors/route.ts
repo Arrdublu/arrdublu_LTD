@@ -9,7 +9,7 @@ export async function GET(req: Request) {
     }
 
     const errorsSnapshot = await db.collection("email_delivery_errors").limit(10).get();
-    const errors = errorsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const errors = errorsSnapshot.docs.map(doc => ({ id: doc.id, ...(doc.data() as any) }));
 
     return NextResponse.json({ errors }, { status: 200 });
   } catch (error: any) {
