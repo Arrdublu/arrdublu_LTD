@@ -79,7 +79,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     let needsMigration = false;
     const batch = db.batch();
     
-    snapshot.docs.forEach((doc, idx) => {
+    snapshot.docs.forEach((doc: any, idx: number) => {
       const data: any = doc.data();
       let updatedData: any = {};
       
@@ -108,7 +108,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
       await batch.commit();
       // Re-fetch fresh data after batch commit completes
       const freshSnapshot = await db.collection('portfolio').get();
-      const items = freshSnapshot.docs.map(doc => {
+      const items = freshSnapshot.docs.map((doc: any) => {
         const data = doc.data() as Record<string, any>;
         return {
           id: doc.id,
@@ -126,7 +126,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
       return items.sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
     }
 
-    const items = snapshot.docs.map(doc => {
+    const items = snapshot.docs.map((doc: any) => {
       const data = doc.data() as Record<string, any>;
       return {
         id: doc.id,

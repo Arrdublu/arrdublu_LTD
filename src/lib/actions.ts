@@ -280,7 +280,7 @@ export async function getNewsletterSubscribers() {
   
   try {
     const snapshot = await db.collection('newsletter_subscribers').orderBy('createdAt', 'desc').get();
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...(doc.data() as any),
       createdAt: (doc.data() as any).createdAt?.toDate?.()?.toISOString() || null

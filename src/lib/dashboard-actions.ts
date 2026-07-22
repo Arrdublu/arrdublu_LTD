@@ -107,7 +107,7 @@ export async function getDashboardData(): Promise<DashboardSummary> {
       const searchLogsSnapshot = await db.collection('search_logs').get();
       if (!searchLogsSnapshot.empty) {
         const queryCounts: Record<string, { count: number; resultsCount: number; resultsFound: boolean }> = {};
-        searchLogsSnapshot.docs.forEach(docSnap => {
+        searchLogsSnapshot.docs.forEach((docSnap: any) => {
           const d = docSnap.data() as any;
           const q = (d.query || '').toLowerCase().trim();
           if (!q) return;
@@ -149,7 +149,7 @@ export async function getDashboardData(): Promise<DashboardSummary> {
     // Map to track order dates
     const monthlyAgg: Record<string, { revenue: number; orders: number }> = {};
 
-    snapshot.docs.forEach(docSnap => {
+    snapshot.docs.forEach((docSnap: any) => {
       const data = docSnap.data() as any;
       const status = data.status || 'pending';
       const items = data.items || [];
@@ -209,7 +209,7 @@ export async function getDashboardData(): Promise<DashboardSummary> {
         dailyAgg[d.toISOString().split('T')[0]] = 0;
     }
 
-    snapshot.docs.forEach(docSnap => {
+    snapshot.docs.forEach((docSnap: any) => {
         const data = docSnap.data() as any;
         const status = data.status || 'pending';
         const totalAmount = Number(data.totalAmount) || 0;
@@ -307,7 +307,7 @@ export async function clearDemoOrders(): Promise<{ success: boolean }> {
 
     const snapshot = await db.collection('orders').get();
     const batch = db.batch();
-    snapshot.docs.forEach(doc => {
+    snapshot.docs.forEach((doc: any) => {
       batch.delete(doc.ref);
     });
     

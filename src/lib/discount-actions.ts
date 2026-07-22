@@ -59,7 +59,7 @@ export async function getDiscounts(): Promise<Discount[]> {
   try {
     const snapshot = await db.collection('discounts').get();
     return snapshot.docs.map(
-      (doc) => ({ id: doc.id, ...(doc.data() as any) } as Discount)
+      (doc: any) => ({ id: doc.id, ...(doc.data() as any) } as Discount)
     );
   } catch (error) {
     handleFirestoreError(error, OperationType.LIST, 'discounts');
