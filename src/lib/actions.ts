@@ -22,8 +22,8 @@ export async function submitContactRequest(values: z.infer<typeof contactFormSch
     return { success: false, error: "Invalid form data" };
   }
 
-  const db = getAdminDb();
-  if (!db) {
+  const db = typeof getAdminDb === 'function' ? getAdminDb() : null;
+  if (!db || typeof db.collection !== 'function') {
     return { success: false, error: "Database connection is not available." };
   }
 
@@ -123,8 +123,8 @@ export async function createPaymentIntent(
   currency: Currency,
   discountCode?: string
 ): Promise<{ clientSecret: string; orderId: string }> {
-  const db = getAdminDb();
-  if (!db) {
+  const db = typeof getAdminDb === 'function' ? getAdminDb() : null;
+  if (!db || typeof db.collection !== 'function') {
     throw new Error('Database connection is not available. Please try again later.');
   }
 
@@ -228,8 +228,8 @@ export async function createPaymentIntent(
 }
 
 export async function simulateMockPayment(orderId: string): Promise<{ success: boolean }> {
-  const db = getAdminDb();
-  if (!db) {
+  const db = typeof getAdminDb === 'function' ? getAdminDb() : null;
+  if (!db || typeof db.collection !== 'function') {
     throw new Error('Database connection is not available. Please try again later.');
   }
 
@@ -247,8 +247,8 @@ export async function simulateMockPayment(orderId: string): Promise<{ success: b
 }
 
 export async function subscribeToNewsletter(email: string) {
-  const db = getAdminDb();
-  if (!db) throw new Error("Database connection is not available.");
+  const db = typeof getAdminDb === 'function' ? getAdminDb() : null;
+  if (!db || typeof db.collection !== 'function') throw new Error("Database connection is not available.");
   
   try {
     // Basic email validation
@@ -275,8 +275,8 @@ export async function subscribeToNewsletter(email: string) {
 }
 
 export async function getNewsletterSubscribers() {
-  const db = getAdminDb();
-  if (!db) return [];
+  const db = typeof getAdminDb === 'function' ? getAdminDb() : null;
+  if (!db || typeof db.collection !== 'function') return [];
   
   try {
     const snapshot = await db.collection('newsletter_subscribers').orderBy('createdAt', 'desc').get();
@@ -292,8 +292,8 @@ export async function getNewsletterSubscribers() {
 }
 
 export async function getWebsiteImage(id: string): Promise<string | null> {
-  const db = getAdminDb();
-  if (!db) return null;
+  const db = typeof getAdminDb === 'function' ? getAdminDb() : null;
+  if (!db || typeof db.collection !== 'function') return null;
   try {
     const doc = await db.collection('website_images').doc(id).get();
     if (doc.exists) {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Link as LinkIcon, Image as ImageIcon, Save, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Link as LinkIcon, Image as ImageIcon, Save, AlertCircle, Upload } from 'lucide-react';
 import { getClientLogos, addClientLogo, updateClientLogo, deleteClientLogo, ClientLogo } from '@/lib/logo-actions';
 import Image from 'next/image';
 
@@ -12,6 +12,14 @@ export function LogoManager() {
 
   const [isAdding, setIsAdding] = useState(false);
   const [newLogo, setNewLogo] = useState({ name: '', imageUrl: '', link: '', order: 0 });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+  const MIN_WIDTH = 60;
+  const MIN_HEIGHT = 30;
+  const MAX_WIDTH = 2048;
+  const MAX_HEIGHT = 2048;
 
   const fetchLogos = async () => {
     try {
@@ -29,9 +37,71 @@ export function LogoManager() {
     fetchLogos();
   }, []);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setError(null);
+
+      if (file.size > MAX_FILE_SIZE) {
+        setError(`File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds maximum allowed limit of 5MB.`);
+        setLogoFile(null);
+        setLogoPreview(null);
+        e.target.value = '';
+        return;
+      }
+
+      setLogoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const img = new window.Image();
+        img.src = reader.result as string;
+        img.onload = () => {
+          if (img.width < MIN_WIDTH || img.height < MIN_HEIGHT) {
+            setError(`Logo dimensions (${img.width}x${img.height}px) are too small. Minimum required dimension is ${MIN_WIDTH}x${MIN_HEIGHT}px.`);
+            setLogoFile(null);
+            setLogoPreview(null);
+            e.target.value = '';
+            return;
+          }
+          if (img.width > MAX_WIDTH || img.height > MAX_HEIGHT) {
+            setError(`Logo dimensions (${img.width}x${img.height}px) exceed maximum limit of ${MAX_WIDTH}x${MAX_HEIGHT}px.`);
+            setLogoFile(null);
+            setLogoPreview(null);
+            e.target.value = '';
+            return;
+          }
+
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const targetLimit = 800;
+          if (width > targetLimit || height > targetLimit) {
+            if (width > height) {
+              height *= targetLimit / width;
+              width = targetLimit;
+            } else {
+              width *= targetLimit / height;
+              height = targetLimit;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL('image/png', 0.9);
+            setLogoPreview(dataUrl);
+            setNewLogo(prev => ({ ...prev, imageUrl: dataUrl }));
+          }
+        };
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAdd = async () => {
     if (!newLogo.name || !newLogo.imageUrl) {
-      setError('Name and Image URL are required.');
+      setError('Name and a valid logo image (URL or Upload) are required.');
       return;
     }
     try {
@@ -41,6 +111,8 @@ export function LogoManager() {
       setLogos([...logos, added]);
       setIsAdding(false);
       setNewLogo({ name: '', imageUrl: '', link: '', order: 0 });
+      setLogoFile(null);
+      setLogoPreview(null);
     } catch (err: any) {
       setError(err.message || 'Failed to add logo');
     }
@@ -115,8 +187,23 @@ export function LogoManager() {
                 value={newLogo.imageUrl}
                 onChange={e => setNewLogo({ ...newLogo, imageUrl: e.target.value })}
                 className="w-full bg-slate-950 border border-slate-800 rounded p-2 text-sm text-slate-200 focus:border-cyan-500/50 outline-none"
-                placeholder="https://..."
+                placeholder="https://... or upload below"
               />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <label className="text-xs font-mono text-slate-400 uppercase">Upload Logo File (Min: 60x30px, Max: 2048x2048px, Max Size: 5MB)</label>
+              <input
+                id="logo-file-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-cyan-950/30 file:text-cyan-400 hover:file:bg-cyan-950/50 font-mono"
+              />
+              {logoPreview && (
+                <div className="mt-3 relative w-32 h-16 bg-slate-950 rounded border border-slate-800 overflow-hidden p-2 flex items-center justify-center">
+                  <Image src={logoPreview} alt="Logo Preview" fill referrerPolicy="no-referrer" className="object-contain p-1" />
+                </div>
+              )}
             </div>
             <div className="space-y-2 md:col-span-2">
               <label className="text-xs font-mono text-slate-400 uppercase">External Link (Optional)</label>

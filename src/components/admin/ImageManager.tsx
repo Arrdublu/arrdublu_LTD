@@ -45,30 +45,66 @@ export default function WebsiteImageManager() {
     }
   };
 
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB limit
+  const MIN_WIDTH = 200;
+  const MIN_HEIGHT = 200;
+  const MAX_WIDTH_LIMIT = 4096;
+  const MAX_HEIGHT_LIMIT = 4096;
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      setError(null);
+
+      // Verify file size before upload
+      if (file.size > MAX_FILE_SIZE) {
+        setError(`File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds maximum allowed limit of 5MB. Please upload a smaller image file.`);
+        setNewImageFile(null);
+        setNewImagePreview(null);
+        e.target.value = '';
+        return;
+      }
+
       setNewImageFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         const img = document.createElement('img');
         img.onload = () => {
+          // Verify image dimensions (enforce required size and limits)
+          if (img.width < MIN_WIDTH || img.height < MIN_HEIGHT) {
+            setError(`Image dimensions (${img.width}x${img.height}px) are too small. Minimum required dimension is ${MIN_WIDTH}x${MIN_HEIGHT}px.`);
+            setNewImageFile(null);
+            setNewImagePreview(null);
+            const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+            if (fileInput) fileInput.value = '';
+            return;
+          }
+
+          if (img.width > MAX_WIDTH_LIMIT || img.height > MAX_HEIGHT_LIMIT) {
+            setError(`Image dimensions (${img.width}x${img.height}px) exceed maximum allowed limit of ${MAX_WIDTH_LIMIT}x${MAX_HEIGHT_LIMIT}px.`);
+            setNewImageFile(null);
+            setNewImagePreview(null);
+            const fileInput = document.getElementById('image-upload') as HTMLInputElement;
+            if (fileInput) fileInput.value = '';
+            return;
+          }
+
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
           
-          const MAX_WIDTH = 1200;
-          const MAX_HEIGHT = 1200;
+          const TARGET_MAX_WIDTH = 1200;
+          const TARGET_MAX_HEIGHT = 1200;
 
           if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
+            if (width > TARGET_MAX_WIDTH) {
+              height *= TARGET_MAX_WIDTH / width;
+              width = TARGET_MAX_WIDTH;
             }
           } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
+            if (height > TARGET_MAX_HEIGHT) {
+              width *= TARGET_MAX_HEIGHT / height;
+              height = TARGET_MAX_HEIGHT;
             }
           }
 
@@ -77,7 +113,7 @@ export default function WebsiteImageManager() {
           const ctx = canvas.getContext('2d');
           if (ctx) {
             ctx.drawImage(img, 0, 0, width, height);
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
             setNewImagePreview(dataUrl);
           }
         };

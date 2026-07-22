@@ -62,7 +62,7 @@ export default function HeroCarousel({ triggerStateToggle }: { triggerStateToggl
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="font-display font-light text-4xl sm:text-6xl md:text-7xl lg:text-[6rem] tracking-tight text-white leading-[1.1] text-center max-w-5xl"
+            className="font-display font-light text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-tight text-white leading-[1.05] text-center max-w-6xl"
           >
             Crafting Elite <br />
             <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-slate-200 via-slate-400 to-slate-200 drop-shadow-sm">Digital Experiences</span>
@@ -138,7 +138,7 @@ export default function HeroCarousel({ triggerStateToggle }: { triggerStateToggl
                 initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="font-display font-light text-4xl sm:text-6xl md:text-7xl lg:text-[6rem] tracking-tight text-white leading-[1.1] text-center max-w-5xl"
+                className="font-display font-light text-5xl sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-tight text-white leading-[1.05] text-center max-w-6xl"
                 dangerouslySetInnerHTML={{ __html: slide.title ? slide.title.replace(/\n/g, '<br />') : '' }}
               />
 

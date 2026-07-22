@@ -1,6 +1,14 @@
 
+import type { Metadata } from 'next';
+import { constructMetadata } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+
+export const metadata: Metadata = constructMetadata({
+  title: 'Manage Free Downloads & Media Content | Arrdublu Admin',
+  description: 'Content management portal for digital assets, downloadable media resources, and free downloads in the Arrdublu administration system.',
+  image: 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/Header_Starting_white_Logo.png?alt=media&token=1fcb002e-29e8-499a-bd7a-66ef2c125021',
+});
 
 export default function AdminFreeDownloadsPage() {
   return (

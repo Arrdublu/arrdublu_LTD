@@ -40,45 +40,72 @@ export function SocialShare({ url, title, image, layout = 'default' }: SocialSha
     instagram: 'https://www.instagram.com/arrdublu',
   };
 
+  const handleWebShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title,
+          url: fullUrl,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    }
+  };
+
+  const hasWebShare = typeof navigator !== 'undefined' && !!navigator.share;
+
   if (layout === 'compact') {
     return (
       <TooltipProvider>
         <div className="flex items-center gap-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer">
-                  <Twitter className="h-3.5 w-3.5" />
-                  <span className="sr-only">X</span>
-                </a>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Share on X</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer">
-                  <Facebook className="h-3.5 w-3.5" />
-                  <span className="sr-only">Facebook</span>
-                </a>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Share on Facebook</TooltipContent>
-          </Tooltip>
-
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                <a href={socialLinks.pinterest} target="_blank" rel="noopener noreferrer">
-                  <PinterestIcon />
-                  <span className="sr-only">Pinterest</span>
-                </a>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Pin it</TooltipContent>
-          </Tooltip>
+          {hasWebShare ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleWebShare}>
+                  <Share2 className="h-3.5 w-3.5" />
+                  <span className="sr-only">Share</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Share</TooltipContent>
+            </Tooltip>
+          ) : (
+            <>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                    <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer">
+                      <Twitter className="h-3.5 w-3.5" />
+                      <span className="sr-only">X</span>
+                    </a>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Share on X</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                    <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer">
+                      <Facebook className="h-3.5 w-3.5" />
+                      <span className="sr-only">Facebook</span>
+                    </a>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Share on Facebook</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                    <a href={socialLinks.pinterest} target="_blank" rel="noopener noreferrer">
+                      <PinterestIcon />
+                      <span className="sr-only">Pinterest</span>
+                    </a>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Pin it</TooltipContent>
+              </Tooltip>
+            </>
+          )}
         </div>
       </TooltipProvider>
     );
@@ -91,36 +118,45 @@ export function SocialShare({ url, title, image, layout = 'default' }: SocialSha
         <span className="text-sm font-semibold text-muted-foreground">Amplify this project:</span>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
-        <Button variant="outline" size="icon" asChild title="Share on X">
-          <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer">
-            <Twitter className="h-4 w-4" />
-            <span className="sr-only">Share on X</span>
-          </a>
-        </Button>
-        <Button variant="outline" size="icon" asChild title="Share on Facebook">
-          <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer">
-            <Facebook className="h-4 w-4" />
-            <span className="sr-only">Share on Facebook</span>
-          </a>
-        </Button>
-        <Button variant="outline" size="icon" asChild title="Share on LinkedIn">
-          <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
-            <Linkedin className="h-4 w-4" />
-            <span className="sr-only">Share on LinkedIn</span>
-          </a>
-        </Button>
-        <Button variant="outline" size="icon" asChild title="Pin this">
-          <a href={socialLinks.pinterest} target="_blank" rel="noopener noreferrer">
-            <PinterestIcon />
-            <span className="sr-only">Share on Pinterest</span>
-          </a>
-        </Button>
-        <Button variant="outline" size="icon" asChild title="Follow us on Instagram">
-          <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer">
-            <Instagram className="h-4 w-4" />
-            <span className="sr-only">Instagram</span>
-          </a>
-        </Button>
+        {hasWebShare ? (
+          <Button variant="outline" onClick={handleWebShare} title="Share via device">
+            <Share2 className="h-4 w-4 mr-2" />
+            Share
+          </Button>
+        ) : (
+          <>
+            <Button variant="outline" size="icon" asChild title="Share on X">
+              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer">
+                <Twitter className="h-4 w-4" />
+                <span className="sr-only">Share on X</span>
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" asChild title="Share on Facebook">
+              <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer">
+                <Facebook className="h-4 w-4" />
+                <span className="sr-only">Share on Facebook</span>
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" asChild title="Share on LinkedIn">
+              <a href={socialLinks.linkedin} target="_blank" rel="noopener noreferrer">
+                <Linkedin className="h-4 w-4" />
+                <span className="sr-only">Share on LinkedIn</span>
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" asChild title="Pin this">
+              <a href={socialLinks.pinterest} target="_blank" rel="noopener noreferrer">
+                <PinterestIcon />
+                <span className="sr-only">Share on Pinterest</span>
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" asChild title="Follow us on Instagram">
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer">
+                <Instagram className="h-4 w-4" />
+                <span className="sr-only">Instagram</span>
+              </a>
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );

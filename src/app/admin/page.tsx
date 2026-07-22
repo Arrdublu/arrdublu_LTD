@@ -1,6 +1,7 @@
 
 import { getDashboardData } from '@/lib/dashboard-actions';
 import { DashboardCharts } from '@/components/admin/DashboardCharts';
+import { SystemDiagnosticCard } from '@/components/admin/SystemDiagnosticCard';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Database } from 'lucide-react';
 
@@ -15,6 +16,8 @@ export default async function AdminPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight text-white md:text-3xl">Admin Dashboard</h1>
         </div>
+
+        <SystemDiagnosticCard />
         
         <div className="w-full">
           <DashboardCharts initialData={dashboardData} />
@@ -29,6 +32,8 @@ export default async function AdminPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight text-white md:text-3xl">Admin Dashboard</h1>
         </div>
+
+        <SystemDiagnosticCard />
 
         <div className="rounded-xl border border-red-500/20 bg-zinc-950 p-6 md:p-8">
           <div className="flex flex-col items-center justify-center text-center space-y-4 max-w-lg mx-auto">

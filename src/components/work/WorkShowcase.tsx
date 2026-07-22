@@ -5,13 +5,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Activity, Archive, Edit } from 'lucide-react';
+import { ArrowRight, Activity, Archive, Edit, Maximize2 } from 'lucide-react';
 import { caseStudies } from '@/lib/data';
 import { PortfolioItem, getPortfolioItems, updatePortfolioItem } from '@/lib/portfolio-actions';
 import { auth } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { PortfolioForm } from '@/components/admin/PortfolioForm';
+import { ImageLightbox } from '@/components/work/ImageLightbox';
 import {
   Dialog,
   DialogContent,
@@ -30,6 +31,7 @@ export function WorkShowcase({ initialItems }: WorkShowcaseProps) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -59,7 +61,6 @@ export function WorkShowcase({ initialItems }: WorkShowcaseProps) {
     try {
       await updatePortfolioItem(editingItem.id, data);
       
-      // Update local state items so the UI is updated instantly!
       const updatedList = items.map(item => 
         item.id === editingItem.id ? { ...item, ...data } : item
       );
@@ -100,38 +101,55 @@ export function WorkShowcase({ initialItems }: WorkShowcaseProps) {
   if (displayItems.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
-      {/* Structured Edit Modal */}
-      <Dialog open={editingItem !== null} onOpenChange={(open) => { if (!open) setEditingItem(null); }}>
-        <DialogContent className="max-w-2xl bg-slate-950 border border-slate-800 text-white overflow-y-auto max-h-[90vh] p-6">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-xl font-semibold text-white">Edit Portfolio Item</DialogTitle>
-          </DialogHeader>
-          {editingItem && (
-            <PortfolioForm
-              initialData={editingItem}
-              onSubmit={handleUpdate}
-              onCancel={() => setEditingItem(null)}
-              isLoading={isSaving}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+        {/* Structured Edit Modal */}
+        <Dialog open={editingItem !== null} onOpenChange={(open) => { if (!open) setEditingItem(null); }}>
+          <DialogContent className="max-w-2xl bg-slate-950 border border-slate-800 text-white overflow-y-auto max-h-[90vh] p-6">
+            <DialogHeader className="mb-4">
+              <DialogTitle className="text-xl font-semibold text-white">Edit Portfolio Item</DialogTitle>
+            </DialogHeader>
+            {editingItem && (
+              <PortfolioForm
+                initialData={editingItem}
+                onSubmit={handleUpdate}
+                onCancel={() => setEditingItem(null)}
+                isLoading={isSaving}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
 
-      {displayItems.map((project) => (
-        <Card key={project.id} className="group overflow-hidden relative">
-          <Link href={project.link}>
-            <div className="relative aspect-video overflow-hidden">
+        {displayItems.map((project, idx) => (
+          <Card key={project.id} className="group overflow-hidden relative bg-slate-900/50 border-slate-800">
+            <div className="relative aspect-video overflow-hidden bg-slate-950">
               <Image
                 src={project.image}
                 alt={project.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                className="object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
                 data-ai-hint={project.dataAiHint}
                 referrerPolicy="no-referrer"
+                loading="lazy"
+                onClick={() => setLightboxIndex(idx)}
               />
               
+              {/* Lightbox zoom button overlay */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setLightboxIndex(idx);
+                }}
+                className="absolute bottom-3 left-3 z-25 p-2 rounded-lg bg-black/60 hover:bg-cyan-600 text-white backdrop-blur-md border border-white/20 transition-all cursor-pointer opacity-0 group-hover:opacity-100 flex items-center gap-1.5 text-xs font-mono"
+                title="View High-Resolution Image"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span>ZOOM</span>
+              </button>
+
               {/* EDIT Button overlay for Admins */}
               {isAdmin && (
                 <div className="absolute top-4 left-4 z-20">
@@ -142,7 +160,7 @@ export function WorkShowcase({ initialItems }: WorkShowcaseProps) {
                       const origItem = items.find(i => i.id === project.id);
                       if (origItem) setEditingItem(origItem);
                     }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-[10px] uppercase tracking-wider font-semibold shadow-lg backdrop-blur-md transition-all border border-cyan-400"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-[10px] uppercase tracking-wider font-semibold shadow-lg backdrop-blur-md transition-all border border-cyan-400 cursor-pointer"
                   >
                     <Edit className="w-3.5 h-3.5" /> EDIT PROJECT
                   </button>
@@ -150,7 +168,7 @@ export function WorkShowcase({ initialItems }: WorkShowcaseProps) {
               )}
 
               {project.status && (
-                <div className="absolute top-4 right-4 z-10">
+                <div className="absolute top-4 right-4 z-10 pointer-events-none">
                   <Badge 
                     variant={project.status === 'Live' ? 'default' : 'secondary'}
                     className={`flex items-center gap-1.5 px-2.5 py-1 backdrop-blur-md font-mono text-[10px] uppercase tracking-wider ${project.status === 'Live' ? 'bg-cyan-500/80 text-white border-cyan-400' : 'bg-slate-900/80 text-slate-400 border-slate-700'}`}
@@ -164,21 +182,44 @@ export function WorkShowcase({ initialItems }: WorkShowcaseProps) {
                 </div>
               )}
             </div>
-            <CardHeader>
-              <Badge variant="secondary" className="w-fit mb-2">{project.category}</Badge>
-              <CardTitle className="font-headline text-xl group-hover:text-primary transition-colors">
-                {project.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">{project.description}</p>
-              <div className="flex items-center text-sm font-semibold text-primary">
-                View Project <ArrowRight className="ml-2 h-4 w-4" />
-              </div>
-            </CardContent>
-          </Link>
-        </Card>
-      ))}
-    </div>
+
+            <Link href={project.link}>
+              <CardHeader>
+                <Badge variant="secondary" className="w-fit mb-2">{project.category}</Badge>
+                <CardTitle className="font-headline text-xl group-hover:text-primary transition-colors text-white">
+                  {project.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4 text-slate-400">{project.description}</p>
+                <div className="flex items-center text-sm font-semibold text-primary">
+                  View Project <ArrowRight className="ml-2 h-4 w-4" />
+                </div>
+              </CardContent>
+            </Link>
+          </Card>
+        ))}
+      </div>
+
+      <ImageLightbox
+        isOpen={lightboxIndex !== null}
+        currentIndex={lightboxIndex || 0}
+        items={displayItems}
+        onClose={() => setLightboxIndex(null)}
+        onNavigate={(newIdx) => setLightboxIndex(newIdx)}
+      />
+
+      <div className="mt-12 flex justify-center">
+        <Link
+          href="/work"
+          className="group relative inline-flex items-center justify-center gap-3 bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-xs uppercase tracking-[0.2em] px-8 py-4 rounded-none transition-all duration-300"
+        >
+          <span>View All Projects</span>
+          <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+          <div className="absolute inset-0 border border-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-105 group-hover:scale-100" />
+        </Link>
+      </div>
+    </>
   );
 }
+
