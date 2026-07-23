@@ -9,6 +9,8 @@ import PortfolioSection from '@/components/home/PortfolioSection'
 import VirtualProductionShowcase from '@/components/work/VirtualProductionShowcase'
 import { ClientLogos } from '@/components/home/ClientLogos'
 import Link from 'next/link'
+import Image from 'next/image'
+import regeneratedFounderImg from '@/assets/images/regenerated_image_1784823782765.jpg'
 import { z } from 'zod'
 
 const contactSchema = z.object({
@@ -262,8 +264,15 @@ export default function Home({ founderImage }: { founderImage?: string | null })
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
           <div className="flex-1 w-full relative">
             <div id="founder-portrait-container" className="aspect-[3/4] w-full rounded-sm overflow-hidden bg-slate-900 border border-slate-800 relative">
-              {/* Replace with actual founder image, using placeholder style for now */}
-              <div id="founder-portrait-image" className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${founderImage || 'https://firebasestorage.googleapis.com/v0/b/arrdublu-d1c06.firebasestorage.app/o/IMG_5975.jpg?alt=media&token=34d72a2d-67a0-43fb-a8da-e52bd6152e4e'}')` }}></div>
+              <Image
+                id="founder-portrait-image"
+                src={founderImage || regeneratedFounderImg}
+                alt="Ramone Wynter - Founder & Creative Director"
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
             </div>
           </div>
           <div className="flex-1 space-y-6">

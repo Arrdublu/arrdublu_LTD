@@ -161,7 +161,7 @@ export function ServiceActions({ service }: ServiceActionsProps) {
         <div className="flex justify-between items-center pb-4 border-b border-zinc-800">
           <div>
             <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-400 block mb-1">Standard Industry Rate</span>
-            <span className="text-3xl font-display font-bold text-white tracking-tight">$75.00 <span className="text-lg font-normal text-zinc-500">/ hr</span></span>
+            <span className="text-3xl font-display font-bold text-white tracking-tight font-mono">$75.00 <span className="text-neutral-300 text-sm font-normal"> / hr</span></span>
           </div>
           <div className="bg-zinc-900/80 px-2.5 py-1.5 rounded border border-zinc-800 flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-cyan-400" />

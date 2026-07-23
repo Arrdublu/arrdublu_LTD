@@ -17,6 +17,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
+import { Logo } from '@/components/layout/Logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from '@/components/ui/sheet';
 import { Toaster } from '@/components/ui/toaster';
 import { useLanguage } from '@/context/LanguageProvider';
@@ -37,13 +38,7 @@ export function SiteHeader() {
       <header className="sticky top-0 z-50 w-full border-b border-slate-900 bg-[#020304]/80 backdrop-blur-md">
         <div className="container mx-auto px-4 md:px-8 flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="p-1.5 rounded-sm bg-white group-hover:bg-slate-200 transition-colors">
-              <span className="font-sans text-sm font-bold tracking-tighter text-slate-950">AA</span>
-            </div>
-            <div>
-              <h1 className="text-sm font-sans font-medium tracking-[0.2em] uppercase text-slate-100">ARRDUBLU</h1>
-              <p className="text-[9px] font-sans text-slate-400 tracking-[0.1em] uppercase leading-none mt-1">Director-Led Studio</p>
-            </div>
+            <Logo />
           </Link>
           
           <NavigationMenu className="hidden md:flex mx-auto">

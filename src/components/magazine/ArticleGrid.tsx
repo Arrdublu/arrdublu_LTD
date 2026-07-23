@@ -49,26 +49,26 @@ export function ArticleGrid() {
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {articles.map((article) => (
-          <Card key={article.id} className="group overflow-hidden flex flex-col">
-            <Link href={article.url} className="block">
-              <div className="relative aspect-video overflow-hidden">
-                <Image
-                  src={article.image}
-                  alt={article.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  data-ai-hint={article.dataAiHint}
-                />
-              </div>
-            </Link>
+          <Card key={article.id} className="group overflow-hidden flex flex-col relative focus-within:ring-2 focus-within:ring-white">
+            <div className="relative aspect-video overflow-hidden">
+              <Image
+                src={article.image}
+                alt={`${article.title} preview`}
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                data-ai-hint={article.dataAiHint}
+              />
+            </div>
             <CardHeader>
-              <Badge variant="secondary" className="w-fit mb-2">{article.category}</Badge>
-              <CardTitle className="font-headline text-xl group-hover:text-primary transition-colors">
-                <Link href={article.url}>{article.title}</Link>
+              <Badge variant="secondary" className="w-fit mb-2 relative z-10">{article.category}</Badge>
+              <CardTitle className="font-headline text-xl transition-colors">
+                <Link href={article.url} className="hover:text-primary focus:outline-none after:absolute after:inset-0">
+                  {article.title}
+                </Link>
               </CardTitle>
             </CardHeader>
-            <CardContent className="mt-auto pt-4">
+            <CardContent className="mt-auto pt-4 relative z-10">
               <SocialShare url={article.url} title={article.title} image={article.image} />
             </CardContent>
           </Card>

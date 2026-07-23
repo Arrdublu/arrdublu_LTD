@@ -21,28 +21,28 @@ export function FeaturedArticle() {
       <h2 className="text-3xl font-headline font-semibold mb-8 text-primary border-b pb-4">
         Featured Story
       </h2>
-      <Card className="overflow-hidden shadow-lg md:grid md:grid-cols-2 md:gap-0">
-        <Link href={featuredArticle.url} className="block relative aspect-video md:aspect-auto">
+      <Card className="overflow-hidden shadow-lg md:grid md:grid-cols-2 md:gap-0 group relative focus-within:ring-2 focus-within:ring-white">
+        <div className="relative aspect-video md:aspect-auto overflow-hidden">
           <Image
             src={featuredArticle.image}
-            alt={featuredArticle.title}
+            alt={`${featuredArticle.title} preview`}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 50vw"
             data-ai-hint={featuredArticle.dataAiHint}
           />
-        </Link>
+        </div>
         <div className="p-6 md:p-8 flex flex-col justify-center">
-          <Badge variant="outline" className="mb-2 w-fit">{featuredArticle.category}</Badge>
-          <h3 className="text-2xl font-headline font-bold mb-4 hover:text-primary transition-colors">
-            <Link href={featuredArticle.url}>
+          <Badge variant="outline" className="mb-2 w-fit relative z-10">{featuredArticle.category}</Badge>
+          <h3 className="text-2xl font-headline font-bold mb-4 transition-colors">
+            <Link href={featuredArticle.url} className="hover:text-primary focus:outline-none after:absolute after:inset-0">
                 {featuredArticle.title}
             </Link>
           </h3>
           <p className="text-muted-foreground mb-6">
             {featuredArticle.excerpt}
           </p>
-          <div className="flex items-center gap-4 mt-auto">
+          <div className="flex items-center gap-4 mt-auto relative z-10">
             <SocialShare url={featuredArticle.url} title={featuredArticle.title} image={featuredArticle.image} />
           </div>
         </div>

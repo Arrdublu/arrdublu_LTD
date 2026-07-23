@@ -156,7 +156,7 @@ export function ServicePageClient({ service, caseStudies }: ServicePageClientPro
                 <CardHeader>
                     <CardTitle className="font-headline text-2xl">
                         {getFormattedPrice(service.price)}
-                        {service.unit === 'hr' && <span className="text-lg font-normal text-muted-foreground">/hr</span>}
+                        {service.unit === 'hr' && <span className="text-neutral-300 text-sm font-normal"> / hr</span>}
                     </CardTitle>
                     <CardDescription>Ready to get started?</CardDescription>
                 </CardHeader>
