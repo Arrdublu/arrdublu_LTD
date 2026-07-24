@@ -1,7 +1,8 @@
 
 import { Suspense } from 'react';
 import SearchPageClient from './SearchPageClient';
-import { searchServices } from '@/lib/search-actions';
+import { searchEntireWebsite } from '@/lib/search-actions';
+
 export const dynamic = 'force-dynamic';
 
 interface SearchPageProps {
@@ -13,10 +14,10 @@ interface SearchPageProps {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { q } = await searchParams;
   const query = q || '';
-  const results = await searchServices(query);
+  const results = await searchEntireWebsite(query);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="container mx-auto px-4 py-12 text-slate-400 text-sm">Searching website...</div>}>
       <SearchPageClient query={query} initialResults={results} />
     </Suspense>
   );

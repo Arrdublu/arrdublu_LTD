@@ -4,7 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Globe } from 'lucide-react';
+import { Menu, Globe, Search } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -44,22 +44,22 @@ export function SiteHeader() {
           <NavigationMenu className="hidden md:flex mx-auto">
             <NavigationMenuList className="gap-2">
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium")}>
+                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium", pathname === '/service' && "text-cyan-400 bg-slate-900")}>
                     <Link href="/service">Services</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium")}>
+                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium", pathname?.startsWith('/discover') && "text-cyan-400 bg-slate-900")}>
                     <Link href="/discover/case-studies">Selected Works</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium")}>
+                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium", pathname === '/shop' && "text-cyan-400 bg-slate-900")}>
                     <Link href="/shop">Shop</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium")}>
+                  <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:bg-slate-900 hover:text-white font-sans uppercase tracking-widest text-xs cursor-pointer font-medium", pathname === '/about' && "text-cyan-400 bg-slate-900")}>
                     <Link href="/about">The Director</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
@@ -67,6 +67,15 @@ export function SiteHeader() {
           </NavigationMenu>
 
           <div className="flex items-center gap-4">
+             <Link
+               href="/search"
+               className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 rounded-full font-sans text-xs text-slate-300 hover:text-white transition-all"
+               aria-label="Search catalog"
+             >
+               <Search className="w-3.5 h-3.5 text-cyan-400" />
+               <span className="text-[11px] uppercase tracking-wider font-medium">Search</span>
+             </Link>
+
              <button
                onClick={handleLanguageToggle}
                className="hidden md:flex items-center gap-1.5 px-2 py-1 bg-transparent rounded font-sans text-[10px] uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
@@ -112,6 +121,11 @@ export function SiteHeader() {
                      <SheetClose asChild>
                          <Link href="/shop" className="text-slate-300 hover:text-white transition-colors">
                              Shop
+                         </Link>
+                     </SheetClose>
+                     <SheetClose asChild>
+                         <Link href="/search" className="text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-2">
+                             <Search className="w-3.5 h-3.5" /> Search Catalog
                          </Link>
                      </SheetClose>
                      <SheetClose asChild>

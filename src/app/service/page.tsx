@@ -1,16 +1,20 @@
 import { constructMetadata } from '@/lib/utils';
-import { services } from '@/lib/data';
+import { getServices } from '@/lib/service-actions';
 import { ServiceCard } from '@/components/services/ServiceCard';
 import { Metadata } from 'next';
 import RateSheetDrawer from '@/components/services/RateSheetDrawer';
 import StructuredData from '@/components/services/StructuredData';
+
+export const revalidate = 0;
 
 export const metadata: Metadata = constructMetadata({
   title: 'Services | Arrdublu',
   description: 'Explore our range of creative, lifestyle, and production services.',
 });
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const servicesList = await getServices();
+
   return (
     <div className="container mx-auto px-4 py-12">
       <StructuredData />
@@ -25,7 +29,7 @@ export default function ServicesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {services.map((service) => (
+        {servicesList.map((service) => (
           <ServiceCard key={service.id} service={service} />
         ))}
       </div>
